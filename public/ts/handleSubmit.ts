@@ -1,4 +1,4 @@
-export const handleFormSubmit = async (event : Event, endpoint: string, action: (rep : Response) => void) => {
+export const handleFormSubmit = async (event : Event, endpoint: string, action: (rep : Response, result : any) => void) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
@@ -15,7 +15,7 @@ export const handleFormSubmit = async (event : Event, endpoint: string, action: 
 
         const result = await response.json();
         console.log(result);
-        action(response);
+        action(response, result);
     } catch (e) {
         console.error(e);
     }

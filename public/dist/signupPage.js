@@ -57,7 +57,7 @@ export const signupPage = () => `
         </div>
     </div>
 `;
-export const signupResponse = (rep) => {
+export const signupResponse = (rep, result) => {
     console.log(rep.status);
     if (rep.ok)
         router.navigate('/login');
