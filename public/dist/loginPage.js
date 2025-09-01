@@ -8,7 +8,10 @@ export const loginPage = () => `
 
             <form id="loginForm" class="space-y-6">
                 <div class="space-y-2">
-                    <label for="email" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                        <p id="email-error" class="text-red-700 italic text-xs hidden">Wrong Credentials</p>
+                    </div>
                     <input
                         id="email-input" 
                         type="email" 
@@ -20,7 +23,10 @@ export const loginPage = () => `
                 </div>
 
                 <div class="space-y-2">
-                    <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Password</label>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Password</label>
+                        <p id="password-error" class="text-red-700 italic text-xs hidden">Wrong Credentials</p>
+                    </div>
                     <input
                         id="password-input"
                         type="password" 
@@ -50,16 +56,30 @@ export const loginPage = () => `
                 </p>
             </div>
         </div>`;
-export const loginResponse = (rep) => {
+export const loginResponse = (rep, result) => {
     console.log(rep.status);
-    if (rep.ok)
-        router.navigate('/');
+    if (rep.ok) {
+        try {
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('user', JSON.stringify(result.user));
+            router.navigate('/');
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
     if (rep.status == 401) {
         const email_input = document.getElementById('email-input');
         const pass_input = document.getElementById('password-input');
+        const email_error = document.getElementById('email-error');
+        const pass_error = document.getElementById('password-error');
         if (email_input)
             email_input.classList.replace('border-[#475569]', 'border-[#FF0000]');
         if (pass_input)
             pass_input.classList.replace('border-[#475569]', 'border-[#FF0000]');
+        if (email_error)
+            email_error.classList.remove('hidden');
+        if (pass_error)
+            pass_error.classList.remove('hidden');
     }
 };
