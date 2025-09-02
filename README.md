@@ -42,7 +42,7 @@ public/ts/             # Frontend TypeScript files
 ## Running the Project
 1. Build Tailwind CSS (if not already built):
    ```sh
-   npx tailwindcss -i ./public/styles.css -o ./public/styles.css --watch
+   npx tailwindcss -i ./src/styles.css -o ./public/styles.css --watch
    ```
 2. Start the server:
    ```sh
