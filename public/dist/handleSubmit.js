@@ -13,7 +13,7 @@ export const handleFormSubmit = async (event, endpoint, action) => {
         });
         const result = await response.json();
         console.log(result);
-        action(response);
+        action(response, result);
     }
     catch (e) {
         console.error(e);

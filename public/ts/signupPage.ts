@@ -59,7 +59,7 @@ export const signupPage = () => `
     </div>
 `;
 
-export const signupResponse = (rep : Response) => {
+export const signupResponse = (rep : Response, result : any) => {
     console.log(rep.status);
     if (rep.ok)
         router.navigate('/login');

@@ -29,8 +29,8 @@ const  authRoutes = async (fastify, options) => {
                     return rep.code(501).send({message: "Hash error"});
                 }
                 if (result === true) {
-                    const token = fastify.jwt.sign({id: row[0].id, username: row[0].username});
-                    rep.code(200).send({token, message : "Connected"});
+                    const jwtToken = fastify.jwt.sign({id: row[0].id, username: row[0].username});
+                    rep.code(200).send({"token": jwtToken, "user": {"username": row[0].username, "email": email}, message : "Connected"});
                 }
                 else rep.code(401).send({message : "Wrong Credentials"});
             })
