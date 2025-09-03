@@ -5,11 +5,13 @@ import { render } from './render.js';
 import { loginPage, loginResponse } from './loginPage.js';
 import { signupPage, signupResponse } from './signupPage.js';
 import { WelcomePage } from './welcomePage.js';
+import { gameInit } from './game.js';
 
 export const router = new Router;
 
 document.addEventListener('DOMContentLoaded', () => {
     setupSidebar();
+    gameInit();
 
     router.setupLinkHandlers();
 
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         signupForm?.addEventListener('submit', (e) => handleFormSubmit(e, '/api/signup', signupResponse));
     });
 
-    router.add('/', () => {
+    router.add('/welcome', () => {
         render(WelcomePage());
         const userStored = localStorage.getItem('user');
         if (userStored) {
