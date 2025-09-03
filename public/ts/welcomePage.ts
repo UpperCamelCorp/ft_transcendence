@@ -16,7 +16,7 @@ export const WelcomePage = () => `
                 <div id="features" class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
                     <div class="p-4 bg-transparent rounded-lg">
                         <h3 class="text-white font-semibold">Online Game</h3>
-                        <p class="text-sm text-slate-400 mt-1">Fast matches and tounament</p>
+                        <p class="text-sm text-slate-400 mt-1">Fast matches and tournament</p>
                     </div>
                     <div class="p-4 bg-transparent rounded-lg">
                         <h3 class="text-white font-semibold">Friends and Community</h3>
