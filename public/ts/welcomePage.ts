@@ -24,7 +24,7 @@ export const WelcomePage = () => `
                     </div>
                     <div class="p-4 bg-transparent rounded-lg">
                         <h3 class="text-white font-semibold">Ranking</h3>
-                        <p class="text-sm text-slate-400 mt-1">Follow your and your firends progressions .</p>
+                        <p class="text-sm text-slate-400 mt-1">Follow your and your friends progressions.</p>
                     </div>
                 </div>
             </div>
