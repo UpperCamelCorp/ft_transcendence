@@ -1,4 +1,3 @@
-import { textSpanOverlapsWith } from "../../../node_modules/typescript/lib/typescript.js";
 import { game } from "./pong.js";
 
 class Paddle {
