@@ -1,3 +1,6 @@
+import { textSpanOverlapsWith } from "../../../node_modules/typescript/lib/typescript.js";
+import { game } from "./pong.js";
+
 class Paddle {
     x: number;
     y: number;
@@ -50,6 +53,7 @@ class Ball {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
+        ctx.fillStyle = 'white';
         ctx.setLineDash([]);
         ctx.beginPath();
         ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
@@ -60,6 +64,7 @@ class Ball {
     update(canvas: HTMLCanvasElement) {
         this.x += this.dx;
         this.y += this.dy;
+        
 
         if (this.y + this.dy >= canvas.height || this.y + this.dy <= 0)
             this.dy = -this.dy;
@@ -85,20 +90,26 @@ class Game {
     private rightPaddle : Paddle;
     private ball : Ball;
     private ctx : CanvasRenderingContext2D;
+    private animationId : number;
     private canvas : HTMLCanvasElement;
     private leftScore: number;
     private rightScore: number
     private gameStart: boolean;
+    private maxPoints : number;
+    private winner: string;
 
-    constructor(canvas : HTMLCanvasElement) {
+    constructor(canvas : HTMLCanvasElement, maxPoints: number, leftColor: string, rightColor: string) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
-        this.leftPaddle = new Paddle(((canvas.width / 2) / 2) - 80, canvas.height / 2, 'white');
-        this.rightPaddle = new Paddle((canvas.width / 2) + ((canvas.width / 2) / 2) + 80, canvas.height / 2, 'white');
+        this.leftPaddle = new Paddle(((canvas.width / 2) / 2) - 80, canvas.height / 2, leftColor);
+        this.rightPaddle = new Paddle((canvas.width / 2) + ((canvas.width / 2) / 2) + 80, canvas.height / 2, rightColor);
         this.ball = new Ball(canvas.width / 2, canvas.height / 2, 5, 5);
         this.leftScore = 0;
         this.rightScore = 0;
         this.gameStart = false;
+        this.maxPoints = maxPoints;
+        this.animationId = 0;
+        this.winner = '';
     }
 
     private drawMap() {
@@ -139,9 +150,13 @@ class Game {
             this.rightScore++;
             this.updateScoreDisplay();
             this.ball.reset(this.canvas);
-            this.rightPaddle.reset(this.canvas.height);
-            this.leftPaddle.reset(this.canvas.height);
+            this.rightPaddle.reset(this.canvas.height / 2);
+            this.leftPaddle.reset(this.canvas.height / 2);
             this.gameStart = false;
+            if (this.rightScore == this.maxPoints) {
+                this.winner = 'Player 2';
+                this.stop();
+            }
         }
 
         else if (prevX < this.canvas.width && this.ball.x >= this.canvas.width) {
@@ -151,6 +166,10 @@ class Game {
             this.rightPaddle.reset(this.canvas.height / 2);
             this.leftPaddle.reset(this.canvas.height / 2);
             this.gameStart = false;
+            if (this.leftScore == this.maxPoints) {
+                this.winner = 'Player 1';    
+                this.stop();
+            }
         }
     }
 
@@ -189,6 +208,22 @@ class Game {
                 break;
         }
     };
+
+    private handleTouchStart = (up: boolean) => {
+        if (!this.gameStart)
+            this.gameStart = true;
+        if (up)
+            this.leftPaddle.upPressed = true;
+        else
+            this.leftPaddle.downPressed = true;
+    }
+
+    private handleTouchEnd = (up: boolean) => {
+        if (up)
+            this.leftPaddle.upPressed = false;
+        else
+            this.leftPaddle.downPressed = false;
+    }
     
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -200,29 +235,64 @@ class Game {
         this.leftPaddle.draw(this.ctx);
         this.rightPaddle.draw(this.ctx);
         this.ball.draw(this.ctx);
-        requestAnimationFrame(this.loop);
+        this.animationId = requestAnimationFrame(this.loop);
     };
 
     public start() {
         document.addEventListener('keydown', this.handleKeyDown);
         document.addEventListener('keyup', this.handleKeyUp);
+        const upArrow = document.getElementById('up');
+        const downArrow = document.getElementById('down');
+        upArrow?.addEventListener('touchstart', () => this.handleTouchStart(true));
+        upArrow?.addEventListener('touchend', () => this.handleTouchEnd(true));
+        downArrow?.addEventListener('touchstart', () => this.handleTouchStart(false));
+        downArrow?.addEventListener('touchend', () => this.handleTouchEnd(false));
+        
         this.loop();
+        this.rightScore = 0;
+        this.leftScore = 0;
+        this.updateScoreDisplay();
     }
 
     public stop() {
+        cancelAnimationFrame(this.animationId);
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
+
+        const overlay = document.createElement('div');
+        overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-3 z-50";
+        overlay.innerHTML = `
+            <span class="text-3xl font-bold m-3" >Game Over</span>
+            <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} Won!</span>
+            <div class="flex m-2 space-x-8">
+                <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>
+                <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Retry</button>
+            </div>
+        `
+        document.body.appendChild(overlay);
+
+        const returnButton = document.getElementById('return-button');
+        const retryButton = document.getElementById('retry-button');
+
+        returnButton?.addEventListener('click', () => {
+            overlay.remove();
+            game()
+        });
+        retryButton?.addEventListener('click', () => {
+            overlay.remove();
+            this.start()
+        });
     }
 }
 
 
-export const gameInit = () => {
+export const gameInit = (max: number, leftColor: string = 'white', rightColor: string = 'white') => {
     const canvas = document.getElementById('game') as HTMLCanvasElement;
     const container = canvas.parentElement;
     if (canvas && container) {
         canvas.width = container.clientWidth - 10;
         canvas.height = canvas.width * (9 / 16);
     }
-    const game = new Game(canvas);
+    const game = new Game(canvas, max, leftColor, rightColor);
     game.start();
 }
