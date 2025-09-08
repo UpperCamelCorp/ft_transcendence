@@ -1,7 +1,9 @@
 import {router} from './index.js'
+import { render } from './render.js';
+import { handleFormSubmit } from './handleSubmit.js';
 
-export const signupPage = () => `
-    <div class="flex flex-col w-96 max-w-md bg-[#1E293B] rounded-3xl shadow-2xl backdrop-blur-lg border border-[#334155] text-white p-8">
+const signupPage = () => `
+    <div class="flex flex-col w-96 max-w-md bg-gradient-to-br from-[#18003C] to-[#142033] rounded-3xl shadow-2xl backdrop-blur-lg border border-[#334155] text-white p-8">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold mb-2">Welcome</h2>
             <p class="text-[#94A3B8] text-sm">Sign up an account</p>
@@ -59,8 +61,15 @@ export const signupPage = () => `
     </div>
 `;
 
-export const signupResponse = (rep : Response, result : any) => {
+const signupResponse = (rep : Response, result : any) => {
     console.log(rep.status);
     if (rep.ok)
         router.navigate('/login');
+}
+
+export const signup = () => {
+    render(signupPage());
+    const signupForm = document.getElementById('signupForm');
+    signupForm?.addEventListener('submit', (e) => handleFormSubmit(e, '/api/signup', signupResponse));
+    
 }
