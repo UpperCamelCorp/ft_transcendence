@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#0F172A] w-screen min-h-screen font-roboto md:overflow-hidden">
+<body class="bg-[url('../images/bg.jpg')] bg-cover bg-right md:bg-center font-roboto md:overflow-hidden">
     <!-- header -->
-    <header class="fixed top-0 bg-[#1E293B] w-full h-16 flex items-center justify-between z-50">
+    <header class="fixed top-0 bg-[#18003c] w-full h-16 flex items-center justify-between z-50">
         <div class="flex items-center">
             <button id="openMenu" class="w-10 h-10 pl-2 md:hidden">
                 <img src="../svg/menu-icon.svg" alt="menu-icon">
@@ -21,7 +21,7 @@
         </div>
     </header>
         <!-- sidebar -->
-    <div id="slideMenu" class="fixed bg-[#1E293B] min-h-screen w-0 md:w-22 top-16 z-50 transition-all delay-150 ease-in border-r border-[#334155]">
+    <div id="slideMenu" class="fixed bg-[#18003C] min-h-screen w-0 md:w-22 top-16 z-50 transition-all delay-150 ease-in border-r border-[#334155]">
         <button id="closeMenu" class="md:hidden opacity-0 absolute top-1 right-2 w-8 h-8 transition-opacity duration-500">
             <img src="svg/close-icon.svg" alt="close-icon">
         </button>
@@ -30,18 +30,19 @@
                 <img id="logo-ref" src="svg/menu-icon.svg" alt="menu-icon" class="w-9 h-9 transition-all translate-x-3 duration-300">
                 <span id="text-ref" class="opacity-0 transition-opacity duration-150 overflow-hidden">Dashboard</span>
             </a>
-            <a href="#" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
+            <a href="/game" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
                 <img id="logo-ref" src="svg/game-icon.svg" alt="game-icon" class="w-9 h-9 transition-all translate-x-3 duration-300">
                 <span id="text-ref" class="opacity-0 transition-opacity duration-150 overflow-hidden">Game</span>
             </a>
-            <a href="#" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
+            <a href="/friends" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
                 <img id="logo-ref" src="svg/friends-icon.svg" alt="friends-icon" class="w-9 h-9 transition-all translate-x-3 duration-300">
                 <span id="text-ref" class="opacity-0 transition-opacity duration-150 overflow-hidden">Friends</span>
             </a>
         </div>
     </div>
     <!-- main content -->
-    <main id="main" class="min-h-[calc(100vh-4rem)] relative md:ml-22 mt-16 z-10 flex items-center justify-center overflow-x-scroll">
+    <main id="main" class="h-[calc(100vh-4rem)] relative md:ml-22 mt-16 z-10 flex items-center justify-center overflow-x-scroll">
     </main>
+    </div>
 </body>
 </html>

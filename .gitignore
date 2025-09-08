@@ -1,5 +1,2 @@
-/node_modules
-/dist
-/build
-/coverage
-transcendence.db
+node_modules/
+db/transcendence.db
