@@ -14,7 +14,8 @@ const setUpDataBase = async () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
             email TEXT NOT NULL,
-            hash TEXT NOT NULL
+            hash TEXT NOT NULL,
+            picture TEXT
             )`
         , (e) => {
             if (e)

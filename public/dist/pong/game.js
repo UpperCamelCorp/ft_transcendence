@@ -193,6 +193,7 @@ class Game {
         }
     }
     start() {
+        cancelAnimationFrame(this.animationId);
         document.addEventListener('keydown', this.handleKeyDown);
         document.addEventListener('keyup', this.handleKeyUp);
         const upArrow = document.getElementById('up');
@@ -204,6 +205,10 @@ class Game {
         this.loop();
         this.rightScore = 0;
         this.leftScore = 0;
+        this.ball.dx = Math.floor(Math.random() * 2) % 2 ? 5 : -5;
+        this.ball.dy = Math.floor(Math.random() * 2) % 2 ? 5 : -5;
+        console.log('dx = ', this.ball.dx);
+        console.log('dy = ', this.ball.dy);
         this.updateScoreDisplay();
     }
     stop() {

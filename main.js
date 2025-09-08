@@ -17,8 +17,10 @@ const start = async () => {
         fastify.register(require('@fastify/jwt'), {
             secret : process.env.JWTPASS
         })
+        fastify.register(require('@fastify/multipart'))
         console.log(process.env.JWTPASS);
         fastify.register(require('./api/auth.js'));
+        fastify.register(require('./api/user.js'));
         fastify.setNotFoundHandler((req, rep) => {
             rep.sendFile('static/index.html')
         });
