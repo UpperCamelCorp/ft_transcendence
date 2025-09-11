@@ -26,31 +26,31 @@ const userRoute = (fastify, options) => {
                 console.log('no file');
             }
             const {username, email, password, confirm} = data.fields;
-            const sqlFileds = [];
+            const sqlFields = [];
             const sqlParam = [];
             if (username.value) {
-                sqlFileds.push('username = ?');
+                sqlFields.push('username = ?');
                 sqlParam.push(username.value);
             }
             if (email.value) {
-                sqlFileds.push('email = ?');
+                sqlFields.push('email = ?');
                 sqlParam.push(email.value);
             }
             if (password.value) {
                 const hash = await bcrypt.hash(password.value, 10);
-                sqlFileds.push('hash = ?');
+                sqlFields.push('hash = ?');
                 sqlParam.push(hash);
             }
             if (finalFile) {
-                sqlFileds.push('picture = ?');
+                sqlFields.push('picture = ?');
                 sqlParam.push(finalFile);
             }
             sqlParam.push(req.user.id);
             console.log(username.value + ' ' + email.value + ' ' + password.value + ' ' + confirm.value);
-            if (sqlFileds.length === 0)
+            if (sqlFields.length === 0)
                 return rep.code(200).send({message: "Sucess"});
             try {
-                await fastify.db.run(`UPDATE users SET ${sqlFileds.join(', ')} WHERE id = ?`, sqlParam);
+                await fastify.db.run(`UPDATE users SET ${sqlFields.join(', ')} WHERE id = ?`, sqlParam);
             } catch(e) {
                 console.error(e);
                 return rep.code(500).send({message: "Error try again later"});
