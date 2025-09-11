@@ -11,25 +11,31 @@ const userRoute = (fastify, options) => {
             let finalFile = null;
             console.log('id= ', req.user.id);
             if (data.file && data.filename) {
-                const ext = data.filename.split('.').pop();
-                const filename = `pp_${req.user.username}_${Date.now()}.${ext}`;
-                const filePath = path.join(__dirname, '../public/uploads/', filename);
-                console.log('path = ', filePath);
-                await fs.writeFile(filePath, await data.toBuffer());
-                finalFile = `/uploads/${filename}`;
-                console.log('final file = ', finalFile);                
+                try {
+                    const ext = data.filename.split('.').pop();
+                    const filename = `pp_${req.user.username}_${Date.now()}.${ext}`;
+                    const filePath = path.join(__dirname, '../public/uploads/', filename);
+                    console.log('path = ', filePath);
+                    await fs.writeFile(filePath, await data.toBuffer());
+                    finalFile = `/uploads/${filename}`;
+                    console.log('final file = ', finalFile);
+                } catch (e) {
+                    console.log(e);
+                }                
             } else {
                 console.log('no file');
             }
             const {username, email, password, confirm} = data.fields;
             const sqlFileds = [];
             const sqlParam = [];
-            if (username.value)
+            if (username.value) {
                 sqlFileds.push('username = ?');
                 sqlParam.push(username.value);
-            if (email.value)
+            }
+            if (email.value) {
                 sqlFileds.push('email = ?');
-                sqlParam.push(emai.value);
+                sqlParam.push(email.value);
+            }
             if (password.value) {
                 const hash = await bcrypt.hash(password.value, 10);
                 sqlFileds.push('hash = ?');
@@ -40,7 +46,7 @@ const userRoute = (fastify, options) => {
                 sqlParam.push(finalFile);
             }
             sqlParam.push(req.user.id);
-
+            console.log(username.value + ' ' + email.value + ' ' + password.value + ' ' + confirm.value);
             if (sqlFileds.length === 0)
                 return rep.code(200).send({message: "Sucess"});
             try {
