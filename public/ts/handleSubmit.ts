@@ -1,3 +1,7 @@
+const getToken = (): string | null => {
+    return localStorage.getItem('authToken');
+}
+
 export const handleFormSubmit = async (event : Event, endpoint: string, action: (rep : Response, result : any) => void) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -6,11 +10,15 @@ export const handleFormSubmit = async (event : Event, endpoint: string, action: 
 
     console.log(data);
     try {
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+        };
+        const token = getToken();
+        if (token) 
+            headers['Authorization'] = `Bearer ${token}`;
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify(data)
         });
 
@@ -29,11 +37,14 @@ export const handleMultiFormSubmit  = async (event : Event, endpoint: string, ac
 
     console.log(formData);
     try {
+        const headers: HeadersInit = {};
+        const token = getToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers,
             body: formData
         });
 
