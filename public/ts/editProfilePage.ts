@@ -51,7 +51,7 @@ export const edit = () => {
     const editForm = document.getElementById('form-edit');
     const pictureInputDesktop = document.getElementById('input-picture') as HTMLInputElement;
     const pictureInputMobile = document.getElementById('picture') as HTMLInputElement;
-    editForm?.addEventListener('submit', (e) => handleMultiFormSubmit(e, '/api/edit', () =>{}));
+    editForm?.addEventListener('submit', (e) => handleMultiFormSubmit(e, '/api/edit', editResponse));
     const handleImageChange = (input: HTMLInputElement) => {
         const userImage = input.files?.[0];
         if (userImage) {
