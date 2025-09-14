@@ -12,8 +12,16 @@ const initJwt =  () => {
     fastify.decorate("authenticate", async (request, reply) => {
     try {
       await request.jwtVerify();
-    } catch (err) {
-      reply.send(err);
+    } catch (e) {
+        if (e.name === 'FastifyError' && e.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
+            reply.code(401).send({error: "Missing Token" });
+        } else if (e.name === 'FastifyError' && e.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
+            reply.code(401).send({error: "Token Expired" });
+        } else if (e.name === 'FastifyError' && e.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
+            reply.code(401).send({error: "Invalid Token" });
+        } else {
+            reply.code(401).send({error: 'Error'});
+        }
     }
     });
 }
@@ -28,17 +36,6 @@ const start = async () => {
         });
         fastify.register(require('@fastify/jwt'), {
             secret : process.env.JWTPASS
-        });
-        fastify.setErrorHandler((e, req, rep) => {
-            if (error.name === 'FastifyError' && error.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
-                rep.status(401).send({ error: "Missing Token" });
-            } else if (error.name === 'FastifyError' && error.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
-                rep.status(401).send({ error: "Token Expired" });
-            } else if (error.name === 'FastifyError' && error.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
-                rep.status(401).send({ error: "Invalid Token" });
-            } else {
-                rep.send(error);
-            }
         });
         fastify.register(require('@fastify/multipart'))
         console.log(process.env.JWTPASS);
