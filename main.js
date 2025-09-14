@@ -13,11 +13,11 @@ const initJwt =  () => {
     try {
       await request.jwtVerify();
     } catch (e) {
-        if (error.name === 'FastifyError' && error.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
+        if (e.name === 'FastifyError' && e.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
             reply.code(401).send({error: "Missing Token" });
-        } else if (error.name === 'FastifyError' && error.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
+        } else if (e.name === 'FastifyError' && e.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
             reply.code(401).send({error: "Token Expired" });
-        } else if (error.name === 'FastifyError' && error.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
+        } else if (e.name === 'FastifyError' && e.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
             reply.code(401).send({error: "Invalid Token" });
         } else {
             reply.code(401).send({error: 'Error'});
