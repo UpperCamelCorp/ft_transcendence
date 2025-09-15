@@ -3,31 +3,35 @@ import { game } from "./pong.js";
 class Paddle {
     x: number;
     y: number;
+    height: number
     color : string;
     upPressed : boolean;
     downPressed : boolean;
 
-    constructor(x: number, y: number, color: string) {
+    constructor(x: number, y: number, color: string, canvas: HTMLCanvasElement) {
         this.x = x;
         this.y = y;
         this.color = color;
         this.upPressed = false;
         this.downPressed = false;
+        this.height = Math.floor(canvas.height / 25) * 2;
     }
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x - 5, this.y - 20, 10, 40);
+        ctx.fillRect(this.x - 5, this.y - (this.height / 2), 10, this.height);
     }
 
     moveUp() {
-        if (this.y - 10 > 0 + 10)
-            this.y -= 10;
+        const move = this.height / 4;
+        if (this.y - move > 0 + move)
+            this.y -= move;
     }
 
     moveDown(height: number) {
-        if (this.y + 10 < height - 10)
-            this.y += 10;
+        const move = this.height / 4;
+        if (this.y + move < height - move)
+            this.y += move;
     }
 
     reset(y: number) {
@@ -35,7 +39,7 @@ class Paddle {
     }
 
     clear(ctx: CanvasRenderingContext2D) {
-        ctx.clearRect(this.x - 5, this.y - 20, 10, 40);
+        ctx.clearRect(this.x - 5, this.y - (this.height / 2), 10, this.height);
     }
 }
 
@@ -44,11 +48,11 @@ class Ball {
     y: number;
     dx: number;
     dy: number;
-    constructor(x: number, y: number, dx: number, dy: number) {
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.dx = dx;
-        this.dy = dy;
+        this.dx = 0;
+        this.dy = 0;
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -73,14 +77,19 @@ class Ball {
         return (
             this.x + this.dx < paddle.x + 10 &&
             this.x + this.dx > paddle.x - 10 &&
-            this.y > paddle.y - 30 &&
-            this.y < paddle.y + 30
+            this.y > paddle.y - ((paddle.height / 2) + 10) &&
+            this.y < paddle.y + ((paddle.height / 2) + 10)
         );
     }
 
     reset(canvas: HTMLCanvasElement) {
         this.x = canvas.width / 2;
         this.y = canvas.height / 2;
+    }
+
+    setSpeedFromCanvas(height: number, width: number) {
+        this.dx = Math.max(2, Math.round(width / 160));
+        this.dy = Math.max(2, Math.round(height / 160));
     }
 }
 
@@ -91,6 +100,7 @@ class Game {
     private ctx : CanvasRenderingContext2D;
     private animationId : number;
     private canvas : HTMLCanvasElement;
+    private resizeHandler?: () => void;
     private leftScore: number;
     private rightScore: number
     private gameStart: boolean;
@@ -100,9 +110,10 @@ class Game {
     constructor(canvas : HTMLCanvasElement, maxPoints: number, leftColor: string, rightColor: string) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
-        this.leftPaddle = new Paddle(((canvas.width / 2) / 2) - 80, canvas.height / 2, leftColor);
-        this.rightPaddle = new Paddle((canvas.width / 2) + ((canvas.width / 2) / 2) + 80, canvas.height / 2, rightColor);
-        this.ball = new Ball(canvas.width / 2, canvas.height / 2, 5, 5);
+        this.leftPaddle = new Paddle(((canvas.width / 2) / 2) - 80, canvas.height / 2, leftColor, canvas);
+        this.rightPaddle = new Paddle((canvas.width / 2) + ((canvas.width / 2) / 2) + 80, canvas.height / 2, rightColor, canvas);
+        this.ball = new Ball(canvas.width / 2, canvas.height / 2);
+        this.ball.setSpeedFromCanvas(canvas.height, canvas.width);
         this.leftScore = 0;
         this.rightScore = 0;
         this.gameStart = false;
@@ -237,6 +248,38 @@ class Game {
         this.animationId = requestAnimationFrame(this.loop);
     };
 
+    public attachResizeListener() {
+        this.resizeHandler = () => {
+            const container = this.canvas.parentElement;
+            if (!container) return;
+            const newW = container.clientWidth - 10;
+            const newH = newW * (9 / 16);
+            this.resizeCanvas(newW, newH);
+        };
+        window.addEventListener('resize', this.resizeHandler);
+    }
+
+    public detachResizeListener() {
+        if (this.resizeHandler)
+            window.removeEventListener('resize', this.resizeHandler);
+    }
+
+    public resizeCanvas(width: number, height: number) {
+        this.canvas.width = width;
+        this.canvas.height = height;
+
+        const newPaddleHeight = Math.floor(this.canvas.height / 25) * 2;
+        this.leftPaddle.height = newPaddleHeight;
+        this.rightPaddle.height = newPaddleHeight;
+
+        this.leftPaddle.reset(this.canvas.height / 2);
+        this.rightPaddle.reset(this.canvas.height / 2);
+        this.leftPaddle.x = ((width / 2) / 2) - 80;
+        this.rightPaddle.x = (width / 2) + ((width / 2) / 2) + 80;
+        this.ball.reset(this.canvas);
+        this.ball.setSpeedFromCanvas(height, width);
+    }
+
     public start() {
 
         cancelAnimationFrame(this.animationId);
@@ -253,10 +296,8 @@ class Game {
         this.loop();
         this.rightScore = 0;
         this.leftScore = 0;
-        this.ball.dx = Math.floor(Math.random() * 2) % 2 ? 5: -5;
-        this.ball.dy = Math.floor(Math.random() * 2) % 2 ? 5: -5;
-        console.log('dx = ', this.ball.dx,);
-        console.log('dy = ', this.ball.dy);
+        this.ball.dx = Math.floor(Math.random() * 2) % 2 ? this.ball.dx: -this.ball.dx;
+        this.ball.dy = Math.floor(Math.random() * 2) % 2 ? this.ball.dy: -this.ball.dy;
         this.updateScoreDisplay();
     }
 
@@ -264,6 +305,7 @@ class Game {
         cancelAnimationFrame(this.animationId);
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
+        this.detachResizeListener();
 
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-3 z-50";
@@ -299,6 +341,14 @@ export const gameInit = (max: number, leftColor: string = 'white', rightColor: s
         canvas.width = container.clientWidth - 10;
         canvas.height = canvas.width * (9 / 16);
     }
+    window.addEventListener('resize', () => {
+        const container = canvas.parentElement;
+        if (canvas && container) {
+            const newW = container.clientWidth - 10;
+            const newH = newW * (9 / 16);
+            game.resizeCanvas(newW, newH);
+        }
+    });
     const game = new Game(canvas, max, leftColor, rightColor);
     game.start();
 }
