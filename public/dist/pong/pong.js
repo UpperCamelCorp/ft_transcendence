@@ -1,5 +1,6 @@
 import { render } from "../render.js";
 import { gameInit } from "./game.js";
+import { onlineGame } from "./onlineGame.js";
 const pongGame = () => `
     <div class="w-full h-full max-w-4xl p-3 mx-2 aspect-video flex flex-col items-center justify-center">
         <p class="text-white text-4xl">Score</p>
@@ -103,7 +104,11 @@ const custom = () => {
 export const game = () => {
     render(gameChoice());
     const localButton = document.getElementById('local-button');
+    const onlineButton = document.getElementById('online-button');
     localButton?.addEventListener('click', () => {
         custom();
+    });
+    onlineButton?.addEventListener('click', () => {
+        onlineGame();
     });
 };

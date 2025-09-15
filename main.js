@@ -38,9 +38,10 @@ const start = async () => {
             secret : process.env.JWTPASS
         });
         fastify.register(require('@fastify/multipart'))
-        console.log(process.env.JWTPASS);
+        fastify.register(require('@fastify/websocket'));
         fastify.register(require('./api/auth.js'));
         fastify.register(require('./api/user.js'));
+        fastify.register(require('./api/game.js'));
         fastify.setNotFoundHandler((req, rep) => {
             rep.sendFile('static/index.html')
         });
