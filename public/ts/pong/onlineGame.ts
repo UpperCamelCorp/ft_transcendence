@@ -11,29 +11,33 @@ class Paddle {
         this.color = color;
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, scaleX: number, scaleY: number) {
+        const scaledX = this.x / scaleX;
+        const scaledY = this.y / scaleY;
+        const scaledWidth = 10 / scaleX;
+        const scaledHeight = 40 / scaleY;
+        
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x - 5, this.y - 20, 10, 40);
-    }
-
-    clear(ctx: CanvasRenderingContext2D) {
-        ctx.clearRect(this.x - 5, this.y - 20, 10, 40);
+        ctx.fillRect(scaledX - scaledWidth/2, scaledY - scaledHeight/2, scaledWidth, scaledHeight);
     }
 }
 
 class Ball {
     x: number;
     y: number;
-    constructor(x: number, y: number, dx: number, dy: number) {
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, scaleX: number, scaleY: number) {
+        const scaledX = this.x / scaleX;
+        const scaledY = this.y / scaleY;
+        const scaledRadius = 10 / Math.min(scaleX, scaleY);
         ctx.fillStyle = 'white';
         ctx.setLineDash([]);
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
+        ctx.arc(scaledX, scaledY, scaledRadius, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }
@@ -49,17 +53,23 @@ class Game {
     private canvas : HTMLCanvasElement;
     private leftScore: number;
     private rightScore: number
+    private scaleX: number;
+    private scaleY: number;
+    private overlays: HTMLDivElement[];
 
     constructor(canvas : HTMLCanvasElement, leftColor: string, rightColor: string, socket: WebSocket) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
         this.socket = socket;
-        this.leftPaddle = new Paddle(((canvas.width / 2) / 2) - 80, canvas.height / 2, leftColor);
-        this.rightPaddle = new Paddle((canvas.width / 2) + ((canvas.width / 2) / 2) + 80, canvas.height / 2, rightColor);
-        this.ball = new Ball(canvas.width / 2, canvas.height / 2, 5, 5);
+        this.leftPaddle = new Paddle(80, 504 / 2, leftColor);
+        this.rightPaddle = new Paddle(896 - 80, 504 / 2, rightColor);
+        this.ball = new Ball(896 / 2, 504 / 2);
         this.leftScore = 0;
         this.rightScore = 0;
+        this.scaleX = 896 / canvas.width;
+        this.scaleY = 504 / canvas.height;
         this.animationId = 0;
+        this.overlays = [];
     }
 
     private drawMap() {
@@ -152,11 +162,17 @@ class Game {
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawMap();
-        this.leftPaddle.draw(this.ctx);
-        this.rightPaddle.draw(this.ctx);
-        this.ball.draw(this.ctx);
+        this.leftPaddle.draw(this.ctx, this.scaleX, this.scaleY);
+        this.rightPaddle.draw(this.ctx, this.scaleX, this.scaleY);
+        this.ball.draw(this.ctx, this.scaleX, this.scaleY);
+        this.updateScoreDisplay();
         this.animationId = requestAnimationFrame(this.loop);
     };
+
+    public updateScale = () => {
+        this.scaleX = 896 / this.canvas.width;
+        this.scaleY = 504 / this.canvas.height;
+    }
 
     public update = (update: any) => {
         this.ball.x = update.ballx;
@@ -165,9 +181,31 @@ class Game {
         this.leftPaddle.y = update.lefty;
         this.rightPaddle.x = update.rightx;
         this.rightPaddle.y = update.righty;
+        this.leftScore = update.scores[0];
+        this.rightScore = update.scores[1];
     }
 
-    public start() {
+     public cleanAll = () => {
+        this.stop();
+        
+        this.socket.close();
+        this.overlays.forEach(overlay => {
+            if (overlay.parentNode) {
+                overlay.remove();
+            }
+        });
+        this.overlays = [];
+    }
+
+    public clean = () => {
+        this.overlays.forEach(overlay => {
+            if (overlay.parentNode) {
+                overlay.remove();
+            }
+        });
+    }
+
+    public start = () => {
 
         cancelAnimationFrame(this.animationId);
 
@@ -186,16 +224,52 @@ class Game {
         this.updateScoreDisplay();
     }
 
-    public wait(): HTMLDivElement {
+    public full = () => {
         const overlay = document.createElement('div');
-        overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-3 z-50";
+        overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
+        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">This game is full</span>
+                            <button id="return-button" class="mt-5 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>`
+
+        document.body.appendChild(overlay);
+        this.overlays.push(overlay);
+
+        const returnButton = document.getElementById('return-button');
+
+        returnButton?.addEventListener('click', () => {
+            this.cleanAll();
+            game();
+            currentGame = null;
+        });
+    }
+
+    public disconnect = (player: string) => {
+        const overlay = document.createElement('div');
+        overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
+        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">${player} left</span>
+                            <button id="return-button" class="mt-5 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>`
+
+        document.body.appendChild(overlay);
+        this.overlays.push(overlay);
+
+        const returnButton = document.getElementById('return-button');
+
+        returnButton?.addEventListener('click', () => {
+            this.cleanAll();
+            game();
+            currentGame = null;
+        });
+    }
+
+    public wait = () => {
+        const overlay = document.createElement('div');
+        overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
         overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">Waiting...</span>`
 
         document.body.appendChild(overlay);
-        return overlay;
+        this.overlays.push(overlay);
     }
 
-    public GameOver(winner: string) {
+    public GameOver = (winner: string) => {
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
         overlay.innerHTML = `
@@ -207,36 +281,46 @@ class Game {
             </div>
         `
         document.body.appendChild(overlay);
+        this.overlays.push(overlay);
 
         const returnButton = document.getElementById('return-button');
 
         returnButton?.addEventListener('click', () => {
-            overlay.remove();
-            game()
+            this.cleanAll();
+            game();
+            currentGame = null;
         });
     }
 
-    public stop() {
+    public stop = () => {
         cancelAnimationFrame(this.animationId);
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
     }
 }
 
+let currentGame: Game | null;
+
 
 export const onlineGame = (roomId: number, user: number, color: string) => {
     const canvas = document.getElementById('game') as HTMLCanvasElement;
     const container = canvas.parentElement;
-    let overlay: HTMLDivElement;
     if (canvas && container) {
         canvas.width = container.clientWidth;
         canvas.height = canvas.width * (9 / 16);
     }
 
     const socket = new WebSocket(`ws://${window.location.host}/game/play`);
-
-    const game = new Game(canvas, color, 'white', socket);
-    game.start();
+    currentGame = new Game(canvas, color, 'white', socket);
+    currentGame.start();
+    window.addEventListener('resize', () => {
+        const container = canvas.parentElement;
+        if (canvas && container) {
+            canvas.width = container.clientWidth;
+            canvas.height = canvas.width * (9 / 16);
+        }
+        currentGame?.updateScale();
+    });
     socket.onopen = () => {
         try {
             socket.send(JSON.stringify({
@@ -254,20 +338,34 @@ export const onlineGame = (roomId: number, user: number, color: string) => {
         const rep = JSON.parse(data.data);
         switch (rep.type) {
             case 'update':
-                game.update(rep);
+                currentGame?.update(rep);
                 break;
             case 'wait':
-                overlay = game.wait();
+                currentGame?.wait();
                 break;
             case 'start':
-                if (overlay)
-                    overlay.remove();
+                    currentGame?.clean();
                 break;
             case 'gameover':
-                game.stop();
-                game.GameOver(rep.winner);
+                currentGame?.cleanAll();
+                currentGame?.GameOver(rep.winner);
+                break ;
             case 'disconnect':
-                game.stop();
+                currentGame?.cleanAll();
+                currentGame?.disconnect(rep.left);
+                break;
+            case 'full':
+                currentGame?.cleanAll();
+                currentGame?.full();
+                break;
         }
+    }
+}
+
+export const cleanOnlineGame = () => {
+    console.log("hey");
+    if (currentGame) {
+        currentGame.cleanAll();
+        currentGame = null;
     }
 }

@@ -1,7 +1,8 @@
 export default class Router {
     constructor() {
-        this.routes = new Map();
         window.addEventListener('popstate', this.handleRoute.bind(this));
+        this.routes = new Map();
+        this.cleanUp = new Map();
     }
     handleRoute() {
         const path = window.location.pathname;
@@ -26,7 +27,13 @@ export default class Router {
     add(path, handler) {
         this.routes.set(path, handler);
     }
+    addCleanUp(path, cleanUp) {
+        this.cleanUp.set(path, cleanUp);
+    }
     navigate(path) {
+        const cleanUp = this.cleanUp.get(window.location.pathname);
+        if (cleanUp)
+            cleanUp();
         window.history.pushState({}, '', path);
         this.handleRoute();
     }

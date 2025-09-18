@@ -10,13 +10,11 @@ class PongGame {
         this.lefty = this.bally;
         this.righty = this.bally;
         this.ballx = 896 / 2;
-        this.leftx = 50;
-        this.rightx = 896 - 50;
+        this.leftx = 80;
+        this.rightx = 896 - 80;
         this.balldx = 5;
         this.balldy = 5;
         this.speed = 5;
-        this.paddleHeight = 80;
-        this.paddleWidth = 10;
     }
 
     broadcast(data) {
@@ -38,10 +36,10 @@ class PongGame {
             this.balldy = -this.balldy;
 
         else if ((this.ballx <= this.leftx + 10 && this.ballx >= this.leftx - 10) 
-            && (this.bally <= this.lefty + 80 && this.bally >= this.lefty - 80))
+            && (this.bally <= this.lefty + 40 && this.bally >= this.lefty - 40))
             this.balldx = -this.balldx;
         else if ((this.ballx <= this.rightx + 10 && this.ballx >= this.rightx - 10) 
-            && (this.bally <= this.righty + 80 && this.bally >= this.righty - 80))
+            && (this.bally <= this.righty + 40 && this.bally >= this.righty - 40))
             this.balldx = -this.balldx;
         else if (this.ballx <= 0) {
             this.scores[1]++;
@@ -51,10 +49,10 @@ class PongGame {
             this.scores[0]++;
             this.resetBall();
         }
-        if (this.inputs[0].up && this.lefty > 0) lefty -= this.speed;
-        if (this.inputs[0].down && this.lefty < 504) lefty += this.speed;
-        if (this.inputs[1].up && this.righty > 0) righty -= this.speed;
-        if (this.inputs[1].down && this.righty < 504) righty += this.speed;
+        if (this.inputs[0].up && this.lefty > 0) this.lefty -= this.speed;
+        if (this.inputs[0].down && this.lefty < 504) this.lefty += this.speed;
+        if (this.inputs[1].up && this.righty > 0) this.righty -= this.speed;
+        if (this.inputs[1].down && this.righty < 504) this.righty += this.speed;
     }
     loop() {
         this.loopId= setInterval(() => {
@@ -67,6 +65,7 @@ class PongGame {
                 lefty: this.lefty,
                 rightx: this.rightx,
                 righty: this.righty,
+                scores: this.scores
             });
             if (this.scores[0] === 3) {
                 this.broadcast({
@@ -86,7 +85,10 @@ class PongGame {
     }
 
     start() {
-        broadcast()
+        this.broadcast({
+            type: 'start'
+        });
+        this.loop();
     }
 
     stop() {

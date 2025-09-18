@@ -1,8 +1,11 @@
 export default class Router {
-    private routes: Map<string, () => void> = new Map();
+    private routes: Map<string, () => void>;
+    private cleanUp: Map<string, ()=> void | null>;
 
     constructor() {
         window.addEventListener('popstate', this.handleRoute.bind(this));
+        this.routes = new Map();
+        this.cleanUp = new Map();
     }
 
     private handleRoute() : void {
@@ -30,7 +33,14 @@ export default class Router {
         this.routes.set(path, handler);
     }
 
+    public addCleanUp(path: string, cleanUp: () => void | null) {
+        this.cleanUp.set(path, cleanUp);
+    }
+
     public navigate(path : string) : void {
+        const cleanUp = this.cleanUp.get(window.location.pathname);
+        if (cleanUp)
+            cleanUp();
         window.history.pushState({}, '', path);
         this.handleRoute();
     }

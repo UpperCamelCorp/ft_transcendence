@@ -16,7 +16,7 @@ class GameManager {
             game.players.push(connection);
             game.playersNames.push(name);
             if (index === 1)
-                game.loop();
+                game.start();
             return index;
         }
         else {
@@ -35,11 +35,11 @@ class GameManager {
             return;
         game.stop();
         if (index === 0) {
-            game.players[1].send(JSON.stringify({type: 'disconnect'}));
+            game.players[1].send(JSON.stringify({type: 'disconnect', left: game.playersNames[0]}));
             this.games.delete(id);
         }
         else {
-            game.players[0].send(JSON.stringify({type: 'disconnect'}));
+            game.players[0].send(JSON.stringify({type: 'disconnect', left: game.playersNames[1]}));
             this.games.delete(id);
         }
 

@@ -1,4 +1,3 @@
-import { collapseTextChangeRangesAcrossMultipleVersions } from "../../../node_modules/typescript/lib/typescript.js";
 import { render } from "../render.js";
 import { gameInit } from "./game.js";
 import { onlineGame } from "./onlineGame.js";
