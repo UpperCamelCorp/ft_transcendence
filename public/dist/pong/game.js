@@ -242,8 +242,9 @@ export const gameInit = (max, leftColor = 'white', rightColor = 'white') => {
     const canvas = document.getElementById('game');
     const container = canvas.parentElement;
     if (canvas && container) {
-        canvas.width = container.clientWidth - 10;
+        canvas.width = container.clientWidth;
         canvas.height = canvas.width * (9 / 16);
+        console.log(canvas.width, canvas.height);
     }
     const game = new Game(canvas, max, leftColor, rightColor);
     game.start();

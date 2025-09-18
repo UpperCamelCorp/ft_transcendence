@@ -1,3 +1,4 @@
+import { collapseTextChangeRangesAcrossMultipleVersions } from "../../../node_modules/typescript/lib/typescript.js";
 import { render } from "../render.js";
 import { gameInit } from "./game.js";
 import { onlineGame } from "./onlineGame.js";
@@ -82,6 +83,75 @@ const gameCustom = () => ` <div class="w-full max-w-3xl p-5 border rounded-2xl b
             </div>
         </div>`
 
+const onlineGameCustom = () => `
+    <div class="w-full max-w-3xl p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C] to-[#142033]">
+        <h2 class="w-full text-center text-white text-2xl font-bold m-2">Play Pong</h2>
+        <div class="flex w-full">
+            <div class="w-full flex flex-col items-center justify-start">
+                <div class="flex flex-col m-4">
+                    <label for="room" class="text-slate-300">Room id</label>
+                    <input
+                        id="room"
+                        name="room"
+                        type="number" 
+                        max="9999"
+                        min="0"
+                        placeholder="0000"
+                        class="px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
+                    >
+                </div>
+            </div>
+            <div class="w-full flex flex-col justify-center items-start">
+                <div class="flex flex-col m-3">
+                    <label for="name" class="text-slate-300">Display Name</label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        class="px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
+                    >
+                </div>
+                <div class="flex flex-col m-3">
+                    <label for="color" class="text-slate-300">Paddle Color</label>
+                    <input
+                        id="color"
+                        name="color"
+                        type="color"
+                        value="#FFFFFF"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="w-full flex justify-center mt-4">
+            <button id="play" class="bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
+                Play
+            </button>
+        </div>
+    </div>`
+
+const OnlineCustom = () => {
+    render(onlineGameCustom());
+    const playButton = document.getElementById('play');
+    const roomIdInput = document.getElementById('room') as HTMLInputElement;
+    const nameInput = document.getElementById('name') as HTMLInputElement;
+    const colorInput = document.getElementById('color') as HTMLInputElement;
+    const user = JSON.parse(localStorage.getItem('user') || '');
+    if (user && nameInput) {
+        nameInput.placeholder = user.username;
+    }
+    playButton?.addEventListener('click', () => {
+        render(pongGame());
+        const roomId = parseInt(roomIdInput?.value || '0');
+        const color = colorInput?.value;
+        let name;
+        if (user && !nameInput?.value)
+            name = user.username;
+        else
+            name = nameInput?.value;
+        onlineGame(roomId, name, color);
+    });
+}
+
 const custom = () => {
     render(gameCustom());
     const maxPointInput = document.getElementById('max-point') as HTMLInputElement;
@@ -116,7 +186,7 @@ export const game = () => {
         custom();
     });
     onlineButton?.addEventListener('click', () => {
-        onlineGame();
+        OnlineCustom();
     })
     
 }
