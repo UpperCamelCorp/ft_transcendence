@@ -6,15 +6,18 @@ class GameManager {
         this.games = new Map();
     }
 
-    joinGame(id, connection, name) {
+    joinGame(id, connection, name, picture) {
         if (this.games.has(id)) {
             const game = this.games.get(id);
             const index = game.players.length;
-            console.log('game len = ', index);
             if (index >= 2)
                 return -1;
             game.players.push(connection);
             game.playersNames.push(name);
+            if (picture)
+                game.playerPictures.push(picture);
+            else
+                game.playerPictures.push('');
             if (index === 1)
                 game.start();
             return index;
@@ -25,6 +28,10 @@ class GameManager {
             this.games.set(id, game);
             game.players.push(connection);
             game.playersNames.push(name);
+            if (picture)
+                game.playerPictures.push(picture);
+            else
+                game.playerPictures.push('');
             return index;
         }
     }
@@ -34,6 +41,10 @@ class GameManager {
         if (!game)
             return;
         game.stop();
+        if (game.players.length < 2) {
+            this.games.delete(id);
+            return;
+        }
         if (index === 0) {
             game.players[1].send(JSON.stringify({type: 'disconnect', left: game.playersNames[0]}));
             this.games.delete(id);
@@ -42,7 +53,6 @@ class GameManager {
             game.players[0].send(JSON.stringify({type: 'disconnect', left: game.playersNames[1]}));
             this.games.delete(id);
         }
-
     }
 }
 

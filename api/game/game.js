@@ -15,9 +15,10 @@ const game = async (fastify, options) => {
             try {
                 const data = JSON.parse(message.toString());
                 if (data.type === 'join') {
+                    if (data.roomId > 9999 || data.roomId < 0)
+                        return ;
                     gameId = data.roomId;
-                    playerIndex = gameManager.joinGame(gameId, connection, data.name);
-                    console.log(playerIndex);
+                    playerIndex = gameManager.joinGame(gameId, connection, data.name, data.picture);
                     if (playerIndex === 0)
                         connection.send(JSON.stringify({type: 'wait'}));
                     else if (playerIndex === -1) {
@@ -47,10 +48,10 @@ const game = async (fastify, options) => {
             } catch (e) {
                 console.log(e);
             }
-
         });
 
         connection.on('close', () => {
+            console.log('player ', playerIndex, ' left');
             if (gameId != -1) {
                 gameManager.disconnect(gameId, playerIndex);
                 gameId = -1;

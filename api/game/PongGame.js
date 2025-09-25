@@ -4,6 +4,7 @@ class PongGame {
         this.players = [];
         this.inputs = [{up: false, down: false}, {up: false, down: false}];
         this.playersNames = [];
+        this.playerPictures = [];
         this.loopId = 0;
         this.scores = [0, 0];
         this.bally = 504 / 2;
@@ -86,7 +87,11 @@ class PongGame {
 
     start() {
         this.broadcast({
-            type: 'start'
+            type: 'start',
+            player1: this.playersNames[0],
+            player2: this.playersNames[1],
+            player1Picture: this.playerPictures[0],
+            player2Picture: this.playerPictures[1]
         });
         this.loop();
     }
