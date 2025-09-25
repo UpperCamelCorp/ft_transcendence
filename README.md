@@ -42,11 +42,11 @@ public/ts/             # Frontend TypeScript files
 ## Running the Project
 1. Build Tailwind CSS (if not already built):
    ```sh
-   npx tailwindcss -i ./src/styles.css -o ./public/styles.css --watch
+   npm run build
    ```
 2. Start the server:
    ```sh
-   (JWTPASS=your_secret_value (for the moment)) node main.js
+   (JWTPASS=your_secret_value (for the moment)) npm run run
    ```
 3. Open your browser and go to `http://localhost:3000` (or the port specified in your server).
 
