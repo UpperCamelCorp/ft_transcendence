@@ -205,6 +205,22 @@ class Game {
         });
     }
 
+    public setUsers = (data: any) => {
+        const leftPicture = document.getElementById('left-image') as HTMLImageElement;
+        const rightPicture = document.getElementById('right-image') as HTMLImageElement;
+        const leftPlayer = document.getElementById('left-name');
+        const rightPlayer = document.getElementById('right-name');
+
+        if (data.player1Picture)
+            leftPicture.src = data.player1Picture;
+        if (data.player2Picture)
+            rightPicture.src = data.player2Picture;
+        if (leftPlayer && data.player1)
+            leftPlayer.textContent = data.player1;
+        if (rightPlayer && data.player2)
+            rightPlayer.textContent = data.player2;
+    }
+
     public start = () => {
 
         cancelAnimationFrame(this.animationId);
@@ -302,7 +318,7 @@ class Game {
 let currentGame: Game | null;
 
 
-export const onlineGame = (roomId: number, user: number, color: string) => {
+export const onlineGame = (roomId: number, user: string, color: string) => {
     const canvas = document.getElementById('game') as HTMLCanvasElement;
     const container = canvas.parentElement;
     if (canvas && container) {
@@ -312,6 +328,21 @@ export const onlineGame = (roomId: number, user: number, color: string) => {
 
     const socket = new WebSocket(`ws://${window.location.host}/game/play`);
     currentGame = new Game(canvas, color, 'white', socket);
+
+    let picture = localStorage.getItem('picture');
+    let userSetter = {
+        player1Picture : '',
+        player2Picture: '',
+        player1: '',
+        player2: ''
+    };
+    if (picture)
+        userSetter.player1Picture = picture;
+    else
+        picture = '';
+    if (user)
+        userSetter.player1 = user;
+    currentGame.setUsers(userSetter);
     currentGame.start();
     window.addEventListener('resize', () => {
         const container = canvas.parentElement;
@@ -327,6 +358,7 @@ export const onlineGame = (roomId: number, user: number, color: string) => {
                     type: 'join',
                     roomId: roomId,
                     name: user,
+                    picture: picture,
                     color: color
                 }));
         } catch (e) {
@@ -344,7 +376,8 @@ export const onlineGame = (roomId: number, user: number, color: string) => {
                 currentGame?.wait();
                 break;
             case 'start':
-                    currentGame?.clean();
+                currentGame?.clean();
+                currentGame?.setUsers(rep);
                 break;
             case 'gameover':
                 currentGame?.cleanAll();
