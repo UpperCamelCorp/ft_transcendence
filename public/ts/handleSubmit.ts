@@ -21,7 +21,6 @@ export const handleFormSubmit = async (event : Event, endpoint: string, action: 
             headers,
             body: JSON.stringify(data)
         });
-
         const result = await response.json();
         console.log(result);
         action(response, result);
@@ -47,7 +46,6 @@ export const handleMultiFormSubmit  = async (event : Event, endpoint: string, ac
             headers,
             body: formData
         });
-
         const result = await response.json();
         console.log(result);
         action(response, result);
