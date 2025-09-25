@@ -5,10 +5,18 @@ import { onlineGame } from "./onlineGame.js";
 const pongGame = () => `
     <div class="w-full h-full max-w-4xl p-3 mx-2 aspect-video flex flex-col items-center justify-center">
         <p class="text-white text-4xl">Score</p>
-        <div class="flex gap-8 my-4 text-white bg-gray-800/70 text-3xl border rounded-3xl border-b-cyan-400 p-4">
+        <div class="flex items-center gap-8 my-4 text-white bg-gray-800/70 text-3xl border rounded-3xl border-b-cyan-400 p-4">
+            <div class="flex mx-3 mr-10 space-x-1 items-center">
+                <img id="left-image" src="../images/default-pp.png" alt="left-user-image" class="w-12 h-12 rounded-full">
+                <span class="text-white" id="left-name">Player 1</span>
+            </div>
             <span id="score-left">0</span>
             <span>-</span>
             <span id="score-right">0</span>
+            <div class="flex mx-3 ml-10 space-x-1 items-center">
+                <img id="right-image" src="../images/default-pp.png" alt="right-user-image" class="w-12 h-12 rounded-full">
+                <span class="text-white" id="right-name">Player 2</span>
+            </div>
         </div>
         <canvas id="game" class="bg-black/50">
         </canvas>
@@ -20,7 +28,7 @@ const pongGame = () => `
                 <img src="../svg/game-arrow.svg" alt="down-arrow" class="w-20 h-20 rotate-180 m-3">
             </button>
         </div>
-    </div>`;
+    </div>`
 
 const gameChoice = () => `        
     <div class="w-full max-w-3xl p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C] to-[#142033]">
@@ -134,10 +142,18 @@ const OnlineCustom = () => {
     const roomIdInput = document.getElementById('room') as HTMLInputElement;
     const nameInput = document.getElementById('name') as HTMLInputElement;
     const colorInput = document.getElementById('color') as HTMLInputElement;
-    const user = JSON.parse(localStorage.getItem('user') || '');
+    let user = null;
+    const userStr = localStorage.getItem('user');
+    if (userStr) { 
+        try {
+            user = JSON.parse(userStr);
+        } catch (e) {
+            user = null;
+        }
+    }
     if (user && nameInput) {
         nameInput.placeholder = user.username;
-    }
+    } 
     playButton?.addEventListener('click', () => {
         render(pongGame());
         const roomId = parseInt(roomIdInput?.value || '0');
