@@ -1,8 +1,12 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
-const fs = require('fs/promises')
+const fs = require('fs/promises');
+const { promisify } = require('util');
 
 const userRoute = (fastify, options) => {
+
+    const dbGet = promisify(fastify.db.get.bind(fastify.db));
+
     fastify.post('/api/edit', {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
@@ -21,6 +25,7 @@ const userRoute = (fastify, options) => {
                     console.log('final file = ', finalFile);
                 } catch (e) {
                     console.log(e);
+                    return rep.code(500).send({ message: "Error uploading file" });
                 }                
             } else {
                 console.log('no file');
@@ -46,17 +51,20 @@ const userRoute = (fastify, options) => {
                 sqlParam.push(finalFile);
             }
             sqlParam.push(req.user.id);
-            console.log(username.value + ' ' + email.value + ' ' + password.value + ' ' + confirm.value);
-            if (sqlFields.length === 0)
-                return rep.code(200).send({message: "Sucess"});
             try {
-                await fastify.db.run(`UPDATE users SET ${sqlFields.join(', ')} WHERE id = ?`, sqlParam);
+                if (sqlFields.length > 0)
+                    await fastify.db.run(`UPDATE users SET ${sqlFields.join(', ')} WHERE id = ?`, sqlParam);
+                const updatedUser = await dbGet('SELECT id, username, email, picture FROM users WHERE id = ?', [req.user.id]);
+                const jwtToken = fastify.jwt.sign({ id: updatedUser.id, username: updatedUser.username });
+                return rep.code(200).send({
+                    token: jwtToken,
+                    user: { username: updatedUser.username, email: updatedUser.email},
+                    picture: updatedUser.picture,
+                    message: "Success"});
             } catch(e) {
                 console.error(e);
                 return rep.code(500).send({message: "Error try again later"});
             }
-            console.log(username.value + ' ' + email.value + ' ' + password.value + ' ' + confirm.value);
-            return rep.code(200).send({message: "Sucess"});
         }
     })
 }
