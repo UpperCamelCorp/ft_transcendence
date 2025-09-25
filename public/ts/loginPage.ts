@@ -63,6 +63,9 @@ const loginResponse = (rep: Response, result : any) => {
         try {
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
+            if (result.picture) {
+                localStorage.setItem('picture', result.picture);
+            }
             router.navigate('/');
         } catch (e) {
             console.log(e);

@@ -1,3 +1,4 @@
 node_modules/
 db/transcendence.db
-public/uploads/
+public/uploads/*
+public/dist/

@@ -7,19 +7,19 @@ const editProfilePage= () => `
         <form id="form-edit">
             <div class="w-full flex items-center justify-center text-white md:visible">
                 <div class="w-40 hidden md:flex items-center p-4 pr-8">
-                    <label for="picture" class="relative">
+                    <label for="input-picture" class="relative">
                         <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
                         <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-8 h-8 absolute bottom-0 -right-4">
-                        <input id="input-picture" type="file" name="picture" id="picture" accept="image/*" class="hidden">
+                        <input id="input-picture" type="file" name="picture" accept="image/*" class="hidden">
                     </label>
                 </div>
                 <div class="flex flex-col items-center space-y-4 p-4">
                     <p class="text-2xl text-slate-300">Edit Profile</p>
                     <div class="w-40 flex md:hidden items-center p-4">
                         <label for="picture" class="relative">
-                            <img src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
+                            <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
                             <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-8 h-8 absolute bottom-0 left-24">
-                            <input type="file" id="picture" accept="image/*" class="hidden">
+                            <input type="file" id="picture" name="picture" accept="image/*" class="hidden">
                         </label>
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
@@ -67,8 +67,19 @@ export const edit = () => {
 
 
 const editResponse = (rep: Response, res: any) => {
-    if (rep.ok)
+    if (rep.ok) {
         console.log('Good');
+        try {
+            localStorage.setItem('authToken', res.token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            if (res.picture) {
+                localStorage.setItem('picture', res.picture);
+            }
+            router.navigate('/');
+        } catch (e) {
+            console.log(e);
+        }
+    }
     if (rep.status === 401)
         router.navigate('/login');
 }

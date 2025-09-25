@@ -1,7 +1,12 @@
 const bcrypt = require('bcrypt');
+const { promisify } = require('util');
 
 const  authRoutes = async (fastify, options) => {
-    console.log(fastify.db)
+
+    const dbGet = promisify(fastify.db.get.bind(fastify.db));
+    const dbAll = promisify(fastify.db.all.bind(fastify.db));
+    const dbRun = promisify(fastify.db.run.bind(fastify.db));
+
     fastify.post('/api/login',{
         schema: {
             body: {
@@ -12,30 +17,33 @@ const  authRoutes = async (fastify, options) => {
                 }
             }
         }
-     } , (req, rep) => {
-        console.log(req.body);
-        const {email, password} = req.body;
-        fastify.db.all('SELECT id, username, hash FROM users WHERE email = ?', [email], (e, row) => {
-            if (e) {
-                console.log(e);
-                return rep.code(501).send({message : "error db"});
-            }
-            if (row.length === 0)
-                return rep.code(401).send({message: "Wrong Credentials"})
+     } , async (req, rep) => {
+        try {
+            console.log(req.body);
+            const {email, password} = req.body;
+            const rows = await dbAll('SELECT id, username, hash, picture FROM users WHERE email = ?', [email]);
 
-            bcrypt.compare(req.body.password, row[0].hash, (e, result) => {
-                if (e) {
-                    console.log(e);
-                    return rep.code(501).send({message: "Hash error"});
-                }
-                if (result === true) {
-                    const jwtToken = fastify.jwt.sign({id: row[0].id, username: row[0].username});
-                    rep.code(200).send({"token": jwtToken, "user": {"username": row[0].username, "email": email}, message : "Connected"});
-                }
-                else rep.code(401).send({message : "Wrong Credentials"});
-            })
-        });
-    })
+            if (rows.length === 0) {
+                return rep.code(401).send({ message: "Wrong Credentials" });
+            }
+            const user = rows[0];
+
+            const isPasswordValid = await bcrypt.compare(password, user.hash);
+            if (!isPasswordValid) {
+                return rep.code(401).send({ message: "Wrong Credentials" });
+            }
+
+            const jwtToken = fastify.jwt.sign({ id: user.id, username: user.username });
+            return rep.code(200).send({
+                token: jwtToken,
+                user: { username: user.username, email: email},
+                picture: user.picture,
+                message: "Connected"});
+        } catch (e) {
+            fastify.log.error(e);
+            return rep.code(500).send({ message: "Internal server error" });
+        }
+    });
 
     fastify.post('/api/signup', {
         schema : {
@@ -48,27 +56,25 @@ const  authRoutes = async (fastify, options) => {
                 }
             }
         }
-    }, (req, rep) => {
+    }, async (req, rep) => {
         console.log(req.body)
-        const {username, email, password } = req.body;
-        fastify.db.get('SELECT email FROM users WHERE email = ? OR username = ?', [email, username], async (e, row) => {
-            if (e) {
-                console.log(e);
-                return rep.code(501).send({message: "error db"});
-            }
-            if (row) return rep.code(409).send({message : "User already exist"});
-            else {
-                const hash = await bcrypt.hash(password, 10);
-                fastify.db.run('INSERT INTO users(username, email, hash) VALUES(?, ?, ?)', [username, email, hash], (e) => {
-                if (e) {
-                    console.log(e);
-                    return rep.code(501).send({message: "error db"});
+        try {
+            const {username, email, password } = req.body;
+            const existingUser = await dbGet('SELECT email FROM users WHERE email = ? OR username = ?', [email, username]);
+
+                if (existingUser) {
+                    return rep.code(409).send({ message: "User already exists" });
                 }
-                console.log(req.body.email, ' sub');
-                return rep.code(200).send({message : "Registered"});
-            });
-            }
-        });
+                const hash = await bcrypt.hash(password, 12); // Increased salt rounds
+                await dbRun('INSERT INTO users(username, email, hash) VALUES(?, ?, ?)', [username, email, hash]);
+
+                fastify.log.info(`New user registered: ${email}`);
+                return rep.code(201).send({ message: "User registered successfully" });
+
+        } catch (e) {
+            fastify.log.error(e);
+            return rep.code(500).send({ message: "Internal server error" });
+        }
     })
 }
 
