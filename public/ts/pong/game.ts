@@ -15,27 +15,28 @@ class Paddle {
         this.downPressed = false;
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, scaleX: number, scaleY: number) {
+        const scaledX = this.x / scaleX;
+        const scaledY = this.y / scaleY;
+        const scaledWidth = 10 / scaleX;
+        const scaledHeight = 40 / scaleY;
+        
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x - 5, this.y - 20, 10, 40);
+        ctx.fillRect(scaledX - scaledWidth/2, scaledY - scaledHeight/2, scaledWidth, scaledHeight);
     }
 
     moveUp() {
-        if (this.y - 10 > 0 + 10)
-            this.y -= 10;
+        if (this.y - 5 > 0)
+            this.y -= 5;
     }
 
     moveDown(height: number) {
-        if (this.y + 10 < height - 10)
-            this.y += 10;
+        if (this.y + 5 < 504)
+            this.y += 5;
     }
 
-    reset(y: number) {
-        this.y = y;
-    }
-
-    clear(ctx: CanvasRenderingContext2D) {
-        ctx.clearRect(this.x - 5, this.y - 20, 10, 40);
+    reset() {
+        this.y = 504 / 2;
     }
 }
 
@@ -44,18 +45,21 @@ class Ball {
     y: number;
     dx: number;
     dy: number;
-    constructor(x: number, y: number, dx: number, dy: number) {
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.dx = dx;
-        this.dy = dy;
+        this.dx = 5;
+        this.dy = 5;
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, scaleX: number, scaleY: number) {
+        const scaledX = this.x / scaleX;
+        const scaledY = this.y / scaleY;
+        const scaledRadius = 10 / Math.min(scaleX, scaleY);
         ctx.fillStyle = 'white';
         ctx.setLineDash([]);
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
+        ctx.arc(scaledX, scaledY, scaledRadius, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }
@@ -64,8 +68,7 @@ class Ball {
         this.x += this.dx;
         this.y += this.dy;
         
-
-        if (this.y + this.dy >= canvas.height || this.y + this.dy <= 0)
+        if (this.y + this.dy >= 504 || this.y + this.dy <= 0)
             this.dy = -this.dy;
     }
 
@@ -73,15 +76,16 @@ class Ball {
         return (
             this.x + this.dx < paddle.x + 10 &&
             this.x + this.dx > paddle.x - 10 &&
-            this.y > paddle.y - 30 &&
-            this.y < paddle.y + 30
+            this.y > paddle.y - 40 &&
+            this.y < paddle.y + 40
         );
     }
 
-    reset(canvas: HTMLCanvasElement) {
-        this.x = canvas.width / 2;
-        this.y = canvas.height / 2;
+    reset() {
+        this.x = 896 / 2;
+        this.y = 504 / 2;
     }
+
 }
 
 class Game {
@@ -91,6 +95,8 @@ class Game {
     private ctx : CanvasRenderingContext2D;
     private animationId : number;
     private canvas : HTMLCanvasElement;
+    private scaleX: number;
+    private scaleY: number;
     private leftScore: number;
     private rightScore: number
     private gameStart: boolean;
@@ -100,9 +106,11 @@ class Game {
     constructor(canvas : HTMLCanvasElement, maxPoints: number, leftColor: string, rightColor: string) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
-        this.leftPaddle = new Paddle(((canvas.width / 2) / 2) - 80, canvas.height / 2, leftColor);
-        this.rightPaddle = new Paddle((canvas.width / 2) + ((canvas.width / 2) / 2) + 80, canvas.height / 2, rightColor);
-        this.ball = new Ball(canvas.width / 2, canvas.height / 2, 5, 5);
+        this.leftPaddle = new Paddle(80, 504 / 2, leftColor);
+        this.rightPaddle = new Paddle(896 - 80, 504 / 2, rightColor);
+        this.ball = new Ball(896 / 2, 504 / 2);
+        this.scaleX = 896 / canvas.width;
+        this.scaleY = 504 / canvas.height;
         this.leftScore = 0;
         this.rightScore = 0;
         this.gameStart = false;
@@ -148,9 +156,9 @@ class Game {
         if (prevX > 0 && this.ball.x <= 0) {
             this.rightScore++;
             this.updateScoreDisplay();
-            this.ball.reset(this.canvas);
-            this.rightPaddle.reset(this.canvas.height / 2);
-            this.leftPaddle.reset(this.canvas.height / 2);
+            this.ball.reset();
+            this.rightPaddle.reset();
+            this.leftPaddle.reset();
             this.gameStart = false;
             if (this.rightScore == this.maxPoints) {
                 this.winner = 'Player 2';
@@ -158,12 +166,12 @@ class Game {
             }
         }
 
-        else if (prevX < this.canvas.width && this.ball.x >= this.canvas.width) {
+        else if (prevX < 896 && this.ball.x >= 896) {
             this.leftScore++;
             this.updateScoreDisplay();
-            this.ball.reset(this.canvas);
-            this.rightPaddle.reset(this.canvas.height / 2);
-            this.leftPaddle.reset(this.canvas.height / 2);
+            this.ball.reset();
+            this.rightPaddle.reset();
+            this.leftPaddle.reset();
             this.gameStart = false;
             if (this.leftScore == this.maxPoints) {
                 this.winner = 'Player 1';    
@@ -173,6 +181,7 @@ class Game {
     }
 
     private handleKeyDown = (e: KeyboardEvent) => {
+        e.preventDefault();
         if (!this.gameStart)
             this.gameStart = true;
         switch (e.code) {
@@ -192,6 +201,7 @@ class Game {
     };
 
     private handleKeyUp = (e: KeyboardEvent) => {
+        e.preventDefault();
         switch (e.code) {
             case 'KeyW': 
                 this.leftPaddle.upPressed = false; 
@@ -231,11 +241,16 @@ class Game {
             this.updatePaddles();
             this.updateBall();
         }
-        this.leftPaddle.draw(this.ctx);
-        this.rightPaddle.draw(this.ctx);
-        this.ball.draw(this.ctx);
+        this.leftPaddle.draw(this.ctx, this.scaleX, this.scaleY);
+        this.rightPaddle.draw(this.ctx, this.scaleX, this.scaleY);
+        this.ball.draw(this.ctx, this.scaleX, this.scaleY);
         this.animationId = requestAnimationFrame(this.loop);
     };
+
+    public updateScale = () => {
+        this.scaleX = 896 / this.canvas.width;
+        this.scaleY = 504 / this.canvas.height;
+    }
 
     public start() {
 
@@ -253,10 +268,8 @@ class Game {
         this.loop();
         this.rightScore = 0;
         this.leftScore = 0;
-        this.ball.dx = Math.floor(Math.random() * 2) % 2 ? 5: -5;
-        this.ball.dy = Math.floor(Math.random() * 2) % 2 ? 5: -5;
-        console.log('dx = ', this.ball.dx,);
-        console.log('dy = ', this.ball.dy);
+        this.ball.dx = Math.floor(Math.random() * 2) % 2 ? this.ball.dx: -this.ball.dx;
+        this.ball.dy = Math.floor(Math.random() * 2) % 2 ? this.ball.dy: -this.ball.dy;
         this.updateScoreDisplay();
     }
 
@@ -301,5 +314,13 @@ export const gameInit = (max: number, leftColor: string = 'white', rightColor: s
         console.log(canvas.width, canvas.height);
     }
     const game = new Game(canvas, max, leftColor, rightColor);
+    window.addEventListener('resize', () => {
+        const container = canvas.parentElement;
+        if (canvas && container) {
+            canvas.width = container.clientWidth - 10;
+            canvas.height = canvas.width * (9 / 16);
+            game.updateScale();
+        }
+    });
     game.start();
 }
