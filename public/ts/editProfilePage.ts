@@ -1,6 +1,7 @@
 import { render } from "./render.js"
 import { handleMultiFormSubmit } from "./handleSubmit.js";
 import { router } from "./index.js";
+import { setupHeader } from "./header.js";
 
 const editProfilePage= () => `
     <div class="max-w-4xl bg-gradient-to-br from-[#18003C] to-[#142033] rounded-2xl p-8">
@@ -17,7 +18,7 @@ const editProfilePage= () => `
                     <p class="text-2xl text-slate-300">Edit Profile</p>
                     <div class="w-40 flex md:hidden items-center p-4">
                         <label for="picture" class="relative">
-                            <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
+                            <img id="m-profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
                             <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-8 h-8 absolute bottom-0 left-24">
                             <input type="file" id="picture" name="picture" accept="image/*" class="hidden">
                         </label>
@@ -56,8 +57,11 @@ export const edit = () => {
         const userImage = input.files?.[0];
         if (userImage) {
             const imgInput = document.getElementById('profile-picture') as HTMLImageElement;
+            const imgInputMobile = document.getElementById('m-profile-picture') as HTMLImageElement;
             if (imgInput)
                 imgInput.src = URL.createObjectURL(userImage);
+            if (imgInputMobile)
+                imgInputMobile.src = URL.createObjectURL(userImage);
         }
     };
     
@@ -75,6 +79,7 @@ const editResponse = (rep: Response, res: any) => {
             if (res.picture) {
                 localStorage.setItem('picture', res.picture);
             }
+            setupHeader();
             router.navigate('/');
         } catch (e) {
             console.log(e);
