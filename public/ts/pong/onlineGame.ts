@@ -396,7 +396,7 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
 }
 
 export const cleanOnlineGame = () => {
-    console.log("hey");
+    console.log("online cleaned");
     if (currentGame) {
         currentGame.cleanAll();
         currentGame = null;
