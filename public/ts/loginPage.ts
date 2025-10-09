@@ -1,5 +1,6 @@
 import { router } from './index.js'
 import { render } from './render.js';
+import { setupHeader } from './header.js';
 import { handleFormSubmit } from './handleSubmit.js';
 
 const loginPage = () => `
@@ -66,6 +67,7 @@ const loginResponse = (rep: Response, result : any) => {
             if (result.picture) {
                 localStorage.setItem('picture', result.picture);
             }
+            setupHeader();
             router.navigate('/');
         } catch (e) {
             console.log(e);
