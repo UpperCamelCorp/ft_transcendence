@@ -1,6 +1,18 @@
 const bcrypt = require('bcrypt');
 const { promisify } = require('util');
 
+const emailCheck = (email) => {
+    const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    console.log('result of check = ', regex.test(email));
+    return (regex.test(email));
+}
+
+const passwordCheck = (password) => {
+    if (password.length < 8)
+        return false;
+    return true;
+}
+
 const  authRoutes = async (fastify, options) => {
 
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
@@ -21,6 +33,10 @@ const  authRoutes = async (fastify, options) => {
         try {
             console.log(req.body);
             const {email, password} = req.body;
+            
+            if (!emailCheck(email))
+                return rep.code(400).send({message: "Invalid email"});
+
             const rows = await dbAll('SELECT id, username, hash, picture FROM users WHERE email = ?', [email]);
 
             if (rows.length === 0) {
@@ -52,16 +68,22 @@ const  authRoutes = async (fastify, options) => {
                 properties : {
                     username : {type : 'string'},
                     email : {type: 'string'},
-                    password : {type: 'string'}
+                    password : {type: 'string'},
+                    confirmPassword: {type: 'string'}
                 }
             }
         }
     }, async (req, rep) => {
         console.log(req.body)
         try {
-            const {username, email, password } = req.body;
+            const {username, email, password, confirmPassword} = req.body;
+            if (!emailCheck(email))
+                return rep.code(400).send({message: "Invalid email"});
+            if (!passwordCheck(password))
+                return rep.code(400).send({message : "Invalid password"});
+            if (password != confirmPassword)
+                return rep.code(400).send({message : "Password does not match"});
             const existingUser = await dbGet('SELECT email FROM users WHERE email = ? OR username = ?', [email, username]);
-
                 if (existingUser) {
                     return rep.code(409).send({ message: "User already exists" });
                 }
