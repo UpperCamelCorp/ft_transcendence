@@ -1,5 +1,6 @@
 import {router} from './index.js'
 import { render } from './render.js';
+import { invalidError, clearError } from './errorUtils.js';
 import { handleFormSubmit } from './handleSubmit.js';
 
 const signupPage = () => `
@@ -20,7 +21,10 @@ const signupPage = () => `
                 >
             </div>            
             <div class="space-y-2">
-                <label for="email" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                    <p id="email-error" class="text-red-700 italic text-xs hidden"></p>
+                </div>
                 <input 
                     type="email" 
                     id="email"
@@ -30,7 +34,10 @@ const signupPage = () => `
                 >
             </div>
             <div class="space-y-2">
-                <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Password</label>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Password</label>
+                    <p id="password-error" class="text-red-700 italic text-xs hidden"></p>
+                </div>
                 <input 
                     type="password" 
                     id="password"
@@ -40,10 +47,14 @@ const signupPage = () => `
                 >
             </div>
              <div class="space-y-2">
-                <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Confirm Password</label>
+                <div>
+                    <label for="confirm-password" class="block text-sm font-medium text-[#E2E8F0]">Confirm Your Password</label>
+                    <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
+                </div>
                 <input 
                     type="password" 
-                    id="password"
+                    id="confirm-password"
+                    name="confirmPassword"
                     placeholder="Confirm your password"
                     class="w-full px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
                 >
@@ -63,8 +74,28 @@ const signupPage = () => `
 
 const signupResponse = (rep : Response, result : any) => {
     console.log(rep.status);
-    if (rep.ok)
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const passwordInput = document.getElementById('password') as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById('confirm-password') as HTMLInputElement;
+    const emailError = document.getElementById('email-error') as HTMLParagraphElement;
+    const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
+    const confirmPasswordError = document.getElementById('confirm-password-error') as HTMLParagraphElement;
+    if (rep.ok) 
+    {
+        clearError(emailInput, emailError);
+        clearError(passwordInput, passwordError);
+        clearError(confirmPasswordInput, confirmPasswordError);
         router.navigate('/login');
+    }
+    if (rep.status === 400) 
+    {
+        if (result.message === 'Invalid password')
+            invalidError(passwordInput, passwordError, 'Password must contain at least 8 characters');
+        else if (result.message === 'Invalid email')
+            invalidError(emailInput, emailError, "Exemple: john@exemple.com");
+        else if (result.message === 'Password does not match')
+            invalidError(confirmPasswordInput, confirmPasswordError, result.message);
+    }
 }
 
 export const signup = () => {

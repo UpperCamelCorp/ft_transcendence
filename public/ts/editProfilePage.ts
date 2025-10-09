@@ -1,4 +1,5 @@
 import { render } from "./render.js"
+import { invalidError, clearError } from "./errorUtils.js";
 import { handleMultiFormSubmit } from "./handleSubmit.js";
 import { router } from "./index.js";
 import { setupHeader } from "./header.js";
@@ -28,15 +29,24 @@ const editProfilePage= () => `
                         <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <label for="email">Email</label>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                            <p id="email-error" class="text-red-700 italic text-xs hidden"></p>
+                        </div>
                         <input type="text" name="email" id="email" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">                        
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <label for="password">Password</label>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Password</label>
+                            <p id="password-error" class="text-red-700 italic text-xs hidden"></p>
+                        </div>
                         <input type="password" name="password" id="password" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">                        
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <label for="password-confirm">Password Confirmation</label>
+                        <div>
+                            <label for="password-confirm" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                            <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
+                        </div>
                         <input type="password" name="confirm" id="password-confirm" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">                        
                     </div>
                     <button type="submit" class="w-full bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
@@ -71,8 +81,17 @@ export const edit = () => {
 
 
 const editResponse = (rep: Response, res: any) => {
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const passwordInput = document.getElementById('password') as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById('password-confirm') as HTMLInputElement;
+    const emailError = document.getElementById('email-error') as HTMLParagraphElement;
+    const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
+    const confirmPasswordError = document.getElementById('confirm-password-error') as HTMLParagraphElement;
+    console.log(rep.status);
     if (rep.ok) {
-        console.log('Good');
+        clearError(emailInput, emailError);
+        clearError(passwordInput, passwordError);
+        clearError(confirmPasswordInput, confirmPasswordError);
         try {
             localStorage.setItem('authToken', res.token);
             localStorage.setItem('user', JSON.stringify(res.user));
@@ -85,6 +104,15 @@ const editResponse = (rep: Response, res: any) => {
             console.log(e);
         }
     }
-    if (rep.status === 401)
+    else if (rep.status === 401)
         router.navigate('/login');
+    else if (rep.status === 400)
+    {
+        if (res.message === 'Invalid email')
+            invalidError(emailInput, emailError, "Exemple: john@exemple.com");
+        else if (res.message === "Invalid password")
+            invalidError(passwordInput, passwordError, "Password must contain at least 8 characters");
+        else if (res.message === 'Password does not match')
+            invalidError(confirmPasswordInput, confirmPasswordError, res.message);
+    }
 }
