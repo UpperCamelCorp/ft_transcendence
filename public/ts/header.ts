@@ -1,5 +1,7 @@
 import { router } from "./index";
 
+let pictureListener : boolean = false;
+
 export const setupHeader = () => {
     const profilePicture = document.getElementById('profile-picture-header') as HTMLImageElement;
     const userPicture = localStorage.getItem('picture');
@@ -31,6 +33,8 @@ export const setupHeader = () => {
             profilePicture.src = userPicture;
         }
     }
-    profilePicture.removeEventListener('click', menuHandler);
-    profilePicture.addEventListener('click', menuHandler);
+    if (!pictureListener) {
+        profilePicture.addEventListener('click', menuHandler);
+        pictureListener = true;
+    }
 }
