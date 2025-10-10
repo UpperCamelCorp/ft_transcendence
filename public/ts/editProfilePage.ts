@@ -109,7 +109,7 @@ const editResponse = (rep: Response, res: any) => {
     else if (rep.status === 400)
     {
         if (res.message === 'Invalid email')
-            invalidError(emailInput, emailError, "Exemple: john@exemple.com");
+            invalidError(emailInput, emailError, "Example: john@example.com");
         else if (res.message === "Invalid password")
             invalidError(passwordInput, passwordError, "Password must contain at least 8 characters");
         else if (res.message === 'Password does not match')
