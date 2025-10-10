@@ -1,5 +1,6 @@
 import { router } from './index.js'
 import { render } from './render.js';
+import { invalidError, clearError } from './errorUtils.js';
 import { setupHeader } from './header.js';
 import { handleFormSubmit } from './handleSubmit.js';
 
@@ -13,7 +14,7 @@ const loginPage = () => `
             <div class="space-y-2">
                 <div>
                     <label for="email" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
-                    <p id="email-error" class="text-red-700 italic text-xs hidden">Wrong Credentials</p>
+                    <p id="email-error" class="text-red-700 italic text-xs hidden"></p>
                 </div>
                 <input
                     id="email-input" 
@@ -27,7 +28,7 @@ const loginPage = () => `
             <div class="space-y-2">
                 <div>
                     <label for="password" class="block text-sm font-medium text-[#E2E8F0]">Password</label>
-                    <p id="password-error" class="text-red-700 italic text-xs hidden">Wrong Credentials</p>
+                    <p id="password-error" class="text-red-700 italic text-xs hidden"></p>
                 </div>
                 <input
                     id="password-input"
@@ -56,11 +57,16 @@ const loginPage = () => `
         </div>
     </div>`;
 
-
 const loginResponse = (rep: Response, result : any) => {
     console.log(rep.status);
+    const emailInput = document.getElementById('email-input') as HTMLInputElement;
+    const passwordInput = document.getElementById('password-input') as HTMLInputElement;
+    const emailError = document.getElementById('email-error') as HTMLParagraphElement;
+    const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
     if (rep.ok)
     {
+        clearError(emailInput, emailError);
+        clearError(passwordInput, passwordError);
         try {
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
@@ -73,21 +79,23 @@ const loginResponse = (rep: Response, result : any) => {
             console.log(e);
         }
     }
-    if (rep.status == 401)
+    else if (rep.status == 401)
     {
-        const email_input = document.getElementById('email-input');
-        const pass_input = document.getElementById('password-input');
-        const email_error = document.getElementById('email-error');
-        const pass_error = document.getElementById('password-error');
-        if (email_input) email_input.classList.replace('border-[#475569]', 'border-[#FF0000]');
-        if (pass_input) pass_input.classList.replace('border-[#475569]', 'border-[#FF0000]');
-        if (email_error) email_error.classList.remove('hidden');
-        if (pass_error) pass_error.classList.remove('hidden');
+        invalidError(emailInput, emailError, "Wrong Credentials");
+        invalidError(passwordInput, passwordError, "Wrong Credentials");
+    }
+    else if (rep.status == 400)
+    {
+        invalidError(emailInput, emailError, "Exemple: john@exemple.com");
     }
 }
 
 export const login = () => {
     render(loginPage());
     const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email-input') as HTMLInputElement;
+    const emailError = document.getElementById('email-error') as HTMLParagraphElement;
+
     loginForm?.addEventListener('submit', (e) => handleFormSubmit(e, '/api/login', loginResponse));
+    emailInput.addEventListener('invalid', () => invalidError(emailInput, emailError, "Exemple: john@exemple.com"));
 }

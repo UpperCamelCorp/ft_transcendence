@@ -3,6 +3,18 @@ const path = require('path');
 const fs = require('fs/promises');
 const { promisify } = require('util');
 
+const emailCheck = (email) => {
+    const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    console.log('result of check = ', regex.test(email));
+    return (regex.test(email));
+}
+
+const passwordCheck = (password) => {
+    if (password.length < 8)
+        return false;
+    return true;
+}
+
 const userRoute = (fastify, options) => {
 
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
@@ -33,15 +45,21 @@ const userRoute = (fastify, options) => {
             const {username, email, password, confirm} = data.fields;
             const sqlFields = [];
             const sqlParam = [];
+            if (password.value != confirm.value)
+                return rep.code(400).send({message : "Password does not match"});
             if (username.value) {
                 sqlFields.push('username = ?');
                 sqlParam.push(username.value);
             }
             if (email.value) {
+                if (!emailCheck(email.value))
+                    return rep.code(400).send({message : "Invalid email"});
                 sqlFields.push('email = ?');
                 sqlParam.push(email.value);
             }
             if (password.value) {
+                if (!passwordCheck(password.value))
+                    return rep.code(400).send({message : "Invalid password"});
                 const hash = await bcrypt.hash(password.value, 10);
                 sqlFields.push('hash = ?');
                 sqlParam.push(hash);
