@@ -44,7 +44,7 @@ const editProfilePage= () => `
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
                         <div>
-                            <label for="password-confirm" class="block text-sm font-medium text-[#E2E8F0]">Email</label>
+                            <label for="password-confirm" class="block text-sm font-medium text-[#E2E8F0]">Password Confirmation</label>
                             <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
                         </div>
                         <input type="password" name="confirm" id="password-confirm" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">                        
