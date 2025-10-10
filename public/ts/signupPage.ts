@@ -87,7 +87,6 @@ const signupResponse = (rep : Response, result : any) => {
     const confirmPasswordError = document.getElementById('confirm-password-error') as HTMLParagraphElement;
     if (rep.ok) 
     {
-        clearError
         clearError(emailInput, emailError);
         clearError(passwordInput, passwordError);
         clearError(confirmPasswordInput, confirmPasswordError);
