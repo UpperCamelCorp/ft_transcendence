@@ -11,7 +11,10 @@ const signupPage = () => `
         </div>
         <form id="signupForm" class="space-y-6">
             <div class="space-y-2">
-                <label for="username" class="block text-sm font-medium text-[#E2E8F0]">Username</label>
+                <div>
+                    <label for="username" class="block text-sm font-medium text-[#E2E8F0]">Username</label>
+                    <p id="username-error" class="text-red-700 italic text-xs hidden"></p>
+                </div>
                 <input 
                     type="text" 
                     id="username"
@@ -74,17 +77,21 @@ const signupPage = () => `
 
 const signupResponse = (rep : Response, result : any) => {
     console.log(rep.status);
+    const usernameInput = document.getElementById('username') as HTMLInputElement;
     const emailInput = document.getElementById('email') as HTMLInputElement;
     const passwordInput = document.getElementById('password') as HTMLInputElement;
     const confirmPasswordInput = document.getElementById('confirm-password') as HTMLInputElement;
+    const usernameError = document.getElementById('username-error') as HTMLParagraphElement;
     const emailError = document.getElementById('email-error') as HTMLParagraphElement;
     const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
     const confirmPasswordError = document.getElementById('confirm-password-error') as HTMLParagraphElement;
     if (rep.ok) 
     {
+        clearError
         clearError(emailInput, emailError);
         clearError(passwordInput, passwordError);
         clearError(confirmPasswordInput, confirmPasswordError);
+        clearError(usernameInput, usernameError);
         router.navigate('/login');
     }
     if (rep.status === 400) 
@@ -95,6 +102,8 @@ const signupResponse = (rep : Response, result : any) => {
             invalidError(emailInput, emailError, "Exemple: john@exemple.com");
         else if (result.message === 'Password does not match')
             invalidError(confirmPasswordInput, confirmPasswordError, result.message);
+        else if (result.message === 'No Username')
+            invalidError(usernameInput, usernameError, "Username required");
     }
 }
 

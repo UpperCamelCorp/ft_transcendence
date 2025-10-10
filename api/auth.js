@@ -77,6 +77,8 @@ const  authRoutes = async (fastify, options) => {
         console.log(req.body)
         try {
             const {username, email, password, confirmPassword} = req.body;
+            if (!username)
+                return rep.code(400).send({message: "No Username"});
             if (!emailCheck(email))
                 return rep.code(400).send({message: "Invalid email"});
             if (!passwordCheck(password))
