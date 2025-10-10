@@ -1,3 +1,6 @@
+import { setupSidebar } from "./sidebar.js";
+import { setupHeader } from "./header.js";
+
 export default class Router {
     private routes: Map<string, () => void>;
     private cleanUp: Map<string, ()=> void | null>;
@@ -11,6 +14,8 @@ export default class Router {
     private handleRoute() : void {
         const path = window.location.pathname;
         const handler = this.routes.get(path);
+        setupSidebar();
+        setupHeader();
         if (handler){
             handler();
         } else {

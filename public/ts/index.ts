@@ -1,6 +1,4 @@
 import Router from './router.js';
-import { setupSidebar } from './sidebar.js';
-import { setupHeader } from './header.js';
 import { login } from './loginPage.js';
 import { signup } from './signupPage.js';
 import { welcome } from './welcomePage.js';
@@ -11,8 +9,6 @@ import { edit } from './editProfilePage.js';
 export const router = new Router;
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupSidebar();
-    setupHeader();
 
     router.setupLinkHandlers();
 
