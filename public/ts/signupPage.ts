@@ -98,7 +98,7 @@ const signupResponse = (rep : Response, result : any) => {
         if (result.message === 'Invalid password')
             invalidError(passwordInput, passwordError, 'Password must contain at least 8 characters');
         else if (result.message === 'Invalid email')
-            invalidError(emailInput, emailError, "Exemple: john@exemple.com");
+            invalidError(emailInput, emailError, "Example: john@example.com");
         else if (result.message === 'Password does not match')
             invalidError(confirmPasswordInput, confirmPasswordError, result.message);
         else if (result.message === 'No Username')
