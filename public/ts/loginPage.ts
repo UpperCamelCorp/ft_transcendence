@@ -60,7 +60,7 @@ const loginPage = () => `
 const loginResponse = (rep: Response, result : any) => {
     console.log(rep.status);
     const emailInput = document.getElementById('email-input') as HTMLInputElement;
-    const passwordInput = document.getElementById('password-input')as HTMLInputElement;
+    const passwordInput = document.getElementById('password-input') as HTMLInputElement;
     const emailError = document.getElementById('email-error') as HTMLParagraphElement;
     const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
     if (rep.ok)
