@@ -1,7 +1,8 @@
+let menuListener : boolean = false;
+
 export const setupSidebar = () => {
-    const menu = document.getElementById('slideMenu');
-    const buttonMenu = document.getElementById('closeMenu');
-    const openMenu = document.getElementById('openMenu');
+    const menu = document.getElementById('slideMenu') as HTMLDivElement;
+    const openMenu = document.getElementById('openMenu') as HTMLButtonElement;
 
     const toggleMenu = () =>{
         // sidebar
@@ -9,8 +10,6 @@ export const setupSidebar = () => {
         menu?.classList.toggle('md:w-22')
         menu?.classList.toggle('w-full');
         menu?.classList.toggle('md:w-54');
-        //close sidebar
-        buttonMenu?.classList.toggle('opacity-0');
         //logo and text
         const textBar = menu?.querySelectorAll('#text-ref');
         const logoBar = menu?.querySelectorAll('#logo-ref');
@@ -25,14 +24,14 @@ export const setupSidebar = () => {
             logo.classList.toggle('translate-x-3')
         })
     }
-    if (menu)
-    {
+
+    if (menu.classList.contains('w-full'))
+        toggleMenu();
+
+    if (!menuListener) {
         menu.addEventListener('pointerover', toggleMenu);
         menu.addEventListener('pointerout', toggleMenu);
-        // menu.addEventListener('click', toggleMenu);
-    }
-    if (openMenu)
-    {
         openMenu.addEventListener('click', toggleMenu);
+        menuListener = true;
     }
 }
