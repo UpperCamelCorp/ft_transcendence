@@ -35,7 +35,7 @@ export const setupHeader = () => {
             profilePicture.src = userPicture;
         }
         else {
-            profilePicture.src = '../images/default-pp.png'
+            profilePicture.src = '../images/default-pp.png';
         }
     }
     if (!pictureListener) {
