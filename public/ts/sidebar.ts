@@ -25,7 +25,7 @@ export const setupSidebar = () => {
         })
     }
 
-    if (menu.classList.contains('w-full'))
+    if (menu.classList.contains('w-full') && window.innerWidth <= 768)
         toggleMenu();
 
     if (!menuListener) {
