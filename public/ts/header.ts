@@ -8,15 +8,17 @@ export const setupHeader = () => {
     const user = localStorage.getItem('user');
     const menu = document.getElementById('profile-menu') as HTMLDivElement;
     const menuHandler = () => {
-        console.log('click');
         menu.classList.toggle('hidden');
     }
     if (user) {
         menu.innerHTML = `
             <a href="/edit" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">edit</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Edit</button>
             </a>
+            <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Disconnect</button>
         `;
+        const disconnectButton = document.getElementById('disconnect');
+        disconnectButton?.addEventListener('click', () => {localStorage.clear(); setupHeader()});
     }
     else {
         menu.innerHTML = `
@@ -31,6 +33,9 @@ export const setupHeader = () => {
     if (profilePicture) {
         if (userPicture) {
             profilePicture.src = userPicture;
+        }
+        else {
+            profilePicture.src = '../images/default-pp.png'
         }
     }
     if (!pictureListener) {
