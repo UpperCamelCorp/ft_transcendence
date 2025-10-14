@@ -13,15 +13,29 @@ const game = async (fastify, options) => {
         connection.on('message', (message) => {
             try {
                 const data = JSON.parse(message.toString());
+                let token;
                 if (data.type === 'join') {
-                    if (data.roomId > 9999 || data.roomId < 0)
+                    console.log(data.roomId);
+                    if (data.roomId > 9999 || data.roomId < 0) {
+                        connection.send(JSON.stringify({type : 'error', error: 'Wrong RoomId'}));
+                        connection.close();
                         return ;
+                    }
+                    try {
+                        token = fastify.jwt.verify(data.token);
+                    } catch (e) {
+                        console.log(e);
+                        connection.send(JSON.stringify({type: 'error', error : 'Invalid JWT'}));
+                        connection.close();
+                        return ;
+                    }
                     gameId = data.roomId;
-                    playerIndex = gameManager.joinGame(gameId, connection, data.name, data.picture);
+                    playerIndex = gameManager.joinGame(gameId, connection, token.id, data.name, data.picture);
                     if (playerIndex === 0)
                         connection.send(JSON.stringify({type: 'wait'}));
                     else if (playerIndex === -1) {
                         connection.send(JSON.stringify({type: 'full'}));
+                        connection.close();
                         gameId = -1;
                     }
                 }
