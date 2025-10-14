@@ -1,3 +1,4 @@
+import { router } from "../index.js";
 import { render } from "../render.js";
 import { gameInit } from "./game.js";
 import { onlineGame } from "./onlineGame.js";
@@ -137,6 +138,9 @@ const onlineGameCustom = () => `
     </div>`
 
 const OnlineCustom = () => {
+    const token = localStorage.getItem('authToken');
+    if (!token)
+        return router.navigate('login');
     render(onlineGameCustom());
     const playButton = document.getElementById('play');
     const roomIdInput = document.getElementById('room') as HTMLInputElement;
