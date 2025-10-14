@@ -27,9 +27,10 @@ class GameManager {
         else {
             const game = new PongGame(this.db);
             const index = game.players.length;
-            this.games.set(id, game);
+            this.games.set(gameId, game);
             game.players.push(connection);
             game.playersNames.push(name);
+            game.playersId.push(playerId);
             if (picture)
                 game.playerPictures.push(picture);
             else
