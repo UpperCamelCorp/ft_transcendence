@@ -75,6 +75,7 @@ class PongGame {
                     type: 'gameover',
                     winner: this.playersNames[0]
                 });
+                this.saveGame(this.playersId[0]);
                 this.stop();
             }
             else if (this.scores[1] === 3){
@@ -82,6 +83,7 @@ class PongGame {
                     type: 'gameover',
                     winner: this.playersNames[1]
                 });
+                this.saveGame(this.playersId[1]);
                 this.stop();
             }
         }, 1000/60);
@@ -96,6 +98,13 @@ class PongGame {
             player2Picture: this.playerPictures[1]
         });
         this.loop();
+    }
+
+    saveGame(winner) {
+        this.db.run('INSERT INTO game (player1_id, player2_id, winner) VALUES (?, ?, ?)', [this.playersId[0], this.playersId[1], winner], (e) => {
+            if (e)
+                console.log('Cannot save the game : ', e);
+        });
     }
 
     stop() {
