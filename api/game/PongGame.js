@@ -1,7 +1,9 @@
 class PongGame {
 
-    constructor() {
+    constructor(db) {
+        this.db = db
         this.players = [];
+        this.playersId = [];
         this.inputs = [{up: false, down: false}, {up: false, down: false}];
         this.playersNames = [];
         this.playerPictures = [];
