@@ -21,8 +21,21 @@ const setUpDataBase = async () => {
             if (e)
                 console.log(e);
             else
-                console.log('Tables initiated');
+                console.log('user table initiated');
         });
+        db.run(`CREATE TABLE IF NOT EXISTS game (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player1_id INTEGER NOT NULL,
+            player2_id INTEGER NOT NULL,
+            winner INTEGER NOT NULL,
+            FOREIGN KEY (player1_id) REFERENCES user(player1_id),
+            FOREIGN KEY (player2_id) REFERENCES user(player2_id)
+            )`, (e) => {
+                if (e)
+                    console.log(e);
+                else
+                    console.log('game table initiated');
+            });
     })
     return db;
 }
