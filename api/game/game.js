@@ -4,7 +4,7 @@ const GameManager = require('./GameManager');
 /** @param {import('fastify').FastifyInstance} fastify */
 const game = async (fastify, options) => {
     
-    const gameManager = new GameManager();
+    const gameManager = new GameManager(fastify.db);
 
     fastify.get('/game/play', {websocket : true}, (connection, req) => {
         let playerIndex;
