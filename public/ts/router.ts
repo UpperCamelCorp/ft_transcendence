@@ -4,12 +4,14 @@ import { notFound } from "./404page.js";
 
 export default class Router {
     private routes: Map<string, () => void>;
+    private dynamic: Map<string, (params: string) => void>;
     private cleanUp: Map<string, ()=> void | null>;
 
     constructor() {
         window.addEventListener('popstate', this.handleRoute.bind(this));
         this.routes = new Map();
         this.cleanUp = new Map();
+        this.dynamic = new Map();
     }
 
     private setNamePage(name : string) : void {
@@ -29,6 +31,25 @@ export default class Router {
         }
     }
 
+    private handleDynamic(path: string): boolean {
+        const mathPath = path.match(/\/[^\/]+/g);
+        if (!mathPath)
+            return false;
+        const keyPath = mathPath[0];
+        console.log('keypath = ', keyPath);
+        const handler = this.dynamic.get(keyPath);
+        if (handler) {
+            if (mathPath[1]) {
+                handler(mathPath[1].substring(1));
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false; 
+    }
+
     private handleRoute() : void {
         const path = window.location.pathname;
         const handler = this.routes.get(path);
@@ -38,9 +59,11 @@ export default class Router {
             this.setNamePage(path.slice(1).toUpperCase());
             handler();
         } else {
-            this.setNamePage('');
-            notFound();
-            console.log(`No route for ${path}`);
+            if (!this.handleDynamic(path)) {
+                this.setNamePage('');
+                notFound();
+                console.log(`No route for ${path}`);
+            }
         }
     }
 
@@ -57,6 +80,10 @@ export default class Router {
 
     public add(path : string, handler : () => void) : void {
         this.routes.set(path, handler);
+    }
+
+    public addDynamic(path: string, handler: (params : string) => void) : void {
+        this.dynamic.set(path, handler);
     }
 
     public addCleanUp(path: string, cleanUp: () => void | null) {
