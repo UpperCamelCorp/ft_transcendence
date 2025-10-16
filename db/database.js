@@ -28,6 +28,7 @@ const setUpDataBase = async () => {
             player1_id INTEGER NOT NULL,
             player2_id INTEGER NOT NULL,
             winner INTEGER NOT NULL,
+            score TEXT NOT NULL,
             FOREIGN KEY (player1_id) REFERENCES user(player1_id),
             FOREIGN KEY (player2_id) REFERENCES user(player2_id)
             )`, (e) => {
