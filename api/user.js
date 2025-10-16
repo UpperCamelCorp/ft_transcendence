@@ -17,7 +17,7 @@ const passwordCheck = (password) => {
     return true;
 }
 
-const userRoute = (fastify, options) => {
+const userRoute = async (fastify, options) => {
 
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
     const dbAll = promisify(fastify.db.all.bind(fastify.db));
@@ -107,11 +107,30 @@ const userRoute = (fastify, options) => {
         }
     });
 
-    fastify.post('/api/user/:userId', {
+    fastify.get('/api/user/:userId', {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
         const {userId} = req.params;
-        return rep.code(404).send("todo")
+        try {
+            const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
+            return rep.code(200).send({user});
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: "Error try again later"});
+        }
+    });
+
+    fastify.get('/api/games/:userId', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        const {userId} = req.params;
+        try {
+            const games = await dbAll('SELECT * FROM game WHERE player1_id = ? OR player2_id = ?', [userId, userId]);
+            return rep.code(200).send({games});
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: "Error try again later"});
+        }
     });
 }
 
