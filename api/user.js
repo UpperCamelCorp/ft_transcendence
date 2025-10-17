@@ -125,7 +125,16 @@ const userRoute = async (fastify, options) => {
     }, async (req, rep) => {
         const {userId} = req.params;
         try {
-            const games = await dbAll('SELECT * FROM game WHERE player1_id = ? OR player2_id = ?', [userId, userId]);
+            const games = await dbAll(`SELECT game.*,
+                u1.username as player1_username,
+                u1.picture as player1_picture,
+                u2.username as player2_username,
+                u2.picture as player2_picture
+                FROM game 
+                JOIN users u1 ON game.player1_id = u1.id
+                JOIN users u2 ON game.player2_id = u2.id
+                WHERE player1_id = ? OR player2_id = ?`, [userId, userId]);
+
             return rep.code(200).send({games});
         } catch (e) {
             console.log(e);
