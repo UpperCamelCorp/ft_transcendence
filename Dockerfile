@@ -1,8 +1,4 @@
-# Base : Node 18 Alpine
-FROM node:20-alpine
-
-# Installer les dépendances système nécessaires pour compiler sqlite3
-RUN apk add --no-cache python3 make g++ git bash
+FROM node:24-alpine
 
 # Répertoire de travail
 WORKDIR /app
