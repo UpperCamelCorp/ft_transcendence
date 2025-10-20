@@ -97,10 +97,7 @@ const userRoute = async (fastify, options) => {
             return rep.code(400).send({message : "No Username"});
         try {
             const users = await dbAll('SELECT id, username, picture FROM users WHERE username = ? AND id != ?', [username, req.user.id]);
-            if (!users.length)
-                return rep.code(404).send({message : "User not found"});
-            else 
-                return rep.code(200).send(users);
+            return rep.code(200).send(users);
         } catch (e) {
             console.log(e);
             return rep.code(500).send({message: "Error try again later"});
