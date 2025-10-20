@@ -22,7 +22,12 @@
         <div class="hidden md:block">
             <span id="page-name" class="text-4xl text-white font-bold"></span>
         </div>
-        <div class="mx-5">
+        <div class="mx-5 flex justify-center">
+            <div class="relative">
+                <input type="search" name="username" id="user-search" placeholder="Search user" class="rounded-2xl border-2 border-slate-600 mx-3 text-slate-500 p-2">
+                <div id="search-result" class="absolute top-11 left-4 flex flex-col w-64 text-white bg-black/50 hidden">
+                </div>
+            </div>
             <img id="profile-picture-header" src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full hover:ring-2 hover:ring-cyan-300">
         </div>
         <div id="profile-menu" class="fixed top-16 right-0 h-32 z-50 bg-[#18003c]/95 p-8 flex flex-col items-center justify-center rounded-bl-2xl hidden">
