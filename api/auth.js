@@ -125,7 +125,7 @@ const  authRoutes = async (fastify, options) => {
                 // Create new user
                 const username = googleUser.name || googleUser.email.split('@')[0];
                 await dbRun('INSERT INTO users(username, email, hash, picture) VALUES(?, ?, ?, ?)',
-                    [username, googleUser.email, '', googleUser.picture]);
+                    [username, googleUser.email, 'OAUTH_GOOGLE', googleUser.picture]);
                 user = await dbGet('SELECT id, username, email, picture FROM users WHERE email = ?', [googleUser.email]);
             }
 
