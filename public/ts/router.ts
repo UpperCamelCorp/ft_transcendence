@@ -32,15 +32,15 @@ export default class Router {
     }
 
     private handleDynamic(path: string): boolean {
-        const mathPath = path.match(/\/[^\/]+/g);
-        if (!mathPath)
+        const matchPath = path.match(/\/[^\/]+/g);
+        if (!matchPath)
             return false;
-        const keyPath = mathPath[0];
+        const keyPath = matchPath[0];
         console.log('keypath = ', keyPath);
         const handler = this.dynamic.get(keyPath);
         if (handler) {
-            if (mathPath[1]) {
-                handler(mathPath[1].substring(1));
+            if (matchPath[1]) {
+                handler(matchPath[1].substring(1));
                 return true;
             }
             else
