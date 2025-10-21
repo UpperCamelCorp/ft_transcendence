@@ -37,7 +37,12 @@ const start = async () => {
         fastify.register(require('@fastify/jwt'), {
             secret : process.env.JWTPASS
         });
-        fastify.register(require('@fastify/multipart'))
+        const MAX_UPLOAD_MB = 5;
+        fastify.register(require('@fastify/multipart'), {
+            limits: {
+                fileSize: MAX_UPLOAD_MB * 1024 * 1024
+            },
+        });
         fastify.register(require('@fastify/websocket'));
 
         // Register OAuth2 plugin
