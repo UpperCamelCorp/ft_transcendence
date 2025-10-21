@@ -106,8 +106,8 @@ const setHistoryPage = (user: any, games: [any], userId: string) => {
     const userTitle = document.getElementById('user-title') as HTMLSpanElement;
     userTitle.textContent = `${user.username}'s History`;
 
-    const retrunButton = document.getElementById('return-button') as HTMLButtonElement;
-    retrunButton.addEventListener('click', () => setUserPage(user, games, userId));
+    const returnButton = document.getElementById('return-button') as HTMLButtonElement;
+    returnButton.addEventListener('click', () => setUserPage(user, games, userId));
     games.forEach(game => {
         const gameDiv = document.createElement('div');
         const userScore = game.player1_id === parseInt(userId) ? game.score[0] : game.score[4];
