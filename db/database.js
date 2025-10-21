@@ -21,8 +21,33 @@ const setUpDataBase = async () => {
             if (e)
                 console.log(e);
             else
-                console.log('Tables initiated');
+                console.log('user table initiated');
         });
+        db.run(`CREATE TABLE IF NOT EXISTS game (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player1_id INTEGER NOT NULL,
+            player2_id INTEGER NOT NULL,
+            winner INTEGER NOT NULL,
+            score TEXT NOT NULL,
+            FOREIGN KEY (player1_id) REFERENCES user(player1_id),
+            FOREIGN KEY (player2_id) REFERENCES user(player2_id)
+            )`, (e) => {
+                if (e)
+                    console.log(e);
+                else
+                    console.log('game table initiated');
+            });
+        db.run(`CREATE TABLE IF NOT EXISTS friends (
+            user_id INTEGER PRIMARY KEY,
+            friend_id INTEGER NOT NULL,
+            status INTEGER DEFAULT 1,
+            FOREIGN KEY (user_id) REFERENCES user(user_id)
+            )`, (e) => {
+                if (e)
+                    console.log(e);
+                else
+                    console.log('friends table initiated');
+            });
 
         // Add picture column to existing table if it doesn't exist
         db.run(`ALTER TABLE users ADD COLUMN picture TEXT`, (e) => {

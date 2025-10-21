@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const fs = require('fs/promises');
 const { promisify } = require('util');
+const { profile } = require('console');
+const { promiseHooks } = require('v8');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -15,9 +17,10 @@ const passwordCheck = (password) => {
     return true;
 }
 
-const userRoute = (fastify, options) => {
+const userRoute = async (fastify, options) => {
 
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
+    const dbAll = promisify(fastify.db.all.bind(fastify.db));
 
     fastify.post('/api/edit', {
         onRequest: [fastify.authenticate]
@@ -84,7 +87,58 @@ const userRoute = (fastify, options) => {
                 return rep.code(500).send({message: "Error try again later"});
             }
         }
-    })
+    });
+    
+    fastify.post('/api/search', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        let {username} = req.body;
+        if (!username || username.length < 3)
+            return rep.code(400).send({message : "No Username"});
+        try {
+            username += '%'; 
+            const users = await dbAll('SELECT id, username, picture FROM users WHERE username LIKE ? AND id != ?', [username, req.user.id]);
+            return rep.code(200).send(users);
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: "Error try again later"});
+        }
+    });
+
+    fastify.get('/api/user/:userId', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        const {userId} = req.params;
+        try {
+            const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
+            return rep.code(200).send({user});
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: "Error try again later"});
+        }
+    });
+
+    fastify.get('/api/games/:userId', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        const {userId} = req.params;
+        try {
+            const games = await dbAll(`SELECT game.*,
+                u1.username as player1_username,
+                u1.picture as player1_picture,
+                u2.username as player2_username,
+                u2.picture as player2_picture
+                FROM game 
+                JOIN users u1 ON game.player1_id = u1.id
+                JOIN users u2 ON game.player2_id = u2.id
+                WHERE player1_id = ? OR player2_id = ?`, [userId, userId]);
+
+            return rep.code(200).send({games});
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: "Error try again later"});
+        }
+    });
 }
 
 module.exports = userRoute;

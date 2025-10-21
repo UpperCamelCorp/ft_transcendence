@@ -2,18 +2,20 @@ const PongGame = require('./PongGame');
 
 class GameManager {
     
-    constructor() {
+    constructor(db) {
+        this.db = db;
         this.games = new Map();
     }
 
-    joinGame(id, connection, name, picture) {
-        if (this.games.has(id)) {
-            const game = this.games.get(id);
+    joinGame(gameId, connection, playerId, name, picture) {
+        if (this.games.has(gameId)) {
+            const game = this.games.get(gameId);
             const index = game.players.length;
             if (index >= 2)
                 return -1;
             game.players.push(connection);
             game.playersNames.push(name);
+            game.playersId.push(playerId);
             if (picture)
                 game.playerPictures.push(picture);
             else
@@ -23,11 +25,12 @@ class GameManager {
             return index;
         }
         else {
-            const game = new PongGame();
+            const game = new PongGame(this.db);
             const index = game.players.length;
-            this.games.set(id, game);
+            this.games.set(gameId, game);
             game.players.push(connection);
             game.playersNames.push(name);
+            game.playersId.push(playerId);
             if (picture)
                 game.playerPictures.push(picture);
             else

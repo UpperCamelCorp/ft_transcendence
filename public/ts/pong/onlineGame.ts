@@ -1,3 +1,4 @@
+import { router } from "../index.js";
 import { game } from "./pong.js";
 
 class Paddle {
@@ -353,11 +354,13 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
         currentGame?.updateScale();
     });
     socket.onopen = () => {
+        const userJWT = localStorage.getItem('authToken');
         try {
             socket.send(JSON.stringify({
                     type: 'join',
                     roomId: roomId,
                     name: user,
+                    token : userJWT,
                     picture: picture,
                     color: color
                 }));
@@ -391,6 +394,9 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
                 currentGame?.cleanAll();
                 currentGame?.full();
                 break;
+            case 'error':
+                currentGame?.cleanAll();
+                router.navigate('login');
         }
     }
 }

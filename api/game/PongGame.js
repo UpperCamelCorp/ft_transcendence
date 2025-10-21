@@ -1,7 +1,9 @@
 class PongGame {
 
-    constructor() {
+    constructor(db) {
+        this.db = db
         this.players = [];
+        this.playersId = [];
         this.inputs = [{up: false, down: false}, {up: false, down: false}];
         this.playersNames = [];
         this.playerPictures = [];
@@ -73,6 +75,7 @@ class PongGame {
                     type: 'gameover',
                     winner: this.playersNames[0]
                 });
+                this.saveGame(this.playersId[0]);
                 this.stop();
             }
             else if (this.scores[1] === 3){
@@ -80,6 +83,7 @@ class PongGame {
                     type: 'gameover',
                     winner: this.playersNames[1]
                 });
+                this.saveGame(this.playersId[1]);
                 this.stop();
             }
         }, 1000/60);
@@ -94,6 +98,14 @@ class PongGame {
             player2Picture: this.playerPictures[1]
         });
         this.loop();
+    }
+
+    saveGame(winner) {
+        const score = `${this.scores[0]} : ${this.scores[1]}`;
+        this.db.run('INSERT INTO game (player1_id, player2_id, winner, score) VALUES (?, ?, ?, ?)', [this.playersId[0], this.playersId[1], winner, score], (e) => {
+            if (e)
+                console.log('Cannot save the game : ', e);
+        });
     }
 
     stop() {
