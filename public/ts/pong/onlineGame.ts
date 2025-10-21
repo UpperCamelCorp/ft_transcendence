@@ -85,7 +85,7 @@ class Game {
         this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    private updateScoreDisplay() {
+    public updateScoreDisplay() {
         const leftScoreElem = document.getElementById('score-left');
         const rightScoreElem = document.getElementById('score-right');
         if (leftScoreElem) leftScoreElem.textContent = String(this.leftScore);
@@ -214,8 +214,12 @@ class Game {
 
         if (data.player1Picture)
             leftPicture.src = data.player1Picture;
+        else
+            leftPicture.src = '/images/default-pp.png';
         if (data.player2Picture)
             rightPicture.src = data.player2Picture;
+        else
+            rightPicture.src = '/images/default-pp.png';
         if (leftPlayer && data.player1)
             leftPlayer.textContent = data.player1;
         if (rightPlayer && data.player2)
@@ -294,7 +298,6 @@ class Game {
             <span id="player" class="text-2xl font-bold m-4 mb-8">${winner} Won!</span>
             <div class="flex m-2 space-x-8">
                 <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>
-                <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Retry</button>
             </div>
         `
         document.body.appendChild(overlay);
@@ -383,6 +386,7 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
                 currentGame?.setUsers(rep);
                 break;
             case 'gameover':
+                currentGame?.updateScoreDisplay();
                 currentGame?.cleanAll();
                 currentGame?.GameOver(rep.winner);
                 break ;
