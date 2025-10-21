@@ -101,7 +101,7 @@ class PongGame {
     }
 
     saveGame(winner) {
-        const score = `${this.scores[0]} : ${this.scores[1]}}`;
+        const score = `${this.scores[0]} : ${this.scores[1]}`;
         this.db.run('INSERT INTO game (player1_id, player2_id, winner, score) VALUES (?, ?, ?, ?)', [this.playersId[0], this.playersId[1], winner, score], (e) => {
             if (e)
                 console.log('Cannot save the game : ', e);
