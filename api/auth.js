@@ -131,12 +131,18 @@ const  authRoutes = async (fastify, options) => {
 
             const jwtToken = fastify.jwt.sign({ id: user.id, username: user.username });
 
-            // Redirect to frontend with token
-            reply.redirect(`/?token=${jwtToken}&user=${encodeURIComponent(JSON.stringify({
-                username: user.username,
-                email: user.email
-            }))}&picture=${encodeURIComponent(user.picture || googleUser.picture)}`);
-
+            // Set JWT token in HTTP-only cookie and redirect to frontend without token in URL
+            reply
+                .setCookie('token', jwtToken, {
+                    path: '/',
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production', // set secure flag in production
+                    sameSite: 'lax',
+                })
+                .redirect(`/?user=${encodeURIComponent(JSON.stringify({
+                    username: user.username,
+                    email: user.email
+                }))}&picture=${encodeURIComponent(user.picture || googleUser.picture)}`);
         } catch (err) {
             fastify.log.error(err);
             reply.redirect('/?error=oauth_failed');
