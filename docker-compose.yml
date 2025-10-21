@@ -1,5 +1,6 @@
 services:
   app:
+    platform: linux/amd64
     build: .
     container_name: ft_transcendence
     env_file:
@@ -9,4 +10,5 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/public/dist
     restart: unless-stopped
