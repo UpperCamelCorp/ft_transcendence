@@ -134,6 +134,13 @@ export const login = () => {
 
     if (error) {
         console.error('OAuth error:', error);
+        // Show a visible error message to the user
+        const emailInput = document.getElementById('email-input') as HTMLInputElement;
+        const passwordInput = document.getElementById('password-input') as HTMLInputElement;
+        const emailError = document.getElementById('email-error') as HTMLParagraphElement;
+        const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
+        invalidError(emailInput, emailError, "Authentication failed. Please try again.");
+        invalidError(passwordInput, passwordError, "Authentication failed. Please try again.");
     }
 
     const loginForm = document.getElementById('loginForm');
