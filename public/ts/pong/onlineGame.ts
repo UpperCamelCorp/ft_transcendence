@@ -374,7 +374,6 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
 
     socket.onmessage = (data) => {
         const rep = JSON.parse(data.data);
-        console.log(rep);
         switch (rep.type) {
             case 'update':
                 currentGame?.update(rep);
