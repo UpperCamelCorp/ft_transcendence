@@ -92,11 +92,12 @@ const userRoute = async (fastify, options) => {
     fastify.post('/api/search', {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
-        const {username} = req.body;
-        if (!username)
+        let {username} = req.body;
+        if (!username || username.length < 3)
             return rep.code(400).send({message : "No Username"});
         try {
-            const users = await dbAll('SELECT id, username, picture FROM users WHERE username = ? AND id != ?', [username, req.user.id]);
+            username += '%'; 
+            const users = await dbAll('SELECT id, username, picture FROM users WHERE username LIKE ? AND id != ?', [username, req.user.id]);
             return rep.code(200).send(users);
         } catch (e) {
             console.log(e);
