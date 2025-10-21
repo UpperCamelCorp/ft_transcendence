@@ -39,6 +39,22 @@ const start = async () => {
         });
         fastify.register(require('@fastify/multipart'))
         fastify.register(require('@fastify/websocket'));
+
+        // Register OAuth2 plugin
+        fastify.register(require('@fastify/oauth2'), {
+            name: 'googleOAuth2',
+            scope: ['profile', 'email'],
+            credentials: {
+                client: {
+                    id: process.env.GOOGLE_CLIENT_ID,
+                    secret: process.env.GOOGLE_CLIENT_SECRET
+                },
+                auth: require('@fastify/oauth2').GOOGLE_CONFIGURATION
+            },
+            startRedirectPath: '/login/google',
+            callbackUri: `${process.env.BASE_URL || 'http://localhost:3000'}/login/google/callback`
+        });
+
         fastify.register(require('./api/auth.js'));
         fastify.register(require('./api/user.js'));
         fastify.register(require('./api/game/game.js'));

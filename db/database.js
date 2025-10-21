@@ -23,6 +23,15 @@ const setUpDataBase = async () => {
             else
                 console.log('Tables initiated');
         });
+
+        // Add picture column to existing table if it doesn't exist
+        db.run(`ALTER TABLE users ADD COLUMN picture TEXT`, (e) => {
+            if (e && !e.message.includes('duplicate column name')) {
+                console.log('Column addition error:', e);
+            } else if (!e) {
+                console.log('Picture column added successfully');
+            }
+        });
     })
     return db;
 }
