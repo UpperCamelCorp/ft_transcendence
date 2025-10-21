@@ -19,8 +19,10 @@ export const setupHeader = () => {
 
     if (!searchRes.classList.contains('hidden')) {
         searchRes.classList.toggle('hidden');
+        searchRes.innerHTML = '';
         searchBox.value = '';
     }
+
     if (user) {
         menu.innerHTML = `
             <a href="/edit" data-link>
@@ -51,11 +53,11 @@ export const setupHeader = () => {
     }
     if (!headerListener) {
         profilePicture.addEventListener('click', menuHandler);
-        searchBox.addEventListener('keydown', async (e) => {
+        searchBox.addEventListener('input', async (e) => {
             console.log('search');
             try {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
+                searchRes.innerHTML = '';
+                if (searchBox.value.trim().length >= 3) {
                     const username = searchBox.value.trim();
                     const token = localStorage.getItem('authToken');
                     if (!token)
@@ -68,7 +70,7 @@ export const setupHeader = () => {
                         },
                         body : JSON.stringify({username})
                     });
-                    const res = await rep.json();
+                    const res : [any] = await rep.json();
                     console.log(res);
                     searchRes.innerHTML = '';
                     if (searchRes.classList.contains('hidden'))
