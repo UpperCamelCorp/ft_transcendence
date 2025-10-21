@@ -3,3 +3,4 @@ db/transcendence.db
 public/uploads/*
 public/dist/
 .DS_Store
+.env
