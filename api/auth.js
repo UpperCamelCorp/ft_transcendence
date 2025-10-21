@@ -33,7 +33,7 @@ const  authRoutes = async (fastify, options) => {
         try {
             console.log(req.body);
             const {email, password} = req.body;
-            
+
             if (!emailCheck(email))
                 return rep.code(400).send({message: "Invalid email"});
 
@@ -100,6 +100,47 @@ const  authRoutes = async (fastify, options) => {
             return rep.code(500).send({ message: "Internal server error" });
         }
     })
+
+    // Google OAuth callback
+    fastify.get('/login/google/callback', async (request, reply) => {
+        try {
+            const result = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+
+            const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+                headers: {
+                    Authorization: 'Bearer ' + result.token.access_token
+                }
+            });
+
+            if (!userInfoResponse.ok) {
+                return reply.code(500).send({ message: "Failed to fetch user info" });
+            }
+
+            const googleUser = await userInfoResponse.json();
+
+            // Check if user exists
+            let user = await dbGet('SELECT id, username, email, picture FROM users WHERE email = ?', [googleUser.email]);
+
+            if (!user) {
+                // Create new user
+                const username = googleUser.name || googleUser.email.split('@')[0];
+                await dbRun('INSERT INTO users(username, email, hash, picture) VALUES(?, ?, ?, ?)',
+                    [username, googleUser.email, 'OAUTH_GOOGLE', googleUser.picture]);
+                user = await dbGet('SELECT id, username, email, picture FROM users WHERE email = ?', [googleUser.email]);
+            }
+
+            const jwtToken = fastify.jwt.sign({ id: user.id, username: user.username });
+
+            // Redirect to the login route so frontend login handler processes the token
+            reply.redirect(`/login?token=${jwtToken}&user=${encodeURIComponent(JSON.stringify({
+                username: user.username,
+                email: user.email
+            }))}&picture=${encodeURIComponent(user.picture || googleUser.picture)}`);
+        } catch (err) {
+            fastify.log.error(err);
+            reply.redirect('/?error=oauth_failed');
+        }
+    });
 }
 
 module.exports = authRoutes;

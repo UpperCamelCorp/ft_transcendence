@@ -25,30 +25,17 @@ public/ts/             # Frontend TypeScript files
 ```
 
 ## Prerequisites
-- Node.js (v16 or higher recommended)
-- npm (comes with Node.js)
-
-## Installation
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/UpperCamelCorp/ft_transcendence.git
-   cd ft_transcendence
-   ```
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
+- Docker
 
 ## Running the Project
-1. Build Tailwind CSS (if not already built):
+1. Build docker:
    ```sh
-   npm run build
+   docker compose up ( -d )
    ```
-2. Start the server:
+2. Open your browser:
    ```sh
-   (JWTPASS=your_secret_value (for the moment)) npm run run
+   Open your browser and go to `http://localhost:3000.
    ```
-3. Open your browser and go to `http://localhost:3000` (or the port specified in your server).
 
 ## Development
 - TypeScript source files are in `public/ts/`.
