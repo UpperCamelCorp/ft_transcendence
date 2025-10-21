@@ -12,6 +12,9 @@ RUN npm install
 # Copier le reste du projet
 COPY . .
 
+# Build TypeScript and Tailwind CSS
+RUN npm run build
+
 # Exposer le port
 EXPOSE 3000
 
