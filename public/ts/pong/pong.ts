@@ -140,7 +140,7 @@ const onlineGameCustom = () => `
 const OnlineCustom = () => {
     const token = localStorage.getItem('authToken');
     if (!token)
-        return router.navigate('login');
+        return router.navigate('/login');
     render(onlineGameCustom());
     const playButton = document.getElementById('play');
     const roomIdInput = document.getElementById('room') as HTMLInputElement;
