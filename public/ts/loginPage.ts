@@ -125,7 +125,8 @@ export const login = () => {
                 localStorage.setItem('picture', decodeURIComponent(picture));
             }
             setupHeader();
-            router.navigate('/');
+            window.history.replaceState({}, document.title, '/welcome');
+            router.navigate('/welcome');
             return;
         } catch (e) {
             console.error('OAuth callback error:', e);
