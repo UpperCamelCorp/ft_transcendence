@@ -3,8 +3,14 @@ const { promisify } = require('util');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    console.log('result of check = ', regex.test(email));
+    console.log('result of email check = ', regex.test(email));
     return (regex.test(email));
+}
+
+const usernameCheck = (username) => {
+    const regex = new RegExp(/[a-zA-Z0-9]/g);
+    console.log('result of username check = ', regex.test(username) && username.length <= 10);
+    return (regex.test(username) && username.length <= 10)
 }
 
 const passwordCheck = (password) => {
@@ -18,6 +24,8 @@ const  authRoutes = async (fastify, options) => {
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
     const dbAll = promisify(fastify.db.all.bind(fastify.db));
     const dbRun = promisify(fastify.db.run.bind(fastify.db));
+
+    const userRegex = new RegExp(/[a-zA-z0-9]/g);
 
     fastify.post('/api/login',{
         schema: {
@@ -79,6 +87,8 @@ const  authRoutes = async (fastify, options) => {
             const {username, email, password, confirmPassword} = req.body;
             if (!username)
                 return rep.code(400).send({message: "No Username"});
+            if (!usernameCheck(username))
+                return rep.code(400).send({message : "Invalid username"});
             if (!emailCheck(email))
                 return rep.code(400).send({message: "Invalid email"});
             if (!passwordCheck(password))
