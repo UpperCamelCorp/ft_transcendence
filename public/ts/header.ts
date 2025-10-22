@@ -1,4 +1,5 @@
 import { router } from "./index.js";
+import { t, initI18n, setLocale, getLocale } from "./i18n.js";
 
 let headerListener : boolean = false;
 
@@ -9,7 +10,21 @@ export const setupHeader = () => {
     const menu = document.getElementById('profile-menu') as HTMLDivElement;
     const searchBox = document.getElementById('user-search') as HTMLInputElement;
     const searchRes = document.getElementById('search-result') as HTMLDivElement;
-    
+    const langSelect = document.getElementById('lang-select') as HTMLSelectElement;
+
+    if (searchBox) {
+        searchBox.placeholder = t('header.searchPlaceholder');
+    }
+
+    if (langSelect) {
+        langSelect.value = getLocale();
+        langSelect.addEventListener('change', async () => {
+            await setLocale(langSelect.value);
+            router.loadcurrent();
+            setupHeader();
+        });
+    }
+
     const menuHandler = () => {
         menu.classList.toggle('hidden');
     }
