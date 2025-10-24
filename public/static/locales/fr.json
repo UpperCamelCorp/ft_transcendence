@@ -106,5 +106,7 @@
   "pong.waiting": "En attente...",
   "pong.gameOverTitle": "Fin du jeu",
   "pong.wonSuffix": "a gagné !",
-  "pong.left": "a quitté"
+  "pong.left": "a quitté",
+
+  "router.welcome": "Bienvenue"
 }
