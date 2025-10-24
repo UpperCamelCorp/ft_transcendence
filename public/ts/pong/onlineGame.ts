@@ -86,7 +86,7 @@ class Game {
         this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    private updateScoreDisplay() {
+    public updateScoreDisplay() {
         const leftScoreElem = document.getElementById('score-left');
         const rightScoreElem = document.getElementById('score-right');
         if (leftScoreElem) leftScoreElem.textContent = String(this.leftScore);
@@ -215,8 +215,12 @@ class Game {
 
         if (data.player1Picture)
             leftPicture.src = data.player1Picture;
+        else
+            leftPicture.src = '/images/default-pp.png';
         if (data.player2Picture)
             rightPicture.src = data.player2Picture;
+        else
+            rightPicture.src = '/images/default-pp.png';
         if (leftPlayer && data.player1)
             leftPlayer.textContent = data.player1;
         if (rightPlayer && data.player2)
@@ -384,6 +388,7 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
                 currentGame?.setUsers(rep);
                 break;
             case 'gameover':
+                currentGame?.updateScoreDisplay();
                 currentGame?.cleanAll();
                 currentGame?.GameOver(rep.winner);
                 break ;
