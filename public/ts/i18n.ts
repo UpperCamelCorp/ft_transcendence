@@ -15,10 +15,24 @@ export const loadLocale = async (locale: string) => {
   }
 }
 
+// add DOM translation helper (HTML translation)
+export const translateDOM = () => {
+  if (typeof document === 'undefined') return;
+  document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key) el.textContent = t(key);
+  });
+  document.querySelectorAll<HTMLInputElement>('[data-i18n-placeholder]').forEach(inp => {
+    const key = inp.getAttribute('data-i18n-placeholder');
+    if (key) inp.placeholder = t(key);
+  });
+}
+
 export const setLocale = async (locale: string) => {
   await loadLocale(locale);
   current = locale;
   localStorage.setItem('locale', locale);
+  translateDOM();
 }
 
 export const getLocale = () => current;
