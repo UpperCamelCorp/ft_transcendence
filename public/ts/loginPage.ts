@@ -3,7 +3,7 @@ import { render } from './render.js';
 import { invalidError, clearError } from './errorUtils.js';
 import { setupHeader } from './header.js';
 import { handleFormSubmit } from './handleSubmit.js';
-import { t, setLocale, getLocale } from './i18n.js';
+import { t } from './i18n.js';
 
 const loginPage = () => `
     <div class="flex flex-col w-96 max-w-md bg-gradient-to-br from-[#18003C] to-[#142033] rounded-3xl shadow-2xl backdrop-blur-lg border border-[#334155] text-white p-8">
