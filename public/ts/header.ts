@@ -41,9 +41,9 @@ export const setupHeader = () => {
     if (user) {
         menu.innerHTML = `
             <a href="/edit" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Edit</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.edit')}</button>
             </a>
-            <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Disconnect</button>
+            <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.disconnect')}</button>
         `;
         const disconnectButton = document.getElementById('disconnect');
         disconnectButton?.addEventListener('click', () => {localStorage.clear(); setupHeader()});
@@ -51,10 +51,10 @@ export const setupHeader = () => {
     else {
         menu.innerHTML = `
             <a href="/login" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Login</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.login')}</button>
             </a>
             <a href="/signup" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">SignUp</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.signup')}</button>
             </a>
         `;
     }
@@ -104,7 +104,7 @@ export const setupHeader = () => {
                     }
                     else {
                         const noUser = document.createElement('span');
-                        noUser.textContent = 'No User Found';
+                        noUser.textContent = t('header.search.noUser');
                         noUser.className = 'text-slate-300 font-bold italic m-4'
                         searchRes?.appendChild(noUser);
                     }
