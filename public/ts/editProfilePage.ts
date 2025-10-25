@@ -56,19 +56,30 @@ const editProfilePage= () => `
                 </div>
             </div>
         </form>
-    </div>`
+    </div>`;
+
+const initPicture = (classic: HTMLImageElement, mobile: HTMLImageElement) => {
+    const picture = localStorage.getItem('picture');
+    if (picture) {
+        classic.src = picture;
+        mobile.src = picture;
+    }
+}
+
 
 export const edit = () => {
     render(editProfilePage());
     const editForm = document.getElementById('form-edit');
     const pictureInputDesktop = document.getElementById('input-picture') as HTMLInputElement;
     const pictureInputMobile = document.getElementById('picture') as HTMLInputElement;
+    const imgInput = document.getElementById('profile-picture') as HTMLImageElement;
+    const imgInputMobile = document.getElementById('m-profile-picture') as HTMLImageElement;
+    
+    initPicture(imgInput, imgInputMobile);
     editForm?.addEventListener('submit', (e) => handleMultiFormSubmit(e, '/api/edit', editResponse));
     const handleImageChange = (input: HTMLInputElement) => {
         const userImage = input.files?.[0];
         if (userImage) {
-            const imgInput = document.getElementById('profile-picture') as HTMLImageElement;
-            const imgInputMobile = document.getElementById('m-profile-picture') as HTMLImageElement;
             if (imgInput)
                 imgInput.src = URL.createObjectURL(userImage);
             if (imgInputMobile)
