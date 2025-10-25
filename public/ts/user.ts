@@ -1,31 +1,32 @@
 import { render } from "./render.js";
 import { router } from "./index.js";
+import { t } from "./i18n.js";
 
 const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
         <div class="flex flex-col-reverse md:flex-row justify-center items-center mb-8">
             <img id="user-picture" src="../images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full md:mr-4">
-            <h1 id="user-title" class="text-4xl text-white font-bold">- Stats</h1>
+            <h1 id="user-title" class="text-4xl text-white font-bold">${t('user.statsTitle')}</h1>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 w-full">
             <!-- Stat 1 -->
             <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-6 shadow-lg hover:scale-105 transition-transform">
-                <span class="text-2xl font-semibold text-cyan-300 mb-2">Win Rate</span>
+                <span class="text-2xl font-semibold text-cyan-300 mb-2">${t('user.winRate')}</span>
                 <span id="win-rate" class="text-5xl font-bold text-white mb-2">-%</span>
-                <span class="text-sm text-slate-400">Last 30 days</span>
+                <span class="text-sm text-slate-400">${t('user.last30')}</span>
             </div>
             <!-- Stat 2 -->
             <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-6 shadow-lg hover:scale-105 transition-transform">
-                <span class="text-2xl font-semibold text-cyan-300 mb-2">Games Played</span>
+                <span class="text-2xl font-semibold text-cyan-300 mb-2">${t('user.gamesPlayed')}</span>
                 <span id="total" class="text-5xl font-bold text-white mb-2">-</span>
-                <span class="text-sm text-slate-400">Total matches</span>
+                <span class="text-sm text-slate-400">${t('user.totalMatches')}</span>
             </div>
             <!-- Stat 3 -->
             <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-6 shadow-lg hover:scale-105 transition-transform">
-                <span class="text-2xl font-semibold text-cyan-300 mb-2">Games History</span>
+                <span class="text-2xl font-semibold text-cyan-300 mb-2">${t('user.gamesHistory')}</span>
                 <button id="history-button" class="flex h-full items-center">
-                    <span class="text-sm text-slate-400">Click here to see</span>
-                </a>
+                    <span class="text-sm text-slate-400">${t('user.historyClick')}</span>
+                </button>
             </div>
         </div>
     </div>`;
@@ -34,7 +35,7 @@ const historyPage = () => `
     <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col  max-w-3xl w-full">
         <div class="relative flex items-center justify-center m-4">
             <h1 id="user-title" class="text-4xl text-white font-bold">-</h1>
-            <button id="return-button" class="absolute top-0 right-2 border border-[#334155] hover:border-[#475569] text-slate-200 px-6 py-3 rounded-lg">Return</button>
+            <button id="return-button" class="absolute top-0 right-2 border border-[#334155] hover:border-[#475569] text-slate-200 px-6 py-3 rounded-lg">${t('user.return')}</button>
         </div>
     </div>`;
 
@@ -82,7 +83,7 @@ const setUserPage = (user: any, games: [any], userId:string) => {
     render(userPage());
     const title = document.getElementById('user-title') as HTMLHeadingElement;
     const picture = document.getElementById('user-picture') as HTMLImageElement;
-    title.textContent = `${user.username}'s Stats`;
+    title.textContent = `${user.username} ${t('user.statsSuffix')}`;
     picture.src = user.picture;
     if (games.length) {
         const id = parseInt(userId);
@@ -104,7 +105,7 @@ const setHistoryPage = (user: any, games: [any], userId: string) => {
     render(historyPage());
     const mainDiv = document.getElementById('history-div') as HTMLDivElement;
     const userTitle = document.getElementById('user-title') as HTMLSpanElement;
-    userTitle.textContent = `${user.username}'s History`;
+    userTitle.textContent = `${user.username} ${t('user.historySuffix')}`;
 
     const returnButton = document.getElementById('return-button') as HTMLButtonElement;
     returnButton.addEventListener('click', () => setUserPage(user, games, userId));

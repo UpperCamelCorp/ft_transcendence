@@ -1,6 +1,7 @@
 import { setupSidebar } from "./sidebar.js";
 import { setupHeader } from "./header.js";
 import { notFound } from "./404page.js";
+import { t } from "./i18n.js"; // added import
 
 export default class Router {
     private routes: Map<string, () => void>;
@@ -14,20 +15,33 @@ export default class Router {
         this.dynamic = new Map();
     }
 
-    private setNamePage(name : string) : void {
+    private setNamePage(path : string) : void {
+        // map route -> i18n key
+        const map: Record<string, string> = {
+            '/': 'header.title',
+            '/welcome': 'router.welcome',
+            '/login': 'login.title',
+            '/signup': 'signup.title',
+            '/game': 'sidebar.game',
+            '/edit': 'edit.title',
+            '/friends': 'sidebar.friends'
+        };
+
+        const key = map[path] ?? '';
+
         if (window.innerWidth >= 768) {
             const nameSpan = document.getElementById('page-name') as HTMLSpanElement;
-            if (name) 
-                nameSpan.textContent = name;
-            else
+            if (key && nameSpan)
+                nameSpan.textContent = t(key);
+            else if (nameSpan)
                 nameSpan.textContent = '';
         }
         else {
             const titlePage = document.getElementById('title-page') as HTMLAnchorElement;
-            if (name)
-                titlePage.textContent = name;
-            else
-                titlePage.textContent = 'Transcendence';
+            if (key && titlePage)
+                titlePage.textContent = t(key);
+            else if (titlePage)
+                titlePage.textContent = t('header.title');
         }
     }
 
@@ -47,7 +61,7 @@ export default class Router {
                 return false;
         }
         else
-            return false; 
+            return false;
     }
 
     private handleRoute() : void {
@@ -56,7 +70,7 @@ export default class Router {
         setupSidebar();
         setupHeader();
         if (handler){
-            this.setNamePage(path.slice(1).toUpperCase());
+            this.setNamePage(path);
             handler();
         } else {
             if (!this.handleDynamic(path)) {

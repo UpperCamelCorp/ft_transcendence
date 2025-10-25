@@ -1,5 +1,6 @@
 import { router } from "../index.js";
 import { game } from "./pong.js";
+import { t } from "../i18n.js";
 
 class Paddle {
     x: number;
@@ -17,7 +18,7 @@ class Paddle {
         const scaledY = this.y / scaleY;
         const scaledWidth = 10 / scaleX;
         const scaledHeight = 40 / scaleY;
-        
+
         ctx.fillStyle = this.color;
         ctx.fillRect(scaledX - scaledWidth/2, scaledY - scaledHeight/2, scaledWidth, scaledHeight);
     }
@@ -159,7 +160,7 @@ class Game {
                     action: 'Up'
                 }));
     }
-    
+
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawMap();
@@ -188,7 +189,7 @@ class Game {
 
      public cleanAll = () => {
         this.stop();
-        
+
         this.socket.close();
         this.overlays.forEach(overlay => {
             if (overlay.parentNode) {
@@ -238,7 +239,7 @@ class Game {
         upArrow?.addEventListener('touchend', () => this.handleTouchEnd(true));
         downArrow?.addEventListener('touchstart', () => this.handleTouchStart(false));
         downArrow?.addEventListener('touchend', () => this.handleTouchEnd(false));
-        
+
         this.loop();
         this.rightScore = 0;
         this.leftScore = 0;
@@ -248,8 +249,8 @@ class Game {
     public full = () => {
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
-        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">This game is full</span>
-                            <button id="return-button" class="mt-5 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>`
+        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">${t('pong.full')}</span>
+                            <button id="return-button" class="mt-5 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.return')}</button>`
 
         document.body.appendChild(overlay);
         this.overlays.push(overlay);
@@ -266,8 +267,8 @@ class Game {
     public disconnect = (player: string) => {
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
-        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">${player} left</span>
-                            <button id="return-button" class="mt-5 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>`
+        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">${player} ${t('pong.left')}</span>
+                            <button id="return-button" class="mt-5 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.return')}</button>`
 
         document.body.appendChild(overlay);
         this.overlays.push(overlay);
@@ -284,7 +285,7 @@ class Game {
     public wait = () => {
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
-        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">Waiting...</span>`
+        overlay.innerHTML = `<span class="text-4xl text-slate-300 font-bold">${t('pong.waiting')}</span>`
 
         document.body.appendChild(overlay);
         this.overlays.push(overlay);
@@ -294,10 +295,11 @@ class Game {
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-10 z-50";
         overlay.innerHTML = `
-            <span class="text-3xl font-bold m-3" >Game Over</span>
-            <span id="player" class="text-2xl font-bold m-4 mb-8">${winner} Won!</span>
+            <span class="text-3xl font-bold m-3" >${t('pong.gameOverTitle')}</span>
+            <span id="player" class="text-2xl font-bold m-4 mb-8">${winner} ${t('pong.wonSuffix')}</span>
             <div class="flex m-2 space-x-8">
-                <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>
+                <button id="return-button" class="mt-2 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.return')}</button>
+                <button id="retry-button" class="mt-2 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.retry')}</button>
             </div>
         `
         document.body.appendChild(overlay);
