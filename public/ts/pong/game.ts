@@ -98,7 +98,7 @@ class Game {
     private canvas : HTMLCanvasElement;
     private scaleX: number;
     private scaleY: number;
-    private players : [string ,string];
+    private players : [string, string];
     private leftScore: number;
     private rightScore: number
     private gameStart: boolean;
