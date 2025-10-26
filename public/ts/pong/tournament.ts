@@ -39,11 +39,20 @@ const nextPhaseOverlay = (players: string[], phase: number): HTMLDivElement => {
     const innerOverlay = document.createElement('div');
     innerOverlay.className = "grid grid-cols-3 justify-center items-center gap-5";
     let it = 0;
-    const colors = ['cyan', 'red', 'green', 'purple', 'orange', 'lime', 'indigo'];
+    const borderClasses = [
+        'border-cyan-700',
+        'border-red-700',
+        'border-green-700',
+        'border-purple-700',
+        'border-orange-700',
+        'border-lime-700',
+        'border-indigo-700'
+    ];
     players.forEach(player => {
+        const borderClass = borderClasses[it % borderClasses.length];
         innerOverlay.innerHTML += `
             <div class="flex flex-col gap-y-2 justify-center items-center">
-                <img src="/images/default-pp.png" alt="profile-picture" class="w-10 h-10 rounded-full border-2 border-${colors[it]}-700">
+                <img src="/images/default-pp.png" alt="profile-picture" class="w-10 h-10 rounded-full border-2 ${borderClass}">
                 <span class="text-2xl text-slate-300">${player}</span>
             </div>`;
         if (!(it % 2)) {
