@@ -107,7 +107,7 @@ class Game {
     private onEnd?: (winner : string) => void;
     public tournament : boolean = false;
 
-    constructor(canvas : HTMLCanvasElement, players: [string, string] ,maxPoints: number, leftColor: string, rightColor: string, onEnd?: (winner : string) => void) {
+    constructor(canvas : HTMLCanvasElement, players: [string, string], maxPoints: number, leftColor: string, rightColor: string, onEnd?: (winner : string) => void) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
         this.leftPaddle = new Paddle(80, 504 / 2, leftColor);
