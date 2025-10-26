@@ -1,4 +1,5 @@
 import { game } from "./pong.js";
+import { t } from "../i18n.js";
 
 class Paddle {
     x: number;
@@ -20,7 +21,7 @@ class Paddle {
         const scaledY = this.y / scaleY;
         const scaledWidth = 10 / scaleX;
         const scaledHeight = 40 / scaleY;
-        
+
         ctx.fillStyle = this.color;
         ctx.fillRect(scaledX - scaledWidth/2, scaledY - scaledHeight/2, scaledWidth, scaledHeight);
     }
@@ -67,7 +68,7 @@ class Ball {
     update(canvas: HTMLCanvasElement) {
         this.x += this.dx;
         this.y += this.dy;
-        
+
         if (this.y + this.dy >= 504 || this.y + this.dy <= 0)
             this.dy = -this.dy;
     }
@@ -190,17 +191,17 @@ class Game {
         if (!this.gameStart)
             this.gameStart = true;
         switch (e.code) {
-            case 'KeyW': 
-                this.leftPaddle.upPressed = true; 
+            case 'KeyW':
+                this.leftPaddle.upPressed = true;
                 break;
-            case 'KeyS': 
-                this.leftPaddle.downPressed = true; 
+            case 'KeyS':
+                this.leftPaddle.downPressed = true;
                 break;
-            case 'ArrowUp': 
-                this.rightPaddle.upPressed = true; 
+            case 'ArrowUp':
+                this.rightPaddle.upPressed = true;
                 break;
-            case 'ArrowDown': 
-                this.rightPaddle.downPressed = true; 
+            case 'ArrowDown':
+                this.rightPaddle.downPressed = true;
                 break;
         }
     };
@@ -208,17 +209,17 @@ class Game {
     private handleKeyUp = (e: KeyboardEvent) => {
         e.preventDefault();
         switch (e.code) {
-            case 'KeyW': 
-                this.leftPaddle.upPressed = false; 
+            case 'KeyW':
+                this.leftPaddle.upPressed = false;
                 break;
-            case 'KeyS': 
-                this.leftPaddle.downPressed = false; 
+            case 'KeyS':
+                this.leftPaddle.downPressed = false;
                 break;
-            case 'ArrowUp': 
-                this.rightPaddle.upPressed = false; 
+            case 'ArrowUp':
+                this.rightPaddle.upPressed = false;
                 break;
-            case 'ArrowDown': 
-                this.rightPaddle.downPressed = false; 
+            case 'ArrowDown':
+                this.rightPaddle.downPressed = false;
                 break;
         }
     };
@@ -238,7 +239,7 @@ class Game {
         else
             this.leftPaddle.downPressed = false;
     }
-    
+
     private loop = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawMap();
@@ -277,7 +278,7 @@ class Game {
         upArrow?.addEventListener('touchend', () => this.handleTouchEnd(true));
         downArrow?.addEventListener('touchstart', () => this.handleTouchStart(false));
         downArrow?.addEventListener('touchend', () => this.handleTouchEnd(false));
-        
+
         this.loop();
         this.rightScore = 0;
         this.leftScore = 0;
@@ -296,8 +297,8 @@ class Game {
         if (!this.tournament) {
             this.onEnd?.(this.winner);
             overlay.innerHTML = `
-                <span class="text-3xl font-bold m-3" >Game Over</span>
-                <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} Won!</span>
+                <span class="text-3xl font-bold m-3" >${t('pong.gameOverTitle')}</span>
+                <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
                 <div class="flex m-2 space-x-8">
                     <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>
                     <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Retry</button>
@@ -306,7 +307,7 @@ class Game {
         else {
             overlay.innerHTML = `
                 <span class="text-3xl font-bold m-3" >Game Over</span>
-                <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} Won!</span>
+                <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
                 <div class="flex m-2 space-x-8">
                     <button id="next-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Next</button>
                 </div>`;

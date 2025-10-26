@@ -18,14 +18,14 @@
             <button id="openMenu" class="w-10 h-10 pl-2 md:hidden">
                 <img src="/svg/menu-icon.svg" alt="menu-icon">
             </button>
-            <a href="/" data-link id="title-page" class="text-3xl text-white font-bold p-4 md:p-2">Transcendence</a>
+            <a href="/" data-link id="title-page" class="text-3xl text-white font-bold p-4 md:p-2" data-i18n="header.title">Transcendence</a>
         </div>
         <div class="hidden md:block">
             <span id="page-name" class="text-4xl text-white font-bold"></span>
         </div>
         <div class="mx-5 flex justify-center">
             <div class="relative">
-                <input type="search" name="username" id="user-search" placeholder="Search user" class="rounded-2xl border-2 border-slate-600 mx-3 text-slate-500 p-2">
+                <input type="search" name="username" id="user-search" data-i18n-placeholder="header.searchPlaceholder" placeholder="Search user" class="rounded-2xl border-2 border-slate-600 mx-3 text-slate-500 p-2">
                 <div id="search-result" class="absolute top-11 left-4 flex flex-col w-64 text-white bg-black/50 hidden">
                 </div>
             </div>
@@ -39,16 +39,21 @@
         <div class="flex flex-col">
             <a href="/" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
                 <img id="logo-ref" src="/svg/menu-icon.svg" alt="menu-icon" class="w-9 h-9 transition-all translate-x-3 duration-300">
-                <span id="text-ref" class="opacity-0 transition-opacity duration-150 overflow-hidden">Dashboard</span>
+                <span id="text-ref" data-i18n="sidebar.dashboard" class="opacity-0 transition-opacity duration-150 overflow-hidden">Dashboard</span>
             </a>
             <a href="/game" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
                 <img id="logo-ref" src="/svg/game-icon.svg" alt="game-icon" class="w-9 h-9 transition-all translate-x-3 duration-300">
-                <span id="text-ref" class="opacity-0 transition-opacity duration-150 overflow-hidden">Game</span>
+                <span id="text-ref" data-i18n="sidebar.game" class="opacity-0 transition-opacity duration-150 overflow-hidden">Game</span>
             </a>
             <a href="/friends" data-link class="flex items-center p-3.5 gap-x-1 text-2xl text-white hover:bg-gray-700">
                 <img id="logo-ref" src="/svg/friends-icon.svg" alt="friends-icon" class="w-9 h-9 transition-all translate-x-3 duration-300">
-                <span id="text-ref" class="opacity-0 transition-opacity duration-150 overflow-hidden">Friends</span>
+                <span id="text-ref" data-i18n="sidebar.friends" class="opacity-0 transition-opacity duration-150 overflow-hidden">Friends</span>
             </a>
+			<select id="lang-select" class="bg-[#18003c] text-white border border-[#475569] rounded-xl px-2 mr-3">
+                <option value="en">EN</option>
+                <option value="fr">FR</option>
+                <option value="jp">JP</option>
+            </select>
         </div>
     </div>
     <!-- main content -->

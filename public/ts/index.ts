@@ -6,11 +6,13 @@ import { game} from './pong/pong.js';
 import { cleanOnlineGame } from './pong/onlineGame.js';
 import { edit } from './editProfilePage.js';
 import { user } from './user.js';
+import { initI18n } from './i18n.js';
 
 export const router = new Router;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
+    await initI18n();
     router.setupLinkHandlers();
 
     router.add('/welcome', welcome);
