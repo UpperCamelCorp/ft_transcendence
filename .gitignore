@@ -4,3 +4,4 @@ public/uploads/*
 public/dist/
 .DS_Store
 .env
+elk/data/
