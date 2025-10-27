@@ -1,0 +1,15 @@
+cluster.name: "transcendence-cluster"
+node.name: "transcendence-es"
+network.host: 0.0.0.0
+http.port: 9200
+discovery.type: single-node
+
+# Security settings
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: true
+
+# Index lifecycle management
+action.destructive_requires_name: true
+
+# Performance settings
+indices.memory.index_buffer_size: 10%

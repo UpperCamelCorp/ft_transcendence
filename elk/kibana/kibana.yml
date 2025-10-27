@@ -1,0 +1,24 @@
+server.host: "0.0.0.0"
+server.port: 5601
+server.shutdownTimeout: "5s"
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+# Use environment variables
+elasticsearch.username: "${ELASTICSEARCH_USERNAME}"
+elasticsearch.password: "${ELASTICSEARCH_PASSWORD}"
+
+# Security
+xpack.security.enabled: true
+xpack.encryptedSavedObjects.encryptionKey: "transcendence-encryption-key-32-chars-long"
+
+# Logging configuration
+logging:
+  loggers:
+    - name: elasticsearch.query
+      level: warn
+    - name: plugins.securitySolution
+      level: info
+
+# Additional settings
+server.publicBaseUrl: "http://localhost:5601"
+monitoring.ui.container.elasticsearch.enabled: true
