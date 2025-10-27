@@ -6,9 +6,143 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     volumes:
       - .:/app
       - /app/node_modules
       - /app/public/dist
+      - app-logs:/var/log/transcendence
     restart: unless-stopped
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=transcendence"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: transcendence-elasticsearch
+    environment:
+      - node.name=transcendence-es
+      - cluster.name=transcendence-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=true
+      - xpack.security.enrollment.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+    networks:
+      - elk-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -u ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD} -s http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: transcendence-logstash
+    env_file:
+      - .env
+    volumes:
+      - ./elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - app-logs:/var/log/transcendence:ro
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      ELASTICSEARCH_USERNAME: ${LOGSTASH_USERNAME}
+      ELASTICSEARCH_PASSWORD: ${LOGSTASH_PASSWORD}
+    networks:
+      - elk-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  kibana-setup:
+    image: alpine:latest
+    container_name: transcendence-kibana-setup
+    env_file:
+      - .env
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elk-network
+    volumes:
+      - ./scripts:/scripts:ro
+    command: >
+      sh -c "
+        apk add --no-cache curl bash &&
+        cp /scripts/setup-kibana.sh /tmp/setup-kibana.sh &&
+        chmod +x /tmp/setup-kibana.sh &&
+        /tmp/setup-kibana.sh
+      "
+    restart: "no"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: transcendence-kibana
+    env_file:
+      - .env
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      ELASTICSEARCH_USERNAME: ${KIBANA_USERNAME}
+      ELASTICSEARCH_PASSWORD: ${KIBANA_PASSWORD}
+    volumes:
+      - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    networks:
+      - elk-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana-setup:
+        condition: service_completed_successfully
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.11.0
+    container_name: transcendence-filebeat
+    user: root
+    volumes:
+      - ./elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - app-logs:/var/log/transcendence:ro
+    networks:
+      - elk-network
+    depends_on:
+      - logstash
+    command: filebeat -e -strict.perms=false
+
+volumes:
+  elasticsearch-data:
+    driver: local
+  app-logs:
+    driver: local
+
+networks:
+  elk-network:
+    driver: bridge
