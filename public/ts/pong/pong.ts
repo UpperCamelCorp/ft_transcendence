@@ -2,6 +2,7 @@ import { router } from "../index.js";
 import { render } from "../render.js";
 import { gameInit } from "./game.js";
 import { onlineGame } from "./onlineGame.js";
+import { launchTournament } from "./tournament.js";
 import { t } from "../i18n.js";
 
 const pongGame = () => `
@@ -43,6 +44,10 @@ const gameChoice = () => `
             <button id="local-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">
                 <img src="../svg/local-game.svg" alt="local-game" class="w-12 h-12 m-3">
                 <span>${t('pong.localGame')}</span>
+            </button>
+            <button id="tournament-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
+                <img src="/svg/tournament-icon.svg" alt="tournament" class="w-12 h-12 m-3">
+                <span>Tournament</span>
             </button>
             <button id="online-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
                 <img src="../svg/online-game.svg" alt="online-game" class="w-12 h-12 m-3">
@@ -90,7 +95,24 @@ const gameCustom = () => ` <div class="w-full max-w-3xl p-5 border rounded-2xl b
                 </div>
                 <button id="start" class="text-white p-4 px-5 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#1E293B] hover:from-[#1E293B] hover:to-[#334155] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">${t('pong.start')}</button>
             </div>
-        </div>`
+        </div>`;
+
+const tournamentGameOptions = () => `
+    <div class="w-full max-w-3xl max-h-full p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C] to-[#142033] overflow-scroll">
+        <h2 class="w-full text-center text-2xl text-white font-bold">Tournament Options</h2>
+        <div id="player-div" class="grid grid-cols-1 md:grid-cols-4 items-center justify-center">
+            <div id="plus-wrapper" class="flex items-center justify-center h-full">
+                <button id="plus-button" class="rounded-2xl bg-cyan-600 p-3">
+                    <img src="/svg/plus-icon.svg" alt="plus" class="w-8 h-8">
+                </button>
+            </div>
+        </div>
+        <div class="w-full flex justify-center mt-4">
+            <button id="play" class="bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
+                Play
+            </button>
+        </div>
+    </div>`;
 
 const onlineGameCustom = () => `
     <div class="w-full max-w-3xl p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C] to-[#142033]">
@@ -172,6 +194,59 @@ const OnlineCustom = () => {
     });
 }
 
+const tournamentCustom = () => {
+    render(tournamentGameOptions());
+    const playersDiv = document.getElementById('player-div');
+    const addPlayer = document.getElementById('plus-button');
+    const wrapper = document.getElementById('plus-wrapper') as HTMLDivElement;
+    const playButton = document.getElementById('play');
+    let player = 2;
+    
+    const createPlayer = (playerNum: number) => {
+        const player = document.createElement('div') as HTMLDivElement;
+        player.className = 'flex flex-col m-3 p-4 justify-center items-center';
+        player.innerHTML = `
+            <label for="name" class="text-slate-300">Player ${playerNum}</label>
+            <img src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full m-4">
+            <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Player ${playerNum}"
+                class="w-3/4 px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
+            >`;
+        if (!wrapper.classList.contains('hidden'))
+            playersDiv?.insertBefore(player, wrapper);
+        else
+            playersDiv?.appendChild(player);
+    };
+
+    createPlayer(1);
+    createPlayer(2);
+
+    addPlayer?.addEventListener('click', () => {
+        if (player < 8) {
+            player++;
+            createPlayer(player);
+            if (player == 8)
+                wrapper.classList.toggle('hidden');
+        }
+    });
+
+    playButton?.addEventListener('click', () => {
+        const inputs = playersDiv?.querySelectorAll<HTMLInputElement>('input');
+        const playersName: string[] = [];
+        inputs?.forEach(input => {
+            if (!input.value)
+                playersName.push(input.placeholder);
+            else
+                playersName.push(input.value);
+        });
+        render(pongGame());
+        launchTournament(playersName);
+    });
+}
+
 const custom = () => {
     render(gameCustom());
     const maxPointInput = document.getElementById('max-point') as HTMLInputElement;
@@ -201,12 +276,16 @@ const custom = () => {
 export const game = () => {
     render(gameChoice());
     const localButton = document.getElementById('local-button');
+    const tournamentButton = document.getElementById('tournament-button');
     const onlineButton = document.getElementById('online-button');
     localButton?.addEventListener('click', () => {
         custom();
     });
+    tournamentButton?.addEventListener('click', () => {
+        tournamentCustom();
+    });
     onlineButton?.addEventListener('click', () => {
         OnlineCustom();
-    })
-
+    });
+    
 }

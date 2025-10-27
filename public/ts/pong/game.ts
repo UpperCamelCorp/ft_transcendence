@@ -98,13 +98,16 @@ class Game {
     private canvas : HTMLCanvasElement;
     private scaleX: number;
     private scaleY: number;
+    private players : [string, string];
     private leftScore: number;
     private rightScore: number
     private gameStart: boolean;
     private maxPoints : number;
     private winner: string;
+    private onEnd?: (winner : string) => void;
+    public tournament : boolean = false;
 
-    constructor(canvas : HTMLCanvasElement, maxPoints: number, leftColor: string, rightColor: string) {
+    constructor(canvas : HTMLCanvasElement, players: [string, string], maxPoints: number, leftColor: string, rightColor: string, onEnd?: (winner : string) => void) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
         this.leftPaddle = new Paddle(80, 504 / 2, leftColor);
@@ -112,12 +115,14 @@ class Game {
         this.ball = new Ball(896 / 2, 504 / 2);
         this.scaleX = 896 / canvas.width;
         this.scaleY = 504 / canvas.height;
+        this.players = players;
         this.leftScore = 0;
         this.rightScore = 0;
         this.gameStart = false;
         this.maxPoints = maxPoints;
         this.animationId = 0;
         this.winner = '';
+        this.onEnd = onEnd;
     }
 
     private drawMap() {
@@ -162,7 +167,7 @@ class Game {
             this.leftPaddle.reset();
             this.gameStart = false;
             if (this.rightScore == this.maxPoints) {
-                this.winner = t('pong.player2');
+                this.winner = this.players[1];
                 this.stop();
             }
         }
@@ -175,7 +180,7 @@ class Game {
             this.leftPaddle.reset();
             this.gameStart = false;
             if (this.leftScore == this.maxPoints) {
-                this.winner = t('pong.player1');
+                this.winner = this.players[0];    
                 this.stop();
             }
         }
@@ -248,6 +253,14 @@ class Game {
         this.animationId = requestAnimationFrame(this.loop);
     };
 
+    public setUsers = () => {
+        const leftName = document.getElementById('left-name') as HTMLSpanElement;
+        const rightName = document.getElementById('right-name') as HTMLSpanElement;
+
+        leftName.textContent = this.players[0];
+        rightName.textContent = this.players[1];
+    }
+
     public updateScale = () => {
         this.scaleX = 896 / this.canvas.width;
         this.scaleY = 504 / this.canvas.height;
@@ -281,18 +294,29 @@ class Game {
 
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-3 z-50";
-        overlay.innerHTML = `
-            <span class="text-3xl font-bold m-3" >${t('pong.gameOverTitle')}</span>
-            <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
-            <div class="flex m-2 space-x-8">
-                <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.return')}</button>
-                <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.retry')}</button>
-            </div>
-        `
+        if (!this.tournament) {
+            this.onEnd?.(this.winner);
+            overlay.innerHTML = `
+                <span class="text-3xl font-bold m-3" >${t('pong.gameOverTitle')}</span>
+                <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
+                <div class="flex m-2 space-x-8">
+                    <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>
+                    <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Retry</button>
+                </div>`;
+        }
+        else {
+            overlay.innerHTML = `
+                <span class="text-3xl font-bold m-3" >Game Over</span>
+                <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
+                <div class="flex m-2 space-x-8">
+                    <button id="next-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Next</button>
+                </div>`;
+        }
         document.body.appendChild(overlay);
 
         const returnButton = document.getElementById('return-button');
         const retryButton = document.getElementById('retry-button');
+        const nextButton = document.getElementById('next-button');
 
         returnButton?.addEventListener('click', () => {
             overlay.remove();
@@ -302,11 +326,15 @@ class Game {
             overlay.remove();
             this.start()
         });
+        nextButton?.addEventListener('click', () => {
+            overlay.remove();
+            this.onEnd?.(this.winner);
+        });
     }
 }
 
 
-export const gameInit = (max: number, leftColor: string = 'white', rightColor: string = 'white') => {
+export const gameInit = async (max: number = 3, leftColor: string = 'white', rightColor: string = 'white', players: [string , string] = ['Player 1', 'Player 2'], tournament : boolean = false): Promise<string> => {
     const canvas = document.getElementById('game') as HTMLCanvasElement;
     const container = canvas.parentElement;
     if (canvas && container) {
@@ -314,14 +342,18 @@ export const gameInit = (max: number, leftColor: string = 'white', rightColor: s
         canvas.height = canvas.width * (9 / 16);
         console.log(canvas.width, canvas.height);
     }
-    const game = new Game(canvas, max, leftColor, rightColor);
-    window.addEventListener('resize', () => {
-        const container = canvas.parentElement;
-        if (canvas && container) {
-            canvas.width = container.clientWidth - 10;
-            canvas.height = canvas.width * (9 / 16);
-            game.updateScale();
-        }
+    return new Promise<string>((resolve) => {
+        const game = new Game(canvas, players, max, leftColor, rightColor, resolve);
+        if (tournament) game.tournament = true;
+        window.addEventListener('resize', () => {
+            const container = canvas.parentElement;
+            if (canvas && container) {
+                canvas.width = container.clientWidth - 10;
+                canvas.height = canvas.width * (9 / 16);
+                game.updateScale();
+            }
+        });
+        game.setUsers();
+        game.start();
     });
-    game.start();
 }
