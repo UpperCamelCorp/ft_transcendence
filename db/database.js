@@ -15,6 +15,7 @@ const setUpDataBase = async () => {
             username TEXT NOT NULL,
             email TEXT NOT NULL,
             hash TEXT NOT NULL,
+            status INTEGER DEFAULT 0,
             picture TEXT
             )`
         , (e) => {
@@ -29,6 +30,7 @@ const setUpDataBase = async () => {
             player2_id INTEGER NOT NULL,
             winner INTEGER NOT NULL,
             score TEXT NOT NULL,
+            time DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (player1_id) REFERENCES user(player1_id),
             FOREIGN KEY (player2_id) REFERENCES user(player2_id)
             )`, (e) => {
