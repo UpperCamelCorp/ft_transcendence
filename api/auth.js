@@ -9,7 +9,6 @@ const emailCheck = (email) => {
 
 const usernameCheck = (username) => {
     const regex = new RegExp(/^[a-zA-Z0-9]+$/);
-    console.log('result of username check = ', regex.test(username) && username.length <= 10);
     return (regex.test(username) && username.length <= 10)
 }
 
