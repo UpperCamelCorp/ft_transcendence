@@ -15,7 +15,6 @@ const setUpDataBase = async () => {
             username TEXT NOT NULL,
             email TEXT NOT NULL,
             hash TEXT NOT NULL,
-            status INTEGER DEFAULT 0,
             picture TEXT
             )`
         , (e) => {
