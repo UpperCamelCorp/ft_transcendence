@@ -26,10 +26,16 @@ const initJwt =  () => {
     });
 }
 
+const initUsersStatus = () => {
+    const connectedUsers = [];
+    fastify.decorate('connectedUsers', connectedUsers);
+}
+
 const start = async () => {
     try {
         await initDb();
         initJwt();
+        initUsersStatus();
         fastify.register(require('@fastify/static'), {
             root : path.join(__dirname, 'public'),
             prefix : '/'
