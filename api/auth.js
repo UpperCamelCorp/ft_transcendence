@@ -151,7 +151,7 @@ const  authRoutes = async (fastify, options) => {
                         connection.close();
                     const token = fastify.jwt.verify(data.token);
                     id = token.id;
-                    dbRun('UPDATE users SET status = ? WHERE id = ?', [1, id]);
+                    fastify.connectedUsers.push(id);
                     console.log(token.username, token.id, 'online');
                 } catch (e) {
                     connection.close();
@@ -159,7 +159,10 @@ const  authRoutes = async (fastify, options) => {
             });
             connection.on('close', () => {
                 try {
-                    dbRun('UPDATE users SET status = ? WHERE id = ?', [0, id]);
+                    if (id) {
+                        const index = fastify.connectedUsers.indexOf(id);
+                        fastify.connectedUsers.splice(index, 1);
+                    }
                     console.log(id, 'offline');
                 } catch (e) {
                     console.log(e);
