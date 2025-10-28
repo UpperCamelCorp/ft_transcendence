@@ -110,8 +110,9 @@ const userRoute = async (fastify, options) => {
     }, async (req, rep) => {
         const {userId} = req.params;
         try {
-            const user = await dbGet('SELECT username, picture, status FROM users WHERE id = ?', [userId]);
-            return rep.code(200).send({user});
+            const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
+            const status = fastify.connectedUsers.includes(parseInt(userId));
+            return rep.code(200).send({user, status: status});
         } catch (e) {
             console.log(e);
             return rep.code(500).send({message: "Error try again later"});
