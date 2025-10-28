@@ -5,7 +5,10 @@ import { t } from "./i18n.js";
 const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
         <div class="flex flex-col-reverse md:flex-row justify-center items-center mb-8">
-            <img id="user-picture" src="../images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full md:mr-4">
+            <div class="relative">
+                <div id="status" class="absolute left-12 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
+                <img id="user-picture" src="../images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full md:mr-4">
+            </div>    
             <h1 id="user-title" class="text-4xl text-white font-bold">${t('user.statsTitle')}</h1>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 w-full">
@@ -83,7 +86,10 @@ const setUserPage = (user: any, games: [any], userId:string) => {
     render(userPage());
     const title = document.getElementById('user-title') as HTMLHeadingElement;
     const picture = document.getElementById('user-picture') as HTMLImageElement;
+    const statusDiv = document.getElementById('status') as HTMLDivElement;
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
+    if (user.status)
+        statusDiv.classList.replace('bg-[#FF0000]', 'bg-[#00FF00]');
     picture.src = user.picture;
     if (games.length) {
         const id = parseInt(userId);
@@ -138,5 +144,6 @@ export const user = async (params: string) => {
     const gamesData = await getGames(params, token);
     if (!userData)
         return router.navigate('/');
+    console.log(userData.user);
     setUserPage(userData.user, gamesData.games, params);
 }
