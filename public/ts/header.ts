@@ -1,4 +1,5 @@
 import { router } from "./index.js";
+import { t, initI18n, setLocale, getLocale } from "./i18n.js";
 
 let headerListener : boolean = false;
 
@@ -9,7 +10,21 @@ export const setupHeader = () => {
     const menu = document.getElementById('profile-menu') as HTMLDivElement;
     const searchBox = document.getElementById('user-search') as HTMLInputElement;
     const searchRes = document.getElementById('search-result') as HTMLDivElement;
-    
+    const langSelect = document.getElementById('lang-select') as HTMLSelectElement;
+
+    if (searchBox) {
+        searchBox.placeholder = t('header.searchPlaceholder');
+    }
+
+    if (langSelect) {
+        langSelect.value = getLocale();
+        langSelect.addEventListener('change', async () => {
+            await setLocale(langSelect.value);
+            router.loadcurrent();
+            setupHeader();
+        });
+    }
+
     const menuHandler = () => {
         menu.classList.toggle('hidden');
     }
@@ -26,9 +41,9 @@ export const setupHeader = () => {
     if (user) {
         menu.innerHTML = `
             <a href="/edit" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Edit</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.edit')}</button>
             </a>
-            <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Disconnect</button>
+            <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.disconnect')}</button>
         `;
         const disconnectButton = document.getElementById('disconnect');
         disconnectButton?.addEventListener('click', () => {localStorage.clear(); setupHeader()});
@@ -36,10 +51,10 @@ export const setupHeader = () => {
     else {
         menu.innerHTML = `
             <a href="/login" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">Login</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.login')}</button>
             </a>
             <a href="/signup" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">SignUp</button>
+                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.signup')}</button>
             </a>
         `;
     }
@@ -89,7 +104,7 @@ export const setupHeader = () => {
                     }
                     else {
                         const noUser = document.createElement('span');
-                        noUser.textContent = 'No User Found';
+                        noUser.textContent = t('header.search.noUser');
                         noUser.className = 'text-slate-300 font-bold italic m-4'
                         searchRes?.appendChild(noUser);
                     }
