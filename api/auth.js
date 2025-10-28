@@ -25,7 +25,6 @@ const  authRoutes = async (fastify, options) => {
     const dbAll = promisify(fastify.db.all.bind(fastify.db));
     const dbRun = promisify(fastify.db.run.bind(fastify.db));
 
-    const userRegex = new RegExp(/[a-zA-z0-9]/g);
 
     fastify.post('/api/login',{
         schema: {
