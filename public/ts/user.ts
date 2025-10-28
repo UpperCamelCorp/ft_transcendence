@@ -144,6 +144,5 @@ export const user = async (params: string) => {
     const gamesData = await getGames(params, token);
     if (!userData)
         return router.navigate('/');
-    console.log(userData.user);
     setUserPage(userData.user, gamesData.games, params);
 }
