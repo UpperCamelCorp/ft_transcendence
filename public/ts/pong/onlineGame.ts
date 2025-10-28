@@ -409,6 +409,7 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
                     currentGame?.cleanAll();
                     OnlineCustom();
                 }
+                break;
         }
     }
 }
