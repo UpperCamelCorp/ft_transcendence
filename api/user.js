@@ -110,7 +110,7 @@ const userRoute = async (fastify, options) => {
     }, async (req, rep) => {
         const {userId} = req.params;
         try {
-            const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
+            const user = await dbGet('SELECT username, picture, status FROM users WHERE id = ?', [userId]);
             return rep.code(200).send({user});
         } catch (e) {
             console.log(e);
