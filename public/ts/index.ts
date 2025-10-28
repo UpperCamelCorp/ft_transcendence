@@ -10,9 +10,24 @@ import { initI18n } from './i18n.js';
 
 export const router = new Router;
 
+const initStatus = () => {
+    const token = localStorage.getItem('authToken');
+    if (!token)
+        return;
+    const ws = new WebSocket(`ws://${window.location.host}/status`);
+    ws.onopen = () => {
+        try {
+            ws.send(JSON.stringify({token : token}));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 
     await initI18n();
+    initStatus();
     router.setupLinkHandlers();
 
     router.add('/welcome', welcome);
