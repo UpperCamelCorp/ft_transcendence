@@ -1,4 +1,11 @@
 const GameManager = require('./GameManager');
+
+const usernameCheck = (username) => {
+    const regex = new RegExp(/^[a-zA-Z0-9]+$/);
+    console.log('result of username check = ', regex.test(username) && username.length <= 10);
+    return (regex.test(username) && username.length <= 10)
+}
+
 // ...existing code...
 // @ts-check
 /** @param {import('fastify').FastifyInstance} fastify */
@@ -23,6 +30,11 @@ const game = async (fastify, options) => {
                     }
                     try {
                         token = fastify.jwt.verify(data.token);
+                        if (!usernameCheck(data.name)) {
+                            connection.send(JSON.stringify({type: 'error', error: 'Invalid username'}));
+                            connection.close();
+                            return ;
+                        }
                     } catch (e) {
                         console.log(e);
                         connection.send(JSON.stringify({type: 'error', error : 'Invalid JWT'}));
