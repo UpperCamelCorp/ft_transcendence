@@ -105,7 +105,7 @@ const loginResponse = (rep: Response, result : any) => {
     }
 }
 
-export const login = () => {
+export const login = async () => {
     render(loginPage());
 
     // Check for OAuth callback parameters
@@ -150,4 +150,22 @@ export const login = () => {
 
     loginForm?.addEventListener('submit', (e) => handleFormSubmit(e, '/api/login', loginResponse));
     emailInput.addEventListener('invalid', () => invalidError(emailInput, emailError, t('login.errInvalidEmail')));
+
+    if (!token && !error) {
+        try {
+            const resp = await fetch('/api/session', { method: 'GET', credentials: 'same-origin' });
+             if (resp.ok) {
+                 const data = await resp.json();
+                 localStorage.setItem('authToken', data.token);
+                 localStorage.setItem('user', JSON.stringify(data.user));
+                 if (data.user.picture) localStorage.setItem('picture', data.user.picture);
+                 setupHeader();
+                 window.history.replaceState({}, document.title, '/welcome');
+                 setTimeout(() => router.navigate('/welcome'), 100);
+                 return;
+             }
+        } catch (e) {
+            console.error('session fetch failed', e);
+        }
+    }
 }

@@ -37,6 +37,11 @@ const start = async () => {
         fastify.register(require('@fastify/jwt'), {
             secret : process.env.JWTPASS
         });
+
+        fastify.register(require('@fastify/cookie'), {
+            secret: process.env.COOKIE_SECRET || undefined
+        });
+
         const MAX_UPLOAD_MB = 5;
         fastify.register(require('@fastify/multipart'), {
             limits: {
