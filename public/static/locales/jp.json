@@ -84,6 +84,7 @@
   "pong.scoreLabel": "スコア",
   "pong.player1": "プレイヤー1",
   "pong.player2": "プレイヤー2",
+  "pong.player": "プレイヤー {n}",
   "pong.title": "PONG ゲーム",
   "pong.welcome": "Pongゲームへようこそ",
   "pong.playDesc": "友達とプレイしよう！",
@@ -108,5 +109,13 @@
   "pong.wonSuffix": "が勝利しました！",
   "pong.left": "が退出しました",
 
-  "router.welcome": "ようこそ"
+  "router.welcome": "ようこそ",
+
+  "pong.nextGame": "次の試合",
+  "pong.vs": "VS",
+  "pong.out": "敗退",
+  "pong.tournamentWinner": "トーナメント優勝者",
+  "pong.phase": "フェーズ {phase}",
+  "pong.tournament": "トーナメント",
+  "pong.tournamentOptions": "トーナメントのオプション"
 }
