@@ -160,7 +160,7 @@ const onlineGameCustom = () => `
         </div>
     </div>`
 
-const OnlineCustom = () => {
+export const OnlineCustom = () => {
     const token = localStorage.getItem('authToken');
     if (!token)
         return router.navigate('/login');
