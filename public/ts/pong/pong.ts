@@ -47,7 +47,7 @@ const gameChoice = () => `
             </button>
             <button id="tournament-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
                 <img src="/svg/tournament-icon.svg" alt="tournament" class="w-12 h-12 m-3">
-                <span>Tournament</span>
+                <span>${t('pong.tournament')}</span>
             </button>
             <button id="online-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
                 <img src="../svg/online-game.svg" alt="online-game" class="w-12 h-12 m-3">
@@ -99,7 +99,7 @@ const gameCustom = () => ` <div class="w-full max-w-3xl p-5 border rounded-2xl b
 
 const tournamentGameOptions = () => `
     <div class="w-full max-w-3xl max-h-full p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C] to-[#142033] overflow-scroll">
-        <h2 class="w-full text-center text-2xl text-white font-bold">Tournament Options</h2>
+        <h2 class="w-full text-center text-2xl text-white font-bold">${t('pong.tournamentOptions')}</h2>
         <div id="player-div" class="grid grid-cols-1 md:grid-cols-4 items-center justify-center">
             <div id="plus-wrapper" class="flex items-center justify-center h-full">
                 <button id="plus-button" class="rounded-2xl bg-cyan-600 p-3">
@@ -109,7 +109,7 @@ const tournamentGameOptions = () => `
         </div>
         <div class="w-full flex justify-center mt-4">
             <button id="play" class="bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
-                Play
+                ${t('pong.play')}
             </button>
         </div>
     </div>`;
@@ -201,18 +201,18 @@ const tournamentCustom = () => {
     const wrapper = document.getElementById('plus-wrapper') as HTMLDivElement;
     const playButton = document.getElementById('play');
     let player = 2;
-    
+
     const createPlayer = (playerNum: number) => {
         const player = document.createElement('div') as HTMLDivElement;
         player.className = 'flex flex-col m-3 p-4 justify-center items-center';
         player.innerHTML = `
-            <label for="name" class="text-slate-300">Player ${playerNum}</label>
+            <label for="name" class="text-slate-300">${t('pong.player', { n: playerNum })}</label>
             <img src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full m-4">
             <input
                 id="name"
                 name="name"
                 type="text"
-                placeholder="Player ${playerNum}"
+                placeholder="${t('pong.player', { n: playerNum })}"
                 class="w-3/4 px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
             >`;
         if (!wrapper.classList.contains('hidden'))
@@ -287,5 +287,5 @@ export const game = () => {
     onlineButton?.addEventListener('click', () => {
         OnlineCustom();
     });
-    
+
 }
