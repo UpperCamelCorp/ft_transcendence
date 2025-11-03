@@ -8,6 +8,8 @@ COPY package*.json ./
 
 # Installer les dépendances et compiler les modules natifs
 RUN npm install
+# Install Prometheus client
+RUN npm install prom-client
 
 # Copier le reste du projet
 COPY . .
