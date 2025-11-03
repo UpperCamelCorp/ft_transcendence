@@ -39,10 +39,11 @@ const setUpDataBase = async () => {
                     console.log('game table initiated');
             });
         db.run(`CREATE TABLE IF NOT EXISTS friends (
-            user_id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL,
             friend_id INTEGER NOT NULL,
             status INTEGER DEFAULT 1,
-            FOREIGN KEY (user_id) REFERENCES user(user_id)
+            FOREIGN KEY (user_id) REFERENCES user(user_id),
+            FOREIGN KEY (friend_id) REFERENCES user(friend_id)
             )`, (e) => {
                 if (e)
                     console.log(e);
