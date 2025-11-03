@@ -158,6 +158,7 @@ const  authRoutes = async (fastify, options) => {
             if (!token) return rep.code(401).send({ message: 'No session' });
             const payload = fastify.jwt.verify(token);
             const sessionUser = await dbGet('SELECT id, username, email, picture FROM users WHERE id = ?', [payload.id]);
+            if (!sessionUser) return rep.code(401).send({ message: 'User not found' });
             return rep.code(200).send({ token, user: sessionUser });
         } catch (e) {
             fastify.log.error(e);
