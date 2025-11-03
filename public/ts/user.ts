@@ -4,10 +4,13 @@ import { t } from "./i18n.js";
 
 const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
-        <div class="flex flex-col-reverse md:flex-row justify-center items-center mb-8">
+        <div class="flex flex-col-reverse md:flex-col justify-center items-center mb-8">
+            <div class="flex justify-center items-center">
             <div class="relative">
-                <div id="status" class="absolute left-12 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
-                <img id="user-picture" src="../images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full md:mr-4">
+                <div id="status" class="absolute left-14 top-1 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
+                <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full m-2 md:mr-4">
+            </div>
+                <button id="add-button" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold p-3 md:mr-4 rounded-lg shadow">${t('user.add')}</button>
             </div>    
             <h1 id="user-title" class="text-4xl text-white font-bold">${t('user.statsTitle')}</h1>
         </div>
@@ -84,16 +87,47 @@ const getGames = async (userId: string, token: string) => {
     }
 }
 
-const setUserPage = (userData: any, games: [any], userId:string) => {
+const addUser = async (userId: string, token: string) => {
+    try {
+        const rep = await fetch(`/api/friends/add/${userId}`, {
+            method: "POST",
+            headers : {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+        if (!rep.ok)
+            return null;
+        const data = await rep.json();
+        console.log(data);
+        return data;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+const setUserPage = (userData: any, games: [any], userId:string, token: string) => {
     render(userPage());
     const user = userData.user;
     const title = document.getElementById('user-title') as HTMLHeadingElement;
     const picture = document.getElementById('user-picture') as HTMLImageElement;
     const statusDiv = document.getElementById('status') as HTMLDivElement;
+    const addButton = document.getElementById('add-button') as HTMLButtonElement;
+
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
-    if (userData.status)
-        statusDiv.classList.replace('bg-[#FF0000]', 'bg-[#00FF00]');
-    picture.src = user.picture;
+    if (userData.friends === 2) {
+        if (userData.status)
+            statusDiv.classList.replace('bg-[#FF0000]', 'bg-[#00FF00]');
+        addButton.classList.toggle('hidden');
+    }
+    else {
+        statusDiv.classList.toggle('hidden');
+        if (!userData.friends)  
+            addButton.textContent = t('user.add');
+        if (userData.friends === 1)
+            addButton.textContent = "Accept";
+    }
+    picture.src = user.picture ? user.picture : '/images/default-pp.png';
     if (games.length) {
         const id = parseInt(userId);
         const winRate = document.getElementById('win-rate') as HTMLSpanElement;
@@ -107,10 +141,18 @@ const setUserPage = (userData: any, games: [any], userId:string) => {
         total.textContent = `${games.length}`;
     }
     const historyButton = document.getElementById('history-button');
-    historyButton?.addEventListener('click', () => setHistoryPage(userData, games, userId));
+    historyButton?.addEventListener('click', () => setHistoryPage(userData, games, userId, token));
+    if (userData.friends != 2)
+        addButton?.addEventListener('click', async () => { 
+            const data = await addUser(userId, token);
+            if (data.status === 1)
+                addButton.innerText === 'Waiting...';
+            else if (data.status === 2)
+                addButton.classList.toggle('hidden');
+        });
 }
 
-const setHistoryPage = (userData: any, games: [any], userId: string) => {
+const setHistoryPage = (userData: any, games: [any], userId: string, token: string) => {
     render(historyPage());
     const user = userData.user;
     const mainDiv = document.getElementById('games-div') as HTMLDivElement;
@@ -118,7 +160,7 @@ const setHistoryPage = (userData: any, games: [any], userId: string) => {
     userTitle.textContent = `${user.username} ${t('user.historySuffix')}`;
 
     const returnButton = document.getElementById('return-button') as HTMLButtonElement;
-    returnButton.addEventListener('click', () => setUserPage(userData, games, userId));
+    returnButton.addEventListener('click', () => setUserPage(userData, games, userId, token));
     games.forEach(game => {
         const gameDiv = document.createElement('div');
         const userScore = game.player1_id === parseInt(userId) ? game.score[0] : game.score[4];
@@ -151,5 +193,5 @@ export const user = async (params: string) => {
     const gamesData = await getGames(params, token);
     if (!userData)
         return router.navigate('/');
-    setUserPage(userData, gamesData.games, params);
+    setUserPage(userData, gamesData.games, params, token);
 }
