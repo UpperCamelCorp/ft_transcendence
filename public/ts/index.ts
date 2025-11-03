@@ -6,6 +6,7 @@ import { game} from './pong/pong.js';
 import { cleanOnlineGame } from './pong/onlineGame.js';
 import { edit } from './editProfilePage.js';
 import { user } from './user.js';
+import { friends } from './friends.js';
 import { initI18n } from './i18n.js';
 
 export const router = new Router;
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     router.add('/game', game);
     router.addCleanUp('/game', cleanOnlineGame);
     router.add('/edit', edit);
+    router.add('/friends', friends);
 
     router.addDynamic('/user', user);
 
