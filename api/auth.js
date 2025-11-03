@@ -141,34 +141,6 @@ const  authRoutes = async (fastify, options) => {
             reply.redirect('/?error=oauth_failed');
         }
     });
-
-    fastify.get('/status', {websocket: true}, (connection, req) => {
-        let id;
-            connection.on('message', (message) => {
-                try {
-                    const data = JSON.parse(message.toString());
-                    if (!data.token)
-                        connection.close();
-                    const token = fastify.jwt.verify(data.token);
-                    id = token.id;
-                    fastify.connectedUsers.push(id);
-                    console.log(token.username, token.id, 'online');
-                } catch (e) {
-                    connection.close();
-                }
-            });
-            connection.on('close', () => {
-                try {
-                    if (id) {
-                        const index = fastify.connectedUsers.indexOf(id);
-                        fastify.connectedUsers.splice(index, 1);
-                    }
-                    console.log(id, 'offline');
-                } catch (e) {
-                    console.log(e);
-                }
-            });
-        });
 }
 
 module.exports = authRoutes;
