@@ -71,6 +71,7 @@
   "edit.errInvalidPassword": "Le mot de passe doit contenir au moins 8 caractères",
 
   "user.statsTitle": "Stats",
+  "user.add": "Ajouter",
   "user.winRate": "Taux de victoires",
   "user.last30": "Dernières 30 parties",
   "user.gamesPlayed": "Parties jouées",

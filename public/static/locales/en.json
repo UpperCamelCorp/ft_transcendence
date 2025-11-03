@@ -71,6 +71,7 @@
   "edit.errInvalidPassword": "Password must contain at least 8 characters",
 
   "user.statsTitle": "Stats",
+  "user.add": "Add",
   "user.winRate": "Win Rate",
   "user.last30": "Last 30 games",
   "user.gamesPlayed": "Games Played",

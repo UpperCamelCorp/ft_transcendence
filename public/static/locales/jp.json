@@ -71,6 +71,7 @@
   "edit.errInvalidPassword": "パスワードは8文字以上である必要があります",
 
   "user.statsTitle": "統計",
+  "user.add": "jsp traduit",
   "user.winRate": "勝率",
   "user.last30": "直近30試合",
   "user.gamesPlayed": "プレイした試合数",
