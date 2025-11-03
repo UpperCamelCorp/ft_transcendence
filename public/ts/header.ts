@@ -46,7 +46,15 @@ export const setupHeader = () => {
             <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.disconnect')}</button>
         `;
         const disconnectButton = document.getElementById('disconnect');
-        disconnectButton?.addEventListener('click', () => {localStorage.clear(); setupHeader()});
+        disconnectButton?.addEventListener('click', async () => {
+            try {
+                await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' });
+            } catch (e) {
+                console.warn('Logout request failed', e);
+            }
+            localStorage.clear();
+            setupHeader();
+        });
     }
     else {
         menu.innerHTML = `

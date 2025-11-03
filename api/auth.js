@@ -139,14 +139,49 @@ const  authRoutes = async (fastify, options) => {
 
             const jwtToken = fastify.jwt.sign({ id: user.id, username: user.username });
 
-            // Redirect to the login route so frontend login handler processes the token
-            reply.redirect(`/login?token=${jwtToken}&user=${encodeURIComponent(JSON.stringify({
-                username: user.username,
-                email: user.email
-            }))}&picture=${encodeURIComponent(user.picture || googleUser.picture)}`);
+            reply
+                .setCookie('token', jwtToken, {
+                    httpOnly: true,
+                    path: '/',
+                    sameSite: 'lax',
+                    secure: process.env.NODE_ENV === 'production'
+                })
+                .setCookie('picture', encodeURIComponent(user.picture || googleUser.picture), {
+                    httpOnly: false,
+                    path: '/',
+                    sameSite: 'lax',
+                    secure: process.env.NODE_ENV === 'production'
+                })
+                .redirect('/login');
+
         } catch (err) {
             fastify.log.error(err);
             reply.redirect('/?error=oauth_failed');
+        }
+    });
+
+    fastify.get('/api/session', async (req, rep) => {
+        try {
+            const token = req.cookies?.token;
+            if (!token) return rep.code(401).send({ message: 'No session' });
+            const payload = fastify.jwt.verify(token);
+            const sessionUser = await dbGet('SELECT id, username, email, picture FROM users WHERE id = ?', [payload.id]);
+            if (!sessionUser) return rep.code(401).send({ message: 'User not found' });
+            return rep.code(200).send({ token, user: sessionUser });
+        } catch (e) {
+            fastify.log.error(e);
+            return rep.code(401).send({ message: 'Invalid session' });
+        }
+    });
+
+    fastify.post('/api/logout', async (req, reply) => {
+        try {
+            reply.clearCookie('token', { path: '/' });
+            reply.clearCookie('picture', { path: '/' });
+            return reply.code(200).send({ message: 'Logged out' });
+        } catch (e) {
+            fastify.log.error(e);
+            return reply.code(500).send({ message: 'Logout failed' });
         }
     });
 }
