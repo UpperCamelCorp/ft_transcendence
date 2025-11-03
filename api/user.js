@@ -109,10 +109,14 @@ const userRoute = async (fastify, options) => {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
         const {userId} = req.params;
+        const id = req.user.id;
         try {
+            let status = false;
             const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
-            const status = fastify.connectedUsers.includes(parseInt(userId));
-            return rep.code(200).send({user, status: status});
+            const friendStatus = await dbGet('SELECT status FROM friends WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)', [userId, id, id,userId]);
+            if (friendStatus && friendStatus.status === 2)
+                status = fastify.connectedUsers.includes(parseInt(userId));
+            return rep.code(200).send({user, status: status, friends: friendStatus? friendStatus.status : null});
         } catch (e) {
             console.log(e);
             return rep.code(500).send({message: "Error try again later"});
