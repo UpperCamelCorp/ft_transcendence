@@ -1,7 +1,7 @@
 import { router } from "../index.js";
 import { render } from "../render.js";
-import { gameInit } from "./game.js";
-import { onlineGame } from "./onlineGame.js";
+import { gameInit, cleanLocal} from "./game.js";
+import { onlineGame, cleanOnlineGame} from "./onlineGame.js";
 import { launchTournament } from "./tournament.js";
 import { t } from "../i18n.js";
 
@@ -288,4 +288,9 @@ export const game = () => {
         OnlineCustom();
     });
 
+}
+
+export const cleanGame = () => {
+    cleanLocal();
+    cleanOnlineGame();
 }
