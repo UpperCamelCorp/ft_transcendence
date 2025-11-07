@@ -29,14 +29,7 @@ const game = async (fastify, options) => {
                 localActiveGauge.inc();
                 return rep.code(200).send({ ok: true });
             } else if (event === 'stop') {
-                try {
-                    const metrics = await client.register.getMetricsAsJSON();
-                    const metric = metrics.find(m => m.name === 'pong_local_active_games');
-                    const current = metric && metric.values && metric.values[0] ? metric.values[0].value : 0;
-                    localActiveGauge.set(Math.max(0, current - 1));
-                } catch (e) {
-                    localActiveGauge.dec();
-                }
+                localActiveGauge.dec();
                 return rep.code(200).send({ ok: true });
             } else {
                 return rep.code(400).send({ message: 'invalid event' });
