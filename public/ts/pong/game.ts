@@ -186,7 +186,8 @@ class Game {
         }
     }
 
-    private handleKeyDown = (e: KeyboardEvent) => {
+    public handleKeyDown = (e: KeyboardEvent) => {
+        console.log('aa local');
         e.preventDefault();
         if (!this.gameStart)
             this.gameStart = true;
@@ -206,7 +207,7 @@ class Game {
         }
     };
 
-    private handleKeyUp = (e: KeyboardEvent) => {
+    public handleKeyUp = (e: KeyboardEvent) => {
         e.preventDefault();
         switch (e.code) {
             case 'KeyW':
@@ -264,6 +265,12 @@ class Game {
     public updateScale = () => {
         this.scaleX = 896 / this.canvas.width;
         this.scaleY = 504 / this.canvas.height;
+    }
+
+    public clean() {
+        cancelAnimationFrame(this.animationId);
+        document.removeEventListener('keyup', this.handleKeyUp);
+        document.removeEventListener('keydown', this.handleKeyDown);
     }
 
     public start() {
@@ -333,6 +340,7 @@ class Game {
     }
 }
 
+let currentGame: Game | null;
 
 export const gameInit = async (max: number = 3, leftColor: string = 'white', rightColor: string = 'white', players: [string , string] = ['Player 1', 'Player 2'], tournament : boolean = false): Promise<string> => {
     const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -343,17 +351,24 @@ export const gameInit = async (max: number = 3, leftColor: string = 'white', rig
         console.log(canvas.width, canvas.height);
     }
     return new Promise<string>((resolve) => {
-        const game = new Game(canvas, players, max, leftColor, rightColor, resolve);
-        if (tournament) game.tournament = true;
+        currentGame = new Game(canvas, players, max, leftColor, rightColor, resolve);
+        if (tournament) currentGame.tournament = true;
         window.addEventListener('resize', () => {
             const container = canvas.parentElement;
             if (canvas && container) {
                 canvas.width = container.clientWidth - 10;
                 canvas.height = canvas.width * (9 / 16);
-                game.updateScale();
+                currentGame?.updateScale();
             }
         });
-        game.setUsers();
-        game.start();
+        currentGame.setUsers();
+        currentGame.start();
     });
+}
+
+export const cleanLocal= () => {
+    if (currentGame) {
+        currentGame.clean();
+        currentGame = null;
+    }
 }
