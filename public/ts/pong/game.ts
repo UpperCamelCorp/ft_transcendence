@@ -302,7 +302,10 @@ class Game {
         this._beforeUnloadHandler = () => {
             if (!this.gameStart) return;
             try {
-                navigator.sendBeacon && navigator.sendBeacon('/api/metrics/local', JSON.stringify({ event: 'stop' }));
+                navigator.sendBeacon && navigator.sendBeacon(
+                    '/api/metrics/local',
+                    new Blob([JSON.stringify({ event: 'stop' })], { type: 'application/json' })
+                );
             } catch (e) {}
         };
         window.addEventListener('beforeunload', this._beforeUnloadHandler);
