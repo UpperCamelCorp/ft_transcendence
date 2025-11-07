@@ -1,0 +1,59 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "orientation": "auto", "text": {} },
+      "pluginVersion": "9.x",
+      "targets": [{ "expr": "pong_games_started_total", "refId": "A" }],
+      "title": "Online games started (pong_games_started_total)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "options": { "orientation": "auto", "text": {} },
+      "pluginVersion": "9.x",
+      "targets": [{ "expr": "pong_local_games_started_total", "refId": "A" }],
+      "title": "Local games started (pong_local_games_started_total)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "id": 3,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "single" }
+      },
+      "pluginVersion": "9.x",
+      "targets": [
+        { "expr": "pong_games_started_total", "legendFormat": "online_total", "refId": "A" },
+        { "expr": "pong_local_games_started_total", "legendFormat": "local_total", "refId": "B" }
+      ],
+      "title": "Online vs Local games started (total)",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 32,
+  "style": "dark",
+  "tags": ["pong", "metrics", "online", "local", "comparison"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Pong — Local & Online Metrics",
+  "uid": "pong-local-metrics",
+  "version": 4
+}
