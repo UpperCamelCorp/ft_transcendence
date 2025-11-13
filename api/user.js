@@ -22,6 +22,10 @@ const userRoute = async (fastify, options) => {
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
     const dbAll = promisify(fastify.db.all.bind(fastify.db));
 
+    const MAX_FILE_SIZE = 1 * 1024 * 1024;
+    const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
     fastify.post('/api/edit', {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
@@ -31,11 +35,16 @@ const userRoute = async (fastify, options) => {
             console.log('id= ', req.user.id);
             if (data.file && data.filename) {
                 try {
-                    const ext = data.filename.split('.').pop();
+                    const ext = data.filename.split('.').pop().toLowerCase();
+                    if (!ALLOWED_EXTENSIONS.includes(ext))
+                        return rep.code(400).send({ message: `Invalid file type. Allowed types: ${ALLOWED_EXTENSIONS.join(', ')}`});
+                    const fileBuffer = await data.toBuffer();
+                    if (fileBuffer.length > MAX_FILE_SIZE)
+                        return rep.code(400).send({message: `File too large. Maximum size: ${MAX_FILE_SIZE / (1024 * 1024)}MB`});
                     const filename = `pp_${req.user.username}_${Date.now()}.${ext}`;
                     const filePath = path.join(__dirname, '../public/uploads/', filename);
                     console.log('path = ', filePath);
-                    await fs.writeFile(filePath, await data.toBuffer());
+                    await fs.writeFile(filePath, fileBuffer);
                     finalFile = `/uploads/${filename}`;
                     console.log('final file = ', finalFile);
                 } catch (e) {
