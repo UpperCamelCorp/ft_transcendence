@@ -43,6 +43,8 @@
   "signup.errInvalidPassword": "Password must contain at least 8 characters",
   "signup.errInvalidEmail": "Example: john@example.com",
   "signup.errNoUsername": "Username required",
+  "signup.continueWithGoogle": "Continue with Google",
+  "signup.or": "or",
 
   "welcome.title": "Welcome to Transcendence",
   "welcome.notice": "You will have to {loginLink} to be able to play",

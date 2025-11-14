@@ -40,6 +40,8 @@
   "signup.signUp": "S'inscrire",
   "signup.haveAccount": "Vous avez déjà un compte ?",
   "signup.signInLink": "Se connecter",
+  "signup.continueWithGoogle": "Continuer avec Google",
+  "signup.or": "ou",
   "signup.errInvalidPassword": "Le mot de passe doit contenir au moins 8 caractères",
   "signup.errInvalidEmail": "Exemple : john@exemple.com",
   "signup.errNoUsername": "Nom d'utilisateur requis",

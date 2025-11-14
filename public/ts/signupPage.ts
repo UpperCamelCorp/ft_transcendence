@@ -53,7 +53,7 @@ const signupPage = () => `
                     class="w-full px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
                 >
             </div>
-             <div class="space-y-2">
+            <div class="space-y-2">
                 <div>
                     <label for="confirm-password" class="block text-sm font-medium text-[#E2E8F0]">${t('signup.confirmPasswordLabel')}</label>
                     <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
@@ -71,6 +71,17 @@ const signupPage = () => `
                 ${t('signup.signUp')}
             </button>
         </form>
+		<div class="my-6 flex items-center">
+            <div class="flex-1 border-t border-[#475569]"></div>
+            <span class="px-4 text-[#94A3B8] text-sm">${t('signup.or')}</span>
+            <div class="flex-1 border-t border-[#475569]"></div>
+        </div>
+
+        <div class="text-center">
+            <a href="/login/google" class="w-full inline-block bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-[#1E293B]">
+                ${t('signup.continueWithGoogle')}
+            </a>
+        </div>
         <div class="text-center mt-6">
             <p class="text-[#94A3B8] text-sm">
                 ${t('signup.haveAccount')}
