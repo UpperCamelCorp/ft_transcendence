@@ -7,6 +7,7 @@ import { cleanOnlineGame } from './pong/onlineGame.js';
 import { edit } from './editProfilePage.js';
 import { user } from './user.js';
 import { friends } from './friends.js';
+import { profile } from './profile.js';
 import { initI18n } from './i18n.js';
 
 export const router = new Router;
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     router.addCleanUp('/game', cleanOnlineGame);
     router.add('/edit', edit);
     router.add('/friends', friends);
+    router.add('/profile', profile);
 
     router.addDynamic('/user', user);
 

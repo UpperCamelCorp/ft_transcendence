@@ -2,7 +2,7 @@ import { render } from "./render.js";
 import { router } from "./index.js";
 import { t } from "./i18n.js";
 
-const userPage = () => `
+export const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
         <div class="flex flex-col-reverse md:flex-col justify-center items-center mb-8">
             <div class="flex justify-center items-center">
@@ -37,7 +37,7 @@ const userPage = () => `
         </div>
     </div>`;
 
-const historyPage = () => `
+export const historyPage = () => `
     <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col  max-w-3xl w-full max-h-full">
         <div class="relative flex items-center justify-center m-4">
             <h1 id="user-title" class="text-4xl text-white font-bold">-</h1>
@@ -106,7 +106,7 @@ const addUser = async (userId: string, token: string) => {
     }
 }
 
-const setUserPage = (userData: any, games: [any], userId:string, token: string) => {
+export const setUserPage = (userData: any, games: [any], userId:string, token: string) => {
     render(userPage());
     const user = userData.user;
     const title = document.getElementById('user-title') as HTMLHeadingElement;
@@ -115,16 +115,22 @@ const setUserPage = (userData: any, games: [any], userId:string, token: string) 
     const addButton = document.getElementById('add-button') as HTMLButtonElement;
 
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
+    console.log(userData);
     if (userData.friends === 2) {
         if (userData.status)
             statusDiv.classList.replace('bg-[#FF0000]', 'bg-[#00FF00]');
         addButton.classList.toggle('hidden');
     }
     else {
+        console.log('entered')
         statusDiv.classList.toggle('hidden');
-        if (!userData.friends)  
+        if (userData.friends === null) {
             addButton.textContent = t('user.add');
-        if (userData.friends === 1)
+            console.log('wtf')
+        }
+        else if (userData.friends === 0)
+            addButton.textContent = "Waiting..."
+        else if (userData.friends === 1)
             addButton.textContent = "Accept";
     }
     picture.src = user.picture ? user.picture : '/images/default-pp.png';
@@ -145,14 +151,15 @@ const setUserPage = (userData: any, games: [any], userId:string, token: string) 
     if (userData.friends != 2)
         addButton?.addEventListener('click', async () => { 
             const data = await addUser(userId, token);
+            console.log(`status == ${data.status}`)
             if (data.status === 1)
-                addButton.innerText === 'Waiting...';
+                addButton.innerText = 'Waiting...';
             else if (data.status === 2)
                 addButton.classList.toggle('hidden');
         });
 }
 
-const setHistoryPage = (userData: any, games: [any], userId: string, token: string) => {
+export const setHistoryPage = (userData: any, games: [any], userId: string, token: string) => {
     render(historyPage());
     const user = userData.user;
     const mainDiv = document.getElementById('games-div') as HTMLDivElement;
