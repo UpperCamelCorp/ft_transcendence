@@ -1,5 +1,6 @@
 import { router } from "./index.js"
 import { render } from "./render.js";
+import { t } from "./i18n.js";
 
 const friendsPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full max-h-screen">
@@ -8,7 +9,7 @@ const friendsPage = () => `
                 <img src="/svg/friends-icon.svg" alt="friends-icon" class="w-14 h-14 drop-shadow-lg">
                 <span id="user-title" class="text-4xl font-bold bg-gradient-to-r from-slate-200 to-indigo-300 bg-clip-text text-transparent">User's Friends</span>
             </div>
-            <button id="invite-button" class="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105">Invite</button>
+            <button id="invite-button" class="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105">${t('friends.invite')}</button>
         </div>
         <div id="friends-div" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl">
         </div>
@@ -37,10 +38,10 @@ const getFriends = async () => {
 
 const renderFriends = (friendsList : any, mainDiv: HTMLDivElement, button: HTMLButtonElement) => {
     mainDiv.innerHTML = '';
-    button.innerText = 'Invite';
+    button.innerText = t('friends.invite');
     if (!friendsList.friends.length) {
         mainDiv.innerHTML = `
-            <span class="text-2xl text-slate-300">No Friends Yet</span>
+            <span class="text-2xl text-slate-300">${t('friends.noFriends')}</span>
         `;
     }
     friendsList.friends.forEach(friend => {
@@ -48,7 +49,7 @@ const renderFriends = (friendsList : any, mainDiv: HTMLDivElement, button: HTMLB
             mainDiv.innerHTML += `
             <a href="/user/${friend.friend_id}" data-link class="flex items-center justify-center border-2 border-slate-700 rounded-2xl p-4">
                 <img src="${friend.friendPicture ? friend.friendPicture : '/images/default-pp.png'}" alt="profile-picture" class="h-12 w-12 rounded-full m-2">
-                <span class="text-2xl text-slate-300">${friend.friendName} pending...</span>
+                <span class="text-2xl text-slate-300">${friend.friendName} ${t('friends.pending')}</span>
             </a>`
         }
         else if (friend.status === 2) {

@@ -108,6 +108,23 @@
   "pong.gameOverTitle": "Fin du jeu",
   "pong.wonSuffix": "a gagné !",
   "pong.left": "a quitté",
+  "pong.tournament": "Tournoi",
+  "pong.tournamentOptions": "Options du tournoi",
+  "pong.nextGame": "Prochain match",
+  "pong.phase": "Phase",
+  "pong.tournamentWinner": "Vainqueur du tournoi",
+  "pong.gameOver": "Partie terminée",
+  "pong.winner": "Gagnant",
+  "pong.next": "Suivant",
+
+  "friends.invite": "Inviter",
+  "friends.noFriends": "Pas encore d'amis",
+  "friends.pending": "en attente...",
+  "friends.online": "En ligne",
+  "friends.waiting": "En attente...",
+  "friends.accept": "Accepter",
+
+  "errors.passwordMismatch": "Les mots de passe ne correspondent pas",
 
   "router.welcome": "Bienvenue"
 }

@@ -125,6 +125,6 @@ const editResponse = (rep: Response, res: any) => {
         else if (res.message === "Invalid password")
             invalidError(passwordInput, passwordError, t('edit.errInvalidPassword'));
         else if (res.message === 'Password does not match')
-            invalidError(confirmPasswordInput, confirmPasswordError, res.message);
+            invalidError(confirmPasswordInput, confirmPasswordError, t('errors.passwordMismatch'));
     }
 }

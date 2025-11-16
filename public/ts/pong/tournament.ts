@@ -1,12 +1,13 @@
 import { game } from "./pong.js";
 import { gameInit } from "./game.js";
 import { render } from "../render.js";
+import { t } from "../i18n.js";
 
 const nextGameOverlay = (player1 : string, player2: string): HTMLDivElement => {
     const overlay = document.createElement('div');
     overlay.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C]/70 to-[#142033]/70 z-50";
     overlay.innerHTML = `
-        <h3 class="w-full text-center text-white text-3xl mb-4">Next Game</h3>
+        <h3 class="w-full text-center text-white text-3xl mb-4">${t('pong.nextGame')}</h3>
         <div class="w-full flex justify-evenly items-center">
             <div class="flex flex-col gap-y-2 justify-center items-center">
                 <img src="/images/default-pp.png" alt="profile-picture" class="w-10 h-10 rounded-full">
@@ -34,7 +35,7 @@ const initCanva = () => {
 const nextPhaseOverlay = (players: string[], phase: number): HTMLDivElement => {
     const overlay = document.createElement('div');
     overlay.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C]/70 to-[#142033]/70 z-50";
-    overlay.innerHTML = `<h3 class="w-full text-center text-white text-3xl mb-4">Phase ${phase}</h3>`;
+    overlay.innerHTML = `<h3 class="w-full text-center text-white text-3xl mb-4">${t('pong.phase')} ${phase}</h3>`;
     
     const innerOverlay = document.createElement('div');
     innerOverlay.className = "grid grid-cols-3 justify-center items-center gap-5";
@@ -72,7 +73,7 @@ const winnerOverlay = (winner: string): HTMLDivElement => {
     const overlay = document.createElement('div');
     overlay.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C]/70 to-[#142033]/70 z-50";
     overlay.innerHTML = `
-        <h3 class="w-full text-center text-white text-3xl mb-4">Tournament Winner</h3>
+        <h3 class="w-full text-center text-white text-3xl mb-4">${t('pong.tournamentWinner')}</h3>
         <div class="w-full flex flex-col justify-evenly items-center">
             <div class="flex flex-col gap-y-2 justify-center items-center m-4">
                 <img src="/images/default-pp.png" alt="profile-picture" class="w-10 h-10 rounded-full">

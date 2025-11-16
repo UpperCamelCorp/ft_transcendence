@@ -129,9 +129,9 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
             console.log('wtf')
         }
         else if (userData.friends === 0)
-            addButton.textContent = "Waiting..."
+            addButton.textContent = t('friends.waiting');
         else if (userData.friends === 1)
-            addButton.textContent = "Accept";
+            addButton.textContent = t('friends.accept');
     }
     picture.src = user.picture ? user.picture : '/images/default-pp.png';
     if (games.length) {
