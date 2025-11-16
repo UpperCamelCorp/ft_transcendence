@@ -1,5 +1,5 @@
 import { router } from "../index.js";
-import { game } from "./pong.js";
+import { game, OnlineCustom } from "./pong.js";
 import { t } from "../i18n.js";
 
 class Paddle {
@@ -401,14 +401,20 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
                 currentGame?.full();
                 break;
             case 'error':
-                currentGame?.cleanAll();
-                router.navigate('login');
+                if (rep.error === 'Invalid JWT') {
+                    currentGame?.cleanAll();
+                    router.navigate('login');
+                }
+                else if (rep.error === 'Invalid username' || rep.error === 'Wrong RoomId') {
+                    currentGame?.cleanAll();
+                    OnlineCustom();
+                }
+                break;
         }
     }
 }
 
 export const cleanOnlineGame = () => {
-    console.log("online cleaned");
     if (currentGame) {
         currentGame.cleanAll();
         currentGame = null;

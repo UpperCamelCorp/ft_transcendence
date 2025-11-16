@@ -85,6 +85,7 @@
   "pong.scoreLabel": "Score",
   "pong.player1": "Joueur 1",
   "pong.player2": "Joueur 2",
+  "pong.player": "Joueur {n}",
   "pong.title": "JEU PONG",
   "pong.welcome": "Bienvenue dans le jeu pong",
   "pong.playDesc": "Jouez avec vos amis et plus encore !",
@@ -126,5 +127,13 @@
 
   "errors.passwordMismatch": "Les mots de passe ne correspondent pas",
 
-  "router.welcome": "Bienvenue"
+  "router.welcome": "Bienvenue",
+
+  "pong.nextGame": "Prochaine partie",
+  "pong.vs": "VS",
+  "pong.out": "ÉLIMINÉ",
+  "pong.tournamentWinner": "Vainqueur du tournoi",
+  "pong.phase": "Phase {phase}",
+  "pong.tournament": "Tournoi",
+  "pong.tournamentOptions": "Options du tournoi"
 }

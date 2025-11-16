@@ -1,7 +1,7 @@
 import { router } from "../index.js";
 import { render } from "../render.js";
-import { gameInit } from "./game.js";
-import { onlineGame } from "./onlineGame.js";
+import { gameInit, cleanLocal} from "./game.js";
+import { onlineGame, cleanOnlineGame} from "./onlineGame.js";
 import { launchTournament } from "./tournament.js";
 import { t } from "../i18n.js";
 
@@ -160,7 +160,7 @@ const onlineGameCustom = () => `
         </div>
     </div>`
 
-const OnlineCustom = () => {
+export const OnlineCustom = () => {
     const token = localStorage.getItem('authToken');
     if (!token)
         return router.navigate('/login');
@@ -201,18 +201,18 @@ const tournamentCustom = () => {
     const wrapper = document.getElementById('plus-wrapper') as HTMLDivElement;
     const playButton = document.getElementById('play');
     let player = 2;
-    
+
     const createPlayer = (playerNum: number) => {
         const player = document.createElement('div') as HTMLDivElement;
         player.className = 'flex flex-col m-3 p-4 justify-center items-center';
         player.innerHTML = `
-            <label for="name" class="text-slate-300">Player ${playerNum}</label>
+            <label for="name" class="text-slate-300">${t('pong.player', { n: playerNum })}</label>
             <img src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full m-4">
             <input
                 id="name"
                 name="name"
                 type="text"
-                placeholder="Player ${playerNum}"
+                placeholder="${t('pong.player', { n: playerNum })}"
                 class="w-3/4 px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
             >`;
         if (!wrapper.classList.contains('hidden'))
@@ -287,5 +287,10 @@ export const game = () => {
     onlineButton?.addEventListener('click', () => {
         OnlineCustom();
     });
-    
+
+}
+
+export const cleanGame = () => {
+    cleanLocal();
+    cleanOnlineGame();
 }

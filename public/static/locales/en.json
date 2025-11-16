@@ -85,6 +85,7 @@
   "pong.scoreLabel": "Score",
   "pong.player1": "Player 1",
   "pong.player2": "Player 2",
+  "pong.player": "Player {n}",
   "pong.title": "PONG GAME",
   "pong.welcome": "Welcome to the pong game",
   "pong.playDesc": "Play with your friends and more !",
@@ -126,5 +127,13 @@
 
   "errors.passwordMismatch": "Password does not match",
 
-  "router.welcome": "Welcome"
+  "router.welcome": "Welcome",
+
+  "pong.nextGame": "Next Game",
+  "pong.vs": "VS",
+  "pong.out": "OUT",
+  "pong.tournamentWinner": "Tournament Winner",
+  "pong.phase": "Phase {phase}",
+  "pong.tournament": "Tournament",
+  "pong.tournamentOptions": "Tournament Options"
 }

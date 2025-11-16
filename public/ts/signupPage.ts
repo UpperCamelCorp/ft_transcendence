@@ -107,7 +107,9 @@ const signupResponse = (rep : Response, result : any) => {
         else if (result.message === 'Password does not match')
             invalidError(confirmPasswordInput, confirmPasswordError, t('errors.passwordMismatch'));
         else if (result.message === 'No Username')
-            invalidError(usernameInput, usernameError, t('signup.errNoUsername'));
+            invalidError(usernameInput, usernameError, "Username required");
+        else if (result.message === 'Invalid username')
+            invalidError(usernameInput, usernameError, "Username must be < 10 and contain only letters and numbers");
     }
 }
 

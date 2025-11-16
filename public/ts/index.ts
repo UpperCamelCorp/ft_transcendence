@@ -2,8 +2,7 @@ import Router from './router.js';
 import { login } from './loginPage.js';
 import { signup } from './signupPage.js';
 import { welcome } from './welcomePage.js';
-import { game} from './pong/pong.js';
-import { cleanOnlineGame } from './pong/onlineGame.js';
+import { game, cleanGame} from './pong/pong.js';
 import { edit } from './editProfilePage.js';
 import { user } from './user.js';
 import { friends } from './friends.js';
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     router.add("/login", login);
     router.add('/signup', signup);
     router.add('/game', game);
-    router.addCleanUp('/game', cleanOnlineGame);
+    router.addCleanUp('/game', cleanGame);
     router.add('/edit', edit);
     router.add('/friends', friends);
     router.add('/profile', profile);
