@@ -29,6 +29,7 @@ const setUpDataBase = async () => {
             player2_id INTEGER NOT NULL,
             winner INTEGER NOT NULL,
             score TEXT NOT NULL,
+            time DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (player1_id) REFERENCES user(player1_id),
             FOREIGN KEY (player2_id) REFERENCES user(player2_id)
             )`, (e) => {
@@ -38,10 +39,11 @@ const setUpDataBase = async () => {
                     console.log('game table initiated');
             });
         db.run(`CREATE TABLE IF NOT EXISTS friends (
-            user_id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL,
             friend_id INTEGER NOT NULL,
             status INTEGER DEFAULT 1,
-            FOREIGN KEY (user_id) REFERENCES user(user_id)
+            FOREIGN KEY (user_id) REFERENCES user(user_id),
+            FOREIGN KEY (friend_id) REFERENCES user(friend_id)
             )`, (e) => {
                 if (e)
                     console.log(e);

@@ -2,10 +2,16 @@ import { render } from "./render.js";
 import { router } from "./index.js";
 import { t } from "./i18n.js";
 
-const userPage = () => `
+export const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
-        <div class="flex flex-col-reverse md:flex-row justify-center items-center mb-8">
-            <img id="user-picture" src="../images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full md:mr-4">
+        <div class="flex flex-col-reverse md:flex-col justify-center items-center mb-8">
+            <div class="flex justify-center items-center">
+            <div class="relative">
+                <div id="status" class="absolute left-14 top-1 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
+                <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full m-2 md:mr-4">
+            </div>
+                <button id="add-button" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold p-3 md:mr-4 rounded-lg shadow">${t('user.add')}</button>
+            </div>    
             <h1 id="user-title" class="text-4xl text-white font-bold">${t('user.statsTitle')}</h1>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 w-full">
@@ -31,11 +37,13 @@ const userPage = () => `
         </div>
     </div>`;
 
-const historyPage = () => `
-    <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col  max-w-3xl w-full">
+export const historyPage = () => `
+    <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col  max-w-3xl w-full max-h-full">
         <div class="relative flex items-center justify-center m-4">
             <h1 id="user-title" class="text-4xl text-white font-bold">-</h1>
             <button id="return-button" class="absolute top-0 right-2 border border-[#334155] hover:border-[#475569] text-slate-200 px-6 py-3 rounded-lg">${t('user.return')}</button>
+        </div>
+        <div id="games-div" class="overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-800">
         </div>
     </div>`;
 
@@ -79,12 +87,53 @@ const getGames = async (userId: string, token: string) => {
     }
 }
 
-const setUserPage = (user: any, games: [any], userId:string) => {
+const addUser = async (userId: string, token: string) => {
+    try {
+        const rep = await fetch(`/api/friends/add/${userId}`, {
+            method: "POST",
+            headers : {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+        if (!rep.ok)
+            return null;
+        const data = await rep.json();
+        console.log(data);
+        return data;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+export const setUserPage = (userData: any, games: [any], userId:string, token: string) => {
     render(userPage());
+    const user = userData.user;
     const title = document.getElementById('user-title') as HTMLHeadingElement;
     const picture = document.getElementById('user-picture') as HTMLImageElement;
+    const statusDiv = document.getElementById('status') as HTMLDivElement;
+    const addButton = document.getElementById('add-button') as HTMLButtonElement;
+
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
-    picture.src = user.picture;
+    console.log(userData);
+    if (userData.friends === 2) {
+        if (userData.status)
+            statusDiv.classList.replace('bg-[#FF0000]', 'bg-[#00FF00]');
+        addButton.classList.toggle('hidden');
+    }
+    else {
+        console.log('entered')
+        statusDiv.classList.toggle('hidden');
+        if (userData.friends === null) {
+            addButton.textContent = t('user.add');
+            console.log('wtf')
+        }
+        else if (userData.friends === 0)
+            addButton.textContent = t('friends.waiting');
+        else if (userData.friends === 1)
+            addButton.textContent = t('friends.accept');
+    }
+    picture.src = user.picture ? user.picture : '/images/default-pp.png';
     if (games.length) {
         const id = parseInt(userId);
         const winRate = document.getElementById('win-rate') as HTMLSpanElement;
@@ -98,34 +147,47 @@ const setUserPage = (user: any, games: [any], userId:string) => {
         total.textContent = `${games.length}`;
     }
     const historyButton = document.getElementById('history-button');
-    historyButton?.addEventListener('click', () => setHistoryPage(user, games, userId));
+    historyButton?.addEventListener('click', () => setHistoryPage(userData, games, userId, token));
+    if (userData.friends != 2)
+        addButton?.addEventListener('click', async () => { 
+            const data = await addUser(userId, token);
+            console.log(`status == ${data.status}`)
+            if (data.status === 1)
+                addButton.innerText = 'Waiting...';
+            else if (data.status === 2)
+                addButton.classList.toggle('hidden');
+        });
 }
 
-const setHistoryPage = (user: any, games: [any], userId: string) => {
+export const setHistoryPage = (userData: any, games: [any], userId: string, token: string) => {
     render(historyPage());
-    const mainDiv = document.getElementById('history-div') as HTMLDivElement;
+    const user = userData.user;
+    const mainDiv = document.getElementById('games-div') as HTMLDivElement;
     const userTitle = document.getElementById('user-title') as HTMLSpanElement;
     userTitle.textContent = `${user.username} ${t('user.historySuffix')}`;
 
     const returnButton = document.getElementById('return-button') as HTMLButtonElement;
-    returnButton.addEventListener('click', () => setUserPage(user, games, userId));
+    returnButton.addEventListener('click', () => setUserPage(userData, games, userId, token));
     games.forEach(game => {
         const gameDiv = document.createElement('div');
         const userScore = game.player1_id === parseInt(userId) ? game.score[0] : game.score[4];
         const oppScore = game.player1_id != parseInt(userId) ? game.score[0] : game.score[4];
         const oppPicture = game.player1_id != parseInt(userId)? game.player1_picture: game.player2_picture;
         const oppName = game.player1_id != parseInt(userId)? game.player1_username: game.player2_username;
-        gameDiv.className = 'flex items-center justify-between border-2 border-black rounded-2xl mt-2';
+        gameDiv.className = 'flex flex-col items-center justify-between border-2 border-black rounded-2xl mt-2';
         gameDiv.innerHTML = `
-            <div class="flex items-center">
-                <img src="${user.picture ? user.picture : '/images/default-pp.png'}" alt="user-picture" class="rounded-full w-16 h-16 m-8">
-                <span class="text-2xl text-slate-300">${user.username}</span>
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    <img src="${user.picture ? user.picture : '/images/default-pp.png'}" alt="user-picture" class="rounded-full w-16 h-16 m-8">
+                    <span class="text-2xl text-slate-300">${user.username}</span>
+                </div>
+                <span class="text-3xl text-slate-300 m-4">${userScore} : ${oppScore}</span>
+                <div class="flex items-center">
+                    <span class="text-2xl text-slate-300">${oppName}</span>
+                    <img src="${oppPicture ? oppPicture : '/images/default-pp.png'}" alt="opponent-picture" class="rounded-full w-16 h-16 m-8">
+                </div>
             </div>
-            <span class="text-3xl text-slate-300 m-4">${userScore} : ${oppScore}</span>
-            <div class="flex items-center">
-                <span class="text-2xl text-slate-300">${oppName}</span>
-                <img src="${oppPicture ? oppPicture : '/images/default-pp.png'}" alt="opponent-picture" class="rounded-full w-16 h-16 m-8">
-            </div>`;
+            <span class="text-slate-400 italic">${game.time}</span>`;
         mainDiv.appendChild(gameDiv);
     });
 }
@@ -138,5 +200,5 @@ export const user = async (params: string) => {
     const gamesData = await getGames(params, token);
     if (!userData)
         return router.navigate('/');
-    setUserPage(userData.user, gamesData.games, params);
+    setUserPage(userData, gamesData.games, params, token);
 }

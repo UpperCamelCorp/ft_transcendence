@@ -26,10 +26,16 @@ const initJwt =  () => {
     });
 }
 
+const initUsersStatus = () => {
+    const connectedUsers = [];
+    fastify.decorate('connectedUsers', connectedUsers);
+}
+
 const start = async () => {
     try {
         await initDb();
         initJwt();
+        initUsersStatus();
         fastify.register(require('@fastify/static'), {
             root : path.join(__dirname, 'public'),
             prefix : '/'
@@ -68,6 +74,7 @@ const start = async () => {
         fastify.register(require('./api/auth.js'));
         fastify.register(require('./api/user.js'));
         fastify.register(require('./api/game/game.js'));
+        fastify.register(require('./api/friends.js'));
         fastify.setNotFoundHandler((req, rep) => {
             rep.sendFile('static/index.html')
         });

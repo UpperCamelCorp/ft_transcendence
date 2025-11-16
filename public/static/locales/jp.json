@@ -71,6 +71,7 @@
   "edit.errInvalidPassword": "パスワードは8文字以上である必要があります",
 
   "user.statsTitle": "統計",
+  "user.add": "jsp traduit",
   "user.winRate": "勝率",
   "user.last30": "直近30試合",
   "user.gamesPlayed": "プレイした試合数",
@@ -108,6 +109,23 @@
   "pong.gameOverTitle": "ゲーム終了",
   "pong.wonSuffix": "が勝利しました！",
   "pong.left": "が退出しました",
+  "pong.tournament": "トーナメント",
+  "pong.tournamentOptions": "トーナメントオプション",
+  "pong.nextGame": "次の試合",
+  "pong.phase": "フェーズ",
+  "pong.tournamentWinner": "トーナメント優勝者",
+  "pong.gameOver": "ゲームオーバー",
+  "pong.winner": "勝者",
+  "pong.next": "次へ",
+
+  "friends.invite": "招待",
+  "friends.noFriends": "まだフレンドがいません",
+  "friends.pending": "保留中...",
+  "friends.online": "オンライン",
+  "friends.waiting": "待機中...",
+  "friends.accept": "受け入れる",
+
+  "errors.passwordMismatch": "パスワードが一致しません",
 
   "router.welcome": "ようこそ",
 
