@@ -125,7 +125,7 @@ const editResponse = (rep: Response, res: any) => {
         else if (res.message === "Invalid password")
             invalidError(passwordInput, passwordError, t('edit.errInvalidPassword'));
         else if (res.message === 'Password does not match')
-            invalidError(confirmPasswordInput, confirmPasswordError, res.message);
+            invalidError(confirmPasswordInput, confirmPasswordError, t('errors.passwordMismatch'));
         else if (res.message.includes('Invalid file type') || res.message.includes('File too large')) {
             alert(res.message);
             const pictureInputDesktop = document.getElementById('input-picture') as HTMLInputElement;

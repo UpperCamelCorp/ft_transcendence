@@ -2,8 +2,9 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const fs = require('fs/promises');
 const { promisify } = require('util');
-const { profile } = require('console');
+const { profile, Console } = require('console');
 const { promiseHooks } = require('v8');
+const { default: fastifyMultipart } = require('@fastify/multipart');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -114,16 +115,63 @@ const userRoute = async (fastify, options) => {
         }
     });
 
+    fastify.get('/api/user', {
+        onRequest : [fastify.authenticate]
+    }, async (req, rep) => {
+        const id = req.user.id;
+        try {
+            const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [id]);
+            return rep.code(200).send({user, status : 1, friends: 2});
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: "Error try again later"});
+        }
+    });
+
     fastify.get('/api/user/:userId', {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
         const {userId} = req.params;
+        const id = req.user.id;
         try {
+            let status = false;
             const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
-            return rep.code(200).send({user});
+            const friendRequestStatus = await dbGet('SELECT status FROM friends WHERE user_id = ? AND friend_id = ?', [userId, id]);
+            const friendDemmandStatus = await dbGet('SELECT status FROM friends WHERE user_id = ? AND friend_id = ?', [id, userId]);
+            if (friendRequestStatus && friendRequestStatus.status === 2) {
+                status = fastify.connectedUsers.includes(parseInt(userId));
+                return rep.code(200).send({user, status : status, friends: 2});
+            }
+            if (friendRequestStatus)
+                return rep.code(200).send({user, status: status, friends: 1});
+            else if (friendDemmandStatus)
+                return rep.code(200).send({user, status : status, friends: 0})
+            return rep.code(200).send({user, status: status, friends: null});
         } catch (e) {
             console.log(e);
             return rep.code(500).send({message: "Error try again later"});
+        }
+    });
+
+    fastify.get('/api/games', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        const id = req.user.id;
+        try {
+            const games = await dbAll(`SELECT game.*,
+                u1.username as player1_username,
+                u1.picture as player1_picture,
+                u2.username as player2_username,
+                u2.picture as player2_picture
+                FROM game 
+                JOIN users u1 ON game.player1_id = u1.id
+                JOIN users u2 ON game.player2_id = u2.id
+                WHERE player1_id = ? OR player2_id = ?`, [id, id]);
+
+            return rep.code(200).send({games});
+        } catch (e) {
+            console.log(e);
+            return rep.code(500).send({message: 'Error try again later'});
         }
     });
 

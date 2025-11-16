@@ -307,16 +307,16 @@ class Game {
                 <span class="text-3xl font-bold m-3" >${t('pong.gameOverTitle')}</span>
                 <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
                 <div class="flex m-2 space-x-8">
-                    <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Return</button>
-                    <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Retry</button>
+                    <button id="return-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.return')}</button>
+                    <button id="retry-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.retry')}</button>
                 </div>`;
         }
         else {
             overlay.innerHTML = `
-                <span class="text-3xl font-bold m-3" >Game Over</span>
+                <span class="text-3xl font-bold m-3" >${t('pong.gameOver')}</span>
                 <span id="player" class="text-2xl font-bold m-4 mb-8">${this.winner} ${t('pong.wonSuffix')}</span>
                 <div class="flex m-2 space-x-8">
-                    <button id="next-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">Next</button>
+                    <button id="next-button" class="text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.next')}</button>
                 </div>`;
         }
         document.body.appendChild(overlay);

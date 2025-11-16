@@ -105,7 +105,7 @@ const signupResponse = (rep : Response, result : any) => {
         else if (result.message === 'Invalid email')
             invalidError(emailInput, emailError, t('signup.errInvalidEmail'));
         else if (result.message === 'Password does not match')
-            invalidError(confirmPasswordInput, confirmPasswordError, result.message);
+            invalidError(confirmPasswordInput, confirmPasswordError, t('errors.passwordMismatch'));
         else if (result.message === 'No Username')
             invalidError(usernameInput, usernameError, "Username required");
         else if (result.message === 'Invalid username')

@@ -71,6 +71,7 @@
   "edit.errInvalidPassword": "Password must contain at least 8 characters",
 
   "user.statsTitle": "Stats",
+  "user.add": "Add",
   "user.winRate": "Win Rate",
   "user.last30": "Last 30 games",
   "user.gamesPlayed": "Games Played",
@@ -108,6 +109,23 @@
   "pong.gameOverTitle": "Game Over",
   "pong.wonSuffix": "Won!",
   "pong.left": "left",
+  "pong.tournament": "Tournament",
+  "pong.tournamentOptions": "Tournament Options",
+  "pong.nextGame": "Next Game",
+  "pong.phase": "Phase",
+  "pong.tournamentWinner": "Tournament Winner",
+  "pong.gameOver": "Game Over",
+  "pong.winner": "Winner",
+  "pong.next": "Next",
+
+  "friends.invite": "Invite",
+  "friends.noFriends": "No Friends Yet",
+  "friends.pending": "pending...",
+  "friends.online": "Online",
+  "friends.waiting": "Waiting...",
+  "friends.accept": "Accept",
+
+  "errors.passwordMismatch": "Password does not match",
 
   "router.welcome": "Welcome",
 
