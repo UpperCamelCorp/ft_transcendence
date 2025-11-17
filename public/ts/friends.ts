@@ -2,6 +2,19 @@ import { router } from "./index.js"
 import { render } from "./render.js";
 import { t } from "./i18n.js";
 
+interface Friend {
+    user_id: number;
+    friend_id: string | number;
+    friendPicture?: string;
+    friendName: string;
+    status: number;
+}
+
+interface FriendsList {
+    friends: Friend[];
+    pending: Friend[];
+}
+
 const friendsPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full max-h-screen">
         <div class="flex w-full justify-between items-center max-w-5xl mb-12 pb-8 border-b border-slate-700">
@@ -36,7 +49,7 @@ const getFriends = async () => {
     }
 }
 
-const renderFriends = (friendsList : any, mainDiv: HTMLDivElement, button: HTMLButtonElement) => {
+const renderFriends = (friendsList : FriendsList, mainDiv: HTMLDivElement, button: HTMLButtonElement) => {
     mainDiv.innerHTML = '';
     button.innerText = t('friends.invite');
     if (!friendsList.friends.length) {
@@ -44,7 +57,7 @@ const renderFriends = (friendsList : any, mainDiv: HTMLDivElement, button: HTMLB
             <span class="text-2xl text-slate-300">${t('friends.noFriends')}</span>
         `;
     }
-    friendsList.friends.forEach(friend => {
+    friendsList.friends.forEach((friend: Friend) => {
         if (friend.status === 1) {
             mainDiv.innerHTML += `
             <a href="/user/${friend.friend_id}" data-link class="flex items-center justify-center border-2 border-slate-700 rounded-2xl p-4">
@@ -62,7 +75,7 @@ const renderFriends = (friendsList : any, mainDiv: HTMLDivElement, button: HTMLB
     });
 };
 
-const renderPending = (friendsList: any, mainDiv: HTMLDivElement, button: HTMLButtonElement) => {
+const renderPending = (friendsList: FriendsList, mainDiv: HTMLDivElement, button: HTMLButtonElement) => {
     mainDiv.innerHTML = '';
     if (!friendsList.pending.length) {
         mainDiv.innerHTML = `
@@ -70,7 +83,7 @@ const renderPending = (friendsList: any, mainDiv: HTMLDivElement, button: HTMLBu
         `;
     }
     button.innerText = 'Friends'
-    friendsList.pending.forEach(friend => {
+    friendsList.pending.forEach((friend: Friend) => {
         mainDiv.innerHTML += `
         <a href="/user/${friend.user_id}" data-link class="flex items-center justify-center border-2 border-slate-700 rounded-2xl p-4">
             <img src="${friend.friendPicture ? friend.friendPicture : '/images/default-pp.png'}" alt="profile-picture" class="h-12 w-12 rounded-full m-2">
