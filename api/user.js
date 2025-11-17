@@ -41,7 +41,7 @@ const userRoute = async (fastify, options) => {
                         return rep.code(400).send({ message: `Invalid file type. Allowed types: ${ALLOWED_EXTENSIONS.join(', ')}`});
                     const fileBuffer = await data.toBuffer();
                     if (fileBuffer.length > MAX_FILE_SIZE)
-                        return rep.code(400).send({message: `File too large. Maximum size: ${MAX_FILE_SIZE / (1024 * 1024)}MB`});
+                        return rep.code(400).send({ message: `File too large. Maximum size: ${MAX_FILE_SIZE / (1024 * 1024)}MB`});
                     const filename = `pp_${req.user.username}_${Date.now()}.${ext}`;
                     const filePath = path.join(__dirname, '../public/uploads/', filename);
                     console.log('path = ', filePath);
