@@ -332,7 +332,7 @@ export const onlineGame = (roomId: number, user: string, color: string) => {
         canvas.height = canvas.width * (9 / 16);
     }
 
-    const socket = new WebSocket(`ws://${window.location.host}/game/play`);
+    const socket = new WebSocket(`wss://${window.location.host}/game/play`);
     currentGame = new Game(canvas, color, 'white', socket);
 
     let picture = localStorage.getItem('picture');
