@@ -18,5 +18,7 @@ RUN npm run build
 # Exposer le port
 EXPOSE 3000
 
-# Commande par défaut pour le dev
-CMD ["npm", "run", "dev"]
+COPY ./scripts/node_script.sh /node_script.sh
+RUN chmod +x /node_script.sh
+
+CMD ["/node_script.sh"]
