@@ -106,6 +106,7 @@ class Game {
     private winner: string;
     private onEnd?: (winner : string) => void;
     public tournament : boolean = false;
+    private _beforeUnloadHandler?: () => void;
 
     constructor(canvas : HTMLCanvasElement, players: [string, string], maxPoints: number, leftColor: string, rightColor: string, onEnd?: (winner : string) => void) {
         this.canvas = canvas;
@@ -180,7 +181,7 @@ class Game {
             this.leftPaddle.reset();
             this.gameStart = false;
             if (this.leftScore == this.maxPoints) {
-                this.winner = this.players[0];    
+                this.winner = this.players[0];
                 this.stop();
             }
         }
@@ -274,6 +275,8 @@ class Game {
     }
 
     public start() {
+        if (this.gameStart) return;
+        this.gameStart = true;
 
         cancelAnimationFrame(this.animationId);
 
@@ -292,12 +295,51 @@ class Game {
         this.ball.dx = Math.floor(Math.random() * 2) % 2 ? this.ball.dx: -this.ball.dx;
         this.ball.dy = Math.floor(Math.random() * 2) % 2 ? this.ball.dy: -this.ball.dy;
         this.updateScoreDisplay();
+
+        try {
+            fetch('/api/metrics/local', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'start' })
+            }).catch(() => {});
+        } catch (e) {
+            console.warn('metrics start failed', e);
+        }
+
+        this._beforeUnloadHandler = () => {
+            if (!this.gameStart) return;
+            try {
+                navigator.sendBeacon && navigator.sendBeacon(
+                    '/api/metrics/local',
+                    new Blob([JSON.stringify({ event: 'stop' })], { type: 'application/json' })
+                );
+            } catch (e) {}
+        };
+        window.addEventListener('beforeunload', this._beforeUnloadHandler);
     }
 
     public stop() {
         cancelAnimationFrame(this.animationId);
         document.removeEventListener('keydown', this.handleKeyDown);
         document.removeEventListener('keyup', this.handleKeyUp);
+
+        if (this.gameStart) {
+            this.gameStart = false;
+            try {
+                fetch('/api/metrics/local', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event: 'stop' })
+                }).catch(() => {});
+            } catch (e) {
+                console.warn('metrics stop failed', e);
+            }
+        }
+
+        if (this._beforeUnloadHandler) {
+            window.removeEventListener('beforeunload', this._beforeUnloadHandler);
+            this._beforeUnloadHandler = undefined;
+        }
 
         const overlay = document.createElement('div');
         overlay.className = "fixed top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2 rounded-2xl bg-black/70 text-white flex flex-col items-center justify-center p-3 z-50";

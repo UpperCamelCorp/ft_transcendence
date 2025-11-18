@@ -1,16 +1,44 @@
 const GameManager = require('./GameManager');
+const client = require('prom-client');
+
+const localActiveGauge = new client.Gauge({
+    name: 'pong_local_active_games',
+    help: 'Number of active local Pong games'
+});
+const localGamesStartedCounter = new client.Counter({
+    name: 'pong_local_games_started_total',
+    help: 'Total number of local Pong games started'
+});
 
 const usernameCheck = (username) => {
     const regex = new RegExp(/^[a-zA-Z0-9]+$/);
     return (regex.test(username) && username.length <= 10)
 }
 
-// ...existing code...
 // @ts-check
 /** @param {import('fastify').FastifyInstance} fastify */
 const game = async (fastify, options) => {
-    
+
     const gameManager = new GameManager(fastify.db);
+
+    fastify.post('/api/metrics/local', async (req, rep) => {
+        try {
+            const { event } = req.body || {};
+            if (event === 'start') {
+                localGamesStartedCounter.inc();
+                localActiveGauge.inc();
+                return rep.code(200).send({ ok: true });
+            } else if (event === 'stop') {
+                localActiveGauge.dec();
+                return rep.code(200).send({ ok: true });
+            } else {
+                return rep.code(400).send({ message: 'invalid event' });
+            }
+        } catch (e) {
+            fastify.log.error('metrics error', e);
+            return rep.code(500).send({ message: 'metrics error' });
+        }
+    });
 
     fastify.get('/game/play', {websocket : true}, (connection, req) => {
         let playerIndex;
@@ -58,13 +86,13 @@ const game = async (fastify, options) => {
                         if (data.action === 'Down') {
                             if (data.dir === 'Up')
                                 game.inputs[playerIndex].up = true;
-                            else 
+                            else
                                 game.inputs[playerIndex].down = true;
                         }
                         else {
                             if (data.dir === 'Up')
                                 game.inputs[playerIndex].up = false;
-                            else 
+                            else
                                 game.inputs[playerIndex].down = false;
                         }
                     }
