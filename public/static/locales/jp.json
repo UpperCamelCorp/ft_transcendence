@@ -43,6 +43,8 @@
   "signup.errInvalidPassword": "パスワードは8文字以上である必要があります",
   "signup.errInvalidEmail": "例: john@example.com",
   "signup.errNoUsername": "ユーザー名が必要です",
+  "signup.continueWithGoogle": "Googleで続行",
+  "signup.or": "または",
 
   "welcome.title": "Transcendenceへようこそ",
   "welcome.notice": "プレイするには{loginLink}する必要があります",
