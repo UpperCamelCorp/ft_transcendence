@@ -160,12 +160,23 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
     picture.src = user.picture ? user.picture : '/images/default-pp.png';
     const disconnectBtn = document.getElementById('disconnect-profile') as HTMLButtonElement | null;
     if (disconnectBtn) {
-        disconnectBtn.addEventListener('click', () => {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
-            localStorage.removeItem('picture');
-            router.navigate('/welcome');
-            setTimeout(() => location.reload(), 50);
+        disconnectBtn.addEventListener('click', async () => {
+            try {
+                const token = localStorage.getItem('authToken');
+                await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
+                    credentials: 'same-origin'
+                });
+            } catch (e) {
+                console.warn('logout request failed', e);
+            } finally {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('picture');
+                router.navigate('/welcome');
+                setTimeout(() => location.reload(), 50);
+            }
         });
     }
     if (games.length) {
