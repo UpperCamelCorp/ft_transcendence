@@ -1,4 +1,3 @@
-import { setupSidebar } from "./sidebar.js";
 import { setupHeader } from "./header.js";
 import { notFound } from "./404page.js";
 import { t } from "./i18n.js"; // added import
@@ -67,7 +66,6 @@ export default class Router {
     private handleRoute() : void {
         const path = window.location.pathname;
         const handler = this.routes.get(path);
-        setupSidebar();
         setupHeader();
         if (handler){
             this.setNamePage(path);
