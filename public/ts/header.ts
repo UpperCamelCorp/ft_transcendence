@@ -3,6 +3,32 @@ import { t, initI18n, setLocale, getLocale } from "./i18n.js";
 
 let headerListener : boolean = false;
 
+const wireLangButtons = (menu: HTMLDivElement) => {
+    const newLangContainer = menu.querySelector('#lang-select') as HTMLDivElement | null;
+    if (!newLangContainer) return;
+    const buttons = Array.from(newLangContainer.querySelectorAll<HTMLButtonElement>('button[data-locale]'));
+    const applyActive = () => {
+        const cur = getLocale();
+        buttons.forEach(b => {
+            if (b.dataset.locale === cur) {
+                b.classList.add('ring-2','ring-cyan-400','opacity-100');
+            } else {
+                b.classList.remove('ring-2','ring-cyan-400','opacity-100');
+            }
+        });
+    }
+    applyActive();
+    buttons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const locale = btn.dataset.locale;
+            if (!locale) return;
+            await setLocale(locale);
+            router.loadcurrent();
+            setupHeader();
+        });
+    });
+}
+
 export const setupHeader = () => {
     const profilePicture = document.getElementById('profile-picture-header') as HTMLImageElement;
     const userPicture = localStorage.getItem('picture');
@@ -55,32 +81,7 @@ export const setupHeader = () => {
                 </div>
             </div>
         `;
-         const newLangContainer = menu.querySelector('#lang-select') as HTMLDivElement | null;
-         if (newLangContainer) {
-             const buttons = Array.from(newLangContainer.querySelectorAll<HTMLButtonElement>('button[data-locale]'));
-             const applyActive = () => {
-                 const cur = getLocale();
-                 buttons.forEach(b => {
-                     if (b.dataset.locale === cur) {
-                         b.classList.add('ring-2','ring-cyan-400','opacity-100');
-                     } else {
-                         b.classList.remove('ring-2','ring-cyan-400');
-                     }
-                 });
-             }
-             applyActive();
-             buttons.forEach(btn => {
-                 btn.addEventListener('click', async () => {
-                     const locale = btn.dataset.locale;
-                     if (!locale) return;
-                     await setLocale(locale);
-                     router.loadcurrent();
-                     setupHeader();
-                 });
-             });
-         }
-     }
-     else {
+    } else {
         menu.innerHTML = `
             <a href="/login" data-link class="w-full block">
                 <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">${t('header.menu.login')}</button>
@@ -97,31 +98,9 @@ export const setupHeader = () => {
                 </div>
             </div>
         `;
-         const newLangContainer = menu.querySelector('#lang-select') as HTMLDivElement | null;
-         if (newLangContainer) {
-             const buttons = Array.from(newLangContainer.querySelectorAll<HTMLButtonElement>('button[data-locale]'));
-             const applyActive = () => {
-                 const cur = getLocale();
-                 buttons.forEach(b => {
-                     if (b.dataset.locale === cur) {
-                         b.classList.add('ring-2','ring-cyan-400','opacity-100');
-                     } else {
-                         b.classList.remove('ring-2','ring-cyan-400');
-                     }
-                 });
-             }
-             applyActive();
-             buttons.forEach(btn => {
-                 btn.addEventListener('click', async () => {
-                     const locale = btn.dataset.locale;
-                     if (!locale) return;
-                     await setLocale(locale);
-                     router.loadcurrent();
-                     setupHeader();
-                 });
-             });
-         }
-     }
+    }
+    wireLangButtons(menu);
+
     if (profilePicture) {
         if (userPicture) {
             profilePicture.src = userPicture;
