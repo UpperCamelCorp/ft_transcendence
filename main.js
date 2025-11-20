@@ -71,7 +71,7 @@ const start = async () => {
                 auth: require('@fastify/oauth2').GOOGLE_CONFIGURATION
             },
             startRedirectPath: '/login/google',
-            callbackUri: `${process.env.BASE_URL || 'http://localhost:3000'}/login/google/callback`
+            callbackUri: `${process.env.BASE_URL || 'https://localhost'}/login/google/callback`
         });
 
         fastify.register(require('./api/auth.js'));

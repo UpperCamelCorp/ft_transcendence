@@ -15,7 +15,7 @@ const initStatus = () => {
     const token = localStorage.getItem('authToken');
     if (!token)
         return;
-    const ws = new WebSocket(`ws://${window.location.host}/status`);
+    const ws = new WebSocket(`wss://${window.location.host}/status`);
     ws.onopen = () => {
         try {
             ws.send(JSON.stringify({token : token}));
