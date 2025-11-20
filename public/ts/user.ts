@@ -11,7 +11,7 @@ export const userPage = () => `
                     <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full m-2 md:mr-4">
                 </div>
                 <div class="flex flex-col md:flex-row items-center">
-                    <h1 id="user-title" class="text-4xl text-white font-bold mb-2 md:mb-0 md:mr-4">${t('user.statsTitle')}</h1>
+                    <h1 id="user-title" class="text-4xl text-white font-bold text-center mb-2 md:mb-0 md:mr-4">${t('user.statsTitle')}</h1>
                     <div class="flex items-center">
                         <button id="add-button" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold p-3 md:mr-4 rounded-lg shadow">${t('user.add')}</button>
                         <div id="profile-actions" class="flex items-center">
