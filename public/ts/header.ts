@@ -41,27 +41,42 @@ export const setupHeader = () => {
     if (user) {
         menu.innerHTML = `
             <a href="/profile" data-link class="w-full block">
-                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">Profile</button>
+                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">${t('header.menu.profile')}</button>
             </a>
             <a href="/friends" data-link class="w-full block">
-                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">Friends</button>
+                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">${t('header.menu.friends')}</button>
             </a>
             <div class="mt-2 px-2 w-full">
-                <label for="lang-select" class="text-slate-300 text-sm mr-2">${t('header.lang')}</label>
-                <select id="lang-select" class="w-full bg-[#0b1220] text-white p-2 rounded-lg">
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="jp">日本語</option>
-                </select>
+                <label class="text-slate-300 text-sm mr-2">${t('header.lang')}</label>
+                <div id="lang-select" class="flex space-x-2 mt-2">
+                    <button data-locale="en" class="lang-btn p-1 rounded-md text-2xl hover:scale-105 transition">🇬🇧</button>
+                    <button data-locale="fr" class="lang-btn p-1 rounded-md text-2xl hover:scale-105 transition">🇫🇷</button>
+                    <button data-locale="jp" class="lang-btn p-1 rounded-md text-2xl hover:scale-105 transition">🇯🇵</button>
+                </div>
             </div>
         `;
-         const newLangSelect = menu.querySelector('#lang-select') as HTMLSelectElement | null;
-         if (newLangSelect) {
-             newLangSelect.value = getLocale();
-             newLangSelect.addEventListener('change', async () => {
-                 await setLocale(newLangSelect.value);
-                 router.loadcurrent();
-                 setupHeader();
+         const newLangContainer = menu.querySelector('#lang-select') as HTMLDivElement | null;
+         if (newLangContainer) {
+             const buttons = Array.from(newLangContainer.querySelectorAll<HTMLButtonElement>('button[data-locale]'));
+             const applyActive = () => {
+                 const cur = getLocale();
+                 buttons.forEach(b => {
+                     if (b.dataset.locale === cur) {
+                         b.classList.add('ring-2','ring-cyan-400','opacity-100');
+                     } else {
+                         b.classList.remove('ring-2','ring-cyan-400');
+                     }
+                 });
+             }
+             applyActive();
+             buttons.forEach(btn => {
+                 btn.addEventListener('click', async () => {
+                     const locale = btn.dataset.locale;
+                     if (!locale) return;
+                     await setLocale(locale);
+                     router.loadcurrent();
+                     setupHeader();
+                 });
              });
          }
      }
@@ -74,21 +89,36 @@ export const setupHeader = () => {
                 <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">${t('header.menu.signup')}</button>
             </a>
             <div class="mt-2 px-2 w-full">
-                <label for="lang-select" class="text-slate-300 text-sm mr-2">${t('header.lang')}</label>
-                <select id="lang-select" class="w-full bg-[#0b1220] text-white p-2 rounded-lg">
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="jp">日本語</option>
-                </select>
+                <label class="text-slate-300 text-sm mr-2">${t('header.lang')}</label>
+                <div id="lang-select" class="flex space-x-2 mt-2">
+                    <button data-locale="en" class="lang-btn p-1 rounded-md text-2xl hover:scale-105 transition">🇬🇧</button>
+                    <button data-locale="fr" class="lang-btn p-1 rounded-md text-2xl hover:scale-105 transition">🇫🇷</button>
+                    <button data-locale="jp" class="lang-btn p-1 rounded-md text-2xl hover:scale-105 transition">🇯🇵</button>
+                </div>
             </div>
         `;
-         const newLangSelect = menu.querySelector('#lang-select') as HTMLSelectElement | null;
-         if (newLangSelect) {
-             newLangSelect.value = getLocale();
-             newLangSelect.addEventListener('change', async () => {
-                 await setLocale(newLangSelect.value);
-                 router.loadcurrent();
-                 setupHeader();
+         const newLangContainer = menu.querySelector('#lang-select') as HTMLDivElement | null;
+         if (newLangContainer) {
+             const buttons = Array.from(newLangContainer.querySelectorAll<HTMLButtonElement>('button[data-locale]'));
+             const applyActive = () => {
+                 const cur = getLocale();
+                 buttons.forEach(b => {
+                     if (b.dataset.locale === cur) {
+                         b.classList.add('ring-2','ring-cyan-400','opacity-100');
+                     } else {
+                         b.classList.remove('ring-2','ring-cyan-400');
+                     }
+                 });
+             }
+             applyActive();
+             buttons.forEach(btn => {
+                 btn.addEventListener('click', async () => {
+                     const locale = btn.dataset.locale;
+                     if (!locale) return;
+                     await setLocale(locale);
+                     router.loadcurrent();
+                     setupHeader();
+                 });
              });
          }
      }

@@ -5,6 +5,8 @@
   "header.menu.disconnect": "Déconnexion",
   "header.menu.login": "Connexion",
   "header.menu.signup": "Inscription",
+  "header.menu.friends": "Amis",
+  "header.menu.profile": "Profil",
   "header.search.noUser": "Aucun utilisateur trouvé",
 
   "sidebar.dashboard": "Tableau de bord",
@@ -119,6 +121,8 @@
   "pong.gameOver": "Partie terminée",
   "pong.winner": "Gagnant",
   "pong.next": "Suivant",
+  "pong.vs": "VS",
+  "pong.out": "ÉLIMINÉ",
 
   "friends.invite": "Inviter",
   "friends.noFriends": "Pas encore d'amis",
@@ -128,16 +132,6 @@
   "friends.accept": "Accepter",
 
   "errors.passwordMismatch": "Les mots de passe ne correspondent pas",
-
   "router.welcome": "Bienvenue",
-
-  "pong.nextGame": "Prochaine partie",
-  "pong.vs": "VS",
-  "pong.out": "ÉLIMINÉ",
-  "pong.tournamentWinner": "Vainqueur du tournoi",
-  "pong.phase": "Phase {phase}",
-  "pong.tournament": "Tournoi",
-  "pong.tournamentOptions": "Options du tournoi",
-
   "header.lang": "Langue"
 }

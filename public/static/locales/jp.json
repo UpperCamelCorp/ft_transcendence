@@ -5,6 +5,8 @@
   "header.menu.disconnect": "ログアウト",
   "header.menu.login": "ログイン",
   "header.menu.signup": "登録",
+  "header.menu.friends": "フレンド",
+  "header.menu.profile": "プロフィール",
   "header.search.noUser": "ユーザーが見つかりません",
 
   "sidebar.dashboard": "ダッシュボード",
@@ -119,6 +121,8 @@
   "pong.gameOver": "ゲームオーバー",
   "pong.winner": "勝者",
   "pong.next": "次へ",
+  "pong.vs": "VS",
+  "pong.out": "敗退",
 
   "friends.invite": "招待",
   "friends.noFriends": "まだフレンドがいません",
@@ -128,16 +132,6 @@
   "friends.accept": "受け入れる",
 
   "errors.passwordMismatch": "パスワードが一致しません",
-
   "router.welcome": "ようこそ",
-
-  "pong.nextGame": "次の試合",
-  "pong.vs": "VS",
-  "pong.out": "敗退",
-  "pong.tournamentWinner": "トーナメント優勝者",
-  "pong.phase": "フェーズ {phase}",
-  "pong.tournament": "トーナメント",
-  "pong.tournamentOptions": "トーナメントのオプション",
-
   "header.lang": "言語"
 }

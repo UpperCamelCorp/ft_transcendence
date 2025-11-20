@@ -5,6 +5,8 @@
   "header.menu.disconnect": "Disconnect",
   "header.menu.login": "Login",
   "header.menu.signup": "SignUp",
+  "header.menu.friends": "Friends",
+  "header.menu.profile": "Profile",
   "header.search.noUser": "No User Found",
 
   "sidebar.dashboard": "Dashboard",
@@ -119,6 +121,8 @@
   "pong.gameOver": "Game Over",
   "pong.winner": "Winner",
   "pong.next": "Next",
+  "pong.vs": "VS",
+  "pong.out": "OUT",
 
   "friends.invite": "Invite",
   "friends.noFriends": "No Friends Yet",
@@ -128,16 +132,6 @@
   "friends.accept": "Accept",
 
   "errors.passwordMismatch": "Password does not match",
-
   "router.welcome": "Welcome",
-
-  "pong.nextGame": "Next Game",
-  "pong.vs": "VS",
-  "pong.out": "OUT",
-  "pong.tournamentWinner": "Tournament Winner",
-  "pong.phase": "Phase {phase}",
-  "pong.tournament": "Tournament",
-  "pong.tournamentOptions": "Tournament Options",
-
   "header.lang": "Language"
 }
