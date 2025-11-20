@@ -40,32 +40,58 @@ export const setupHeader = () => {
 
     if (user) {
         menu.innerHTML = `
-            <a href="/edit" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.edit')}</button>
+            <a href="/profile" data-link class="w-full block">
+                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">Profile</button>
             </a>
-            <button id="disconnect" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.disconnect')}</button>
+            <a href="/friends" data-link class="w-full block">
+                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">Friends</button>
+            </a>
+            <div class="mt-2 px-2 w-full">
+                <label for="lang-select" class="text-slate-300 text-sm mr-2">${t('header.lang')}</label>
+                <select id="lang-select" class="w-full bg-[#0b1220] text-white p-2 rounded-lg">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="jp">日本語</option>
+                </select>
+            </div>
         `;
-        const disconnectButton = document.getElementById('disconnect');
-        disconnectButton?.addEventListener('click', async () => {
-            try {
-                await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' });
-            } catch (e) {
-                console.warn('Logout request failed', e);
-            }
-            localStorage.clear();
-            setupHeader();
-        });
-    }
-    else {
+         const newLangSelect = menu.querySelector('#lang-select') as HTMLSelectElement | null;
+         if (newLangSelect) {
+             newLangSelect.value = getLocale();
+             newLangSelect.addEventListener('change', async () => {
+                 await setLocale(newLangSelect.value);
+                 router.loadcurrent();
+                 setupHeader();
+             });
+         }
+     }
+     else {
         menu.innerHTML = `
-            <a href="/login" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.login')}</button>
+            <a href="/login" data-link class="w-full block">
+                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">${t('header.menu.login')}</button>
             </a>
-            <a href="/signup" data-link>
-                <button class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-6 py-3 rounded-lg m-2">${t('header.menu.signup')}</button>
+            <a href="/signup" data-link class="w-full block">
+                <button class="w-full bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold px-4 py-2 rounded-lg mb-2 text-left">${t('header.menu.signup')}</button>
             </a>
+            <div class="mt-2 px-2 w-full">
+                <label for="lang-select" class="text-slate-300 text-sm mr-2">${t('header.lang')}</label>
+                <select id="lang-select" class="w-full bg-[#0b1220] text-white p-2 rounded-lg">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="jp">日本語</option>
+                </select>
+            </div>
         `;
-    }
+         const newLangSelect = menu.querySelector('#lang-select') as HTMLSelectElement | null;
+         if (newLangSelect) {
+             newLangSelect.value = getLocale();
+             newLangSelect.addEventListener('change', async () => {
+                 await setLocale(newLangSelect.value);
+                 router.loadcurrent();
+                 setupHeader();
+             });
+         }
+     }
     if (profilePicture) {
         if (userPicture) {
             profilePicture.src = userPicture;
