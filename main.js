@@ -2,6 +2,9 @@ const fastify = require('fastify')({logger: true});
 const path = require('path');
 const { setUpDataBase } = require('./db/database');
 const { error } = require('console');
+const client = require('prom-client');
+
+client.collectDefaultMetrics({ timeout: 5000 });
 
 const initDb = async () => {
     const db = await setUpDataBase();
@@ -85,3 +88,14 @@ const start = async () => {
 }
 
 start();
+
+fastify.get('/metrics', async (request, reply) => {
+  try {
+    const metrics = await client.register.metrics();
+    reply.header('Content-Type', client.register.contentType);
+    return reply.send(metrics);
+  } catch (e) {
+    fastify.log.error('Failed to collect metrics', e);
+    return reply.code(500).send('Metrics error');
+  }
+});

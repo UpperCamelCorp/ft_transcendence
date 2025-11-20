@@ -1,7 +1,17 @@
 const PongGame = require('./PongGame');
+const client = require('prom-client');
+
+const activeGamesGauge = new client.Gauge({
+    name: 'pong_active_games',
+    help: 'Number of active Pong games'
+});
+const gamesStartedCounter = new client.Counter({
+    name: 'pong_games_started_total',
+    help: 'Total number of Pong games started'
+});
 
 class GameManager {
-    
+
     constructor(db) {
         this.db = db;
         this.games = new Map();
@@ -20,8 +30,10 @@ class GameManager {
                 game.playerPictures.push(picture);
             else
                 game.playerPictures.push('');
-            if (index === 1)
+            if (index === 1) {
                 game.start();
+                gamesStartedCounter.inc();
+            }
             return index;
         }
         else {
@@ -35,6 +47,8 @@ class GameManager {
                 game.playerPictures.push(picture);
             else
                 game.playerPictures.push('');
+            activeGamesGauge.set(this.games.size);
+            console.log('[metrics] pong_active_games set to', this.games.size);
             return index;
         }
     }
@@ -46,15 +60,21 @@ class GameManager {
         game.stop();
         if (game.players.length < 2) {
             this.games.delete(id);
+            activeGamesGauge.set(this.games.size);
+            console.log('[metrics] pong_active_games set to', this.games.size);
             return;
         }
         if (index === 0) {
             game.players[1].send(JSON.stringify({type: 'disconnect', left: game.playersNames[0]}));
             this.games.delete(id);
+            activeGamesGauge.set(this.games.size);
+            console.log('[metrics] pong_active_games set to', this.games.size);
         }
         else {
             game.players[0].send(JSON.stringify({type: 'disconnect', left: game.playersNames[1]}));
             this.games.delete(id);
+            activeGamesGauge.set(this.games.size);
+            console.log('[metrics] pong_active_games set to', this.games.size);
         }
     }
 }
