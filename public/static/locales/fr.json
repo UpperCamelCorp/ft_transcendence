@@ -137,5 +137,7 @@
   "pong.tournamentWinner": "Vainqueur du tournoi",
   "pong.phase": "Phase {phase}",
   "pong.tournament": "Tournoi",
-  "pong.tournamentOptions": "Options du tournoi"
+  "pong.tournamentOptions": "Options du tournoi",
+
+  "header.lang": "Langue"
 }

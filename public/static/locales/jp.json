@@ -73,7 +73,7 @@
   "edit.errInvalidPassword": "パスワードは8文字以上である必要があります",
 
   "user.statsTitle": "統計",
-  "user.add": "jsp traduit",
+  "user.add": "追加",
   "user.winRate": "勝率",
   "user.last30": "直近30試合",
   "user.gamesPlayed": "プレイした試合数",
@@ -137,5 +137,7 @@
   "pong.tournamentWinner": "トーナメント優勝者",
   "pong.phase": "フェーズ {phase}",
   "pong.tournament": "トーナメント",
-  "pong.tournamentOptions": "トーナメントのオプション"
+  "pong.tournamentOptions": "トーナメントのオプション",
+
+  "header.lang": "言語"
 }

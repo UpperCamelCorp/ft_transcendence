@@ -137,5 +137,7 @@
   "pong.tournamentWinner": "Tournament Winner",
   "pong.phase": "Phase {phase}",
   "pong.tournament": "Tournament",
-  "pong.tournamentOptions": "Tournament Options"
+  "pong.tournamentOptions": "Tournament Options",
+
+  "header.lang": "Language"
 }
