@@ -6,13 +6,23 @@ export const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
         <div class="flex flex-col-reverse md:flex-col justify-center items-center mb-8">
             <div class="flex justify-center items-center">
-            <div class="relative">
-                <div id="status" class="absolute left-14 top-1 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
-                <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full m-2 md:mr-4">
+                <div class="relative mr-4">
+                    <div id="status" class="absolute left-14 top-1 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
+                    <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full m-2 md:mr-4">
+                </div>
+                <div class="flex flex-col md:flex-row items-center">
+                    <h1 id="user-title" class="text-4xl text-white font-bold mb-2 md:mb-0 md:mr-4">${t('user.statsTitle')}</h1>
+                    <div class="flex items-center">
+                        <button id="add-button" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold p-3 md:mr-4 rounded-lg shadow">${t('user.add')}</button>
+                        <div id="profile-actions" class="flex items-center">
+                            <a href="/edit" data-link class="ml-2">
+                                <button id="edit-profile" class="bg-[#0F172A] hover:bg-[#111827] text-white font-semibold p-3 rounded-lg border border-slate-700">${t('header.menu.edit')}</button>
+                            </a>
+                            <button id="disconnect-profile" class="ml-2 bg-[#ef4444] hover:bg-[#dc2626] text-white font-semibold p-3 rounded-lg border border-red-700">${t('header.menu.disconnect')}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-                <button id="add-button" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold p-3 md:mr-4 rounded-lg shadow">${t('user.add')}</button>
-            </div>    
-            <h1 id="user-title" class="text-4xl text-white font-bold">${t('user.statsTitle')}</h1>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 w-full">
             <!-- Stat 1 -->
@@ -114,26 +124,50 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
     const statusDiv = document.getElementById('status') as HTMLDivElement;
     const addButton = document.getElementById('add-button') as HTMLButtonElement;
 
+    const profileActions = document.getElementById('profile-actions') as HTMLDivElement | null;
+
+    const isOwnProfile = !userId || userId === '';
+
+    if (isOwnProfile) {
+        profileActions?.classList.remove('hidden');
+        addButton?.classList.add('hidden');
+    } else {
+        profileActions?.classList.add('hidden');
+        addButton?.classList.remove('hidden');
+    }
+
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
     console.log(userData);
+
     if (userData.friends === 2) {
-        if (userData.status)
+		if (userData.status)
             statusDiv.classList.replace('bg-[#FF0000]', 'bg-[#00FF00]');
-        addButton.classList.toggle('hidden');
-    }
-    else {
-        console.log('entered')
-        statusDiv.classList.toggle('hidden');
-        if (userData.friends === null) {
-            addButton.textContent = t('user.add');
-            console.log('wtf')
+        statusDiv.classList.remove('hidden');
+        addButton?.classList.add('hidden');
+    } else {
+        statusDiv.classList.add('hidden');
+        if (!isOwnProfile) {
+            addButton?.classList.remove('hidden');
+            if (userData.friends === null) {
+                addButton.textContent = t('user.add');
+            } else if (userData.friends === 0) {
+                addButton.textContent = t('friends.waiting');
+            } else if (userData.friends === 1) {
+                addButton.textContent = t('friends.accept');
+            }
         }
-        else if (userData.friends === 0)
-            addButton.textContent = t('friends.waiting');
-        else if (userData.friends === 1)
-            addButton.textContent = t('friends.accept');
     }
     picture.src = user.picture ? user.picture : '/images/default-pp.png';
+    const disconnectBtn = document.getElementById('disconnect-profile') as HTMLButtonElement | null;
+    if (disconnectBtn) {
+        disconnectBtn.addEventListener('click', () => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            localStorage.removeItem('picture');
+            router.navigate('/welcome');
+            setTimeout(() => location.reload(), 50);
+        });
+    }
     if (games.length) {
         const id = parseInt(userId);
         const winRate = document.getElementById('win-rate') as HTMLSpanElement;
@@ -149,13 +183,13 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
     const historyButton = document.getElementById('history-button');
     historyButton?.addEventListener('click', () => setHistoryPage(userData, games, userId, token));
     if (userData.friends != 2)
-        addButton?.addEventListener('click', async () => { 
+        addButton?.addEventListener('click', async () => {
             const data = await addUser(userId, token);
             console.log(`status == ${data.status}`)
             if (data.status === 1)
-                addButton.innerText = 'Waiting...';
+                addButton.textContent = t('friends.waiting');
             else if (data.status === 2)
-                addButton.classList.toggle('hidden');
+                addButton.classList.add('hidden');
         });
 }
 
