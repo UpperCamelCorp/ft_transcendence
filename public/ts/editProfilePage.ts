@@ -66,7 +66,7 @@ const editProfilePage= () => `
             <p id="twofa-info" class="text-slate-300 text-sm mb-3">${t('edit.twofa.info')}</p>
             <div id="twofa-actions" class="flex gap-3">
                 <button id="twofa-setup-btn" class="px-4 py-2 rounded bg-cyan-600 text-white">${t('edit.enable2fa') ?? 'Enable 2FA'}</button>
-                <button id="twofa-disable-btn" class="px-4 py-2 rounded bg-red-600 text-white">${t('edit.disable2fa') ?? 'Disable 2FA'}</button>
+                <button id="twofa-disable-btn" class="px-4 py-2 rounded bg-red-600 text-white">${t('edit.disable2fa')}</button>
             </div>
         </div>
     </div>`;
