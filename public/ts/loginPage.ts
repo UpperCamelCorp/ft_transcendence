@@ -83,6 +83,10 @@ const loginResponse = (rep: Response, result : any) => {
         clearError(emailInput, emailError);
         clearError(passwordInput, passwordError);
         try {
+            if (result.twofa) {
+                show2faPrompt(result.tempToken);
+                return;
+            }
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
             if (result.picture) {
@@ -167,4 +171,68 @@ export const login = async () => {
             console.error('session fetch failed', e);
         }
     }
+}
+
+export const show2faPrompt = (tempToken: string) => {
+    const prev = document.getElementById('twofa-overlay');
+    if (prev) prev.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'twofa-overlay';
+    overlay.className = 'fixed inset-0 flex items-center justify-center z-[99999]';
+    overlay.innerHTML = `
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative w-full max-w-sm p-6 rounded-xl bg-[#0b1220] text-white border border-slate-700">
+             <h3 class="text-xl font-semibold mb-2">${t('login.twofa.title')}</h3>
+             <p class="text-sm text-slate-600 mb-4">${t('login.twofa.info')}</p>
+             <input id="twofa-code" inputmode="numeric" pattern="[0-9]*" class="p-2 rounded w-full mb-4 bg-[#07172a] text-white placeholder-[#cbd5e1] border border-slate-700" placeholder="${t('login.twofa.placeholder')}" />
+             <div class="flex justify-end gap-2">
+                 <button id="twofa-cancel" class="px-4 py-2 rounded bg-gray-200 text-black">${t('login.twofa.cancel')}</button>
+                 <button id="twofa-submit" class="px-4 py-2 rounded bg-cyan-600 text-white">${t('login.twofa.verify')}</button>
+             </div>
+             <p id="twofa-error" class="text-sm text-red-600 mt-3 hidden"></p>
+         </div>
+     `;
+    document.body.appendChild(overlay);
+
+    const codeInput = document.getElementById('twofa-code') as HTMLInputElement | null;
+    codeInput?.focus();
+
+    const submit = document.getElementById('twofa-submit') as HTMLButtonElement | null;
+    const cancel = document.getElementById('twofa-cancel') as HTMLButtonElement | null;
+    const errorP = document.getElementById('twofa-error') as HTMLParagraphElement | null;
+
+    submit?.addEventListener('click', async () => {
+        const code = (document.getElementById('twofa-code') as HTMLInputElement).value.trim();
+        if (!code) {
+            if (errorP) { errorP.textContent = t('login.twofa.errNoCode'); errorP.classList.remove('hidden'); }
+            return;
+        }
+        try {
+            const resp = await fetch('/api/2fa/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tempToken, token: code }),
+                credentials: 'same-origin'
+            });
+            const text = await resp.text();
+            let res: any = {};
+            try { res = JSON.parse(text); } catch { res.message = text || ''; }
+            if (resp.ok) {
+                localStorage.setItem('authToken', res.token);
+                localStorage.setItem('user', JSON.stringify(res.user));
+                if (res.picture) localStorage.setItem('picture', res.picture);
+                overlay.remove();
+                location.href = '/';
+            } else {
+                if (errorP) { errorP.textContent = res.message || t('login.twofa.errInvalid'); errorP.classList.remove('hidden'); }
+                console.warn('[2FA] verify failed', resp.status, res);
+            }
+        } catch (e) {
+            console.error('[2FA] verify error', e);
+            if (errorP) { errorP.textContent = t('login.twofa.errNetwork'); errorP.classList.remove('hidden'); }
+        }
+    });
+
+    cancel?.addEventListener('click', () => overlay.remove());
 }
