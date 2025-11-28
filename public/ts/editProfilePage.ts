@@ -26,7 +26,10 @@ const editProfilePage= () => `
                         </label>
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <label for="username">${t('edit.usernameLabel')}</label>
+                        <div>
+                            <label for="username">${t('edit.usernameLabel')}</label>
+                            <p id="username-error" class="text-red-700 italic text-xs hidden"></p>    
+                        </div>    
                         <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
@@ -93,9 +96,11 @@ export const edit = () => {
 
 
 const editResponse = (rep: Response, res: any) => {
+    const usernameInput = document.getElementById('username') as HTMLInputElement;
     const emailInput = document.getElementById('email') as HTMLInputElement;
     const passwordInput = document.getElementById('password') as HTMLInputElement;
     const confirmPasswordInput = document.getElementById('password-confirm') as HTMLInputElement;
+    const usernameError = document.getElementById('username-error') as HTMLParagraphElement;
     const emailError = document.getElementById('email-error') as HTMLParagraphElement;
     const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
     const confirmPasswordError = document.getElementById('confirm-password-error') as HTMLParagraphElement;
@@ -126,6 +131,10 @@ const editResponse = (rep: Response, res: any) => {
             invalidError(passwordInput, passwordError, t('edit.errInvalidPassword'));
         else if (res.message === 'Password does not match')
             invalidError(confirmPasswordInput, confirmPasswordError, t('errors.passwordMismatch'));
+        else if (res.message === 'Email already exists')
+            invalidError(emailInput, emailError, res.message);
+        else if (res.message.includes('Username'))
+            invalidError(usernameInput, usernameError, res.message);
         else if (res.message.includes('Invalid file type') || res.message.includes('File too large')) {
             alert(res.message);
             const pictureInputDesktop = document.getElementById('input-picture') as HTMLInputElement;
