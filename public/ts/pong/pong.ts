@@ -251,10 +251,10 @@ const tournamentCustom = () => {
     createPlayer(2);
 
     if (currentUser) {
-        const firstPicutre = document.getElementById('picture1') as HTMLImageElement;
+        const firstPicture = document.getElementById('picture1') as HTMLImageElement;
         const firstName = document.getElementById('name1') as HTMLInputElement;
 
-        firstPicutre.src = currentUserPicture;
+        firstPicture.src = currentUserPicture;
         firstName.placeholder = currentUser.username;
         firstName.value = currentUser.username;
     }
