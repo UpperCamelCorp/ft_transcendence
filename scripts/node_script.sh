@@ -7,7 +7,7 @@ if [ ! -f /app/certs/cert.pem ]; then
         -keyout /app/certs/key.pem \
         -out /app/certs/cert.pem \
         -days 365 \
-        -subj "/C=FR/ST=State/L=City/O=UUC/CN=transcendence"
+        -subj "/C=FR/ST=State/L=City/O=UUC/CN=${SERVER_NAME:-localhost}"
 fi
 
 exec npm run run
