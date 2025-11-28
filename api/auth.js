@@ -95,7 +95,7 @@ const  authRoutes = async (fastify, options) => {
                 return rep.code(400).send({message : "Password does not match"});
             const existingUser = await dbGet('SELECT email FROM users WHERE email = ? OR username = ?', [email, username]);
                 if (existingUser) {
-                    return rep.code(409).send({ message: "User already exists" });
+                    return rep.code(400).send({ message: "User already exists" });
                 }
                 const hash = await bcrypt.hash(password, 12); // Increased salt rounds
                 await dbRun('INSERT INTO users(username, email, hash) VALUES(?, ?, ?)', [username, email, hash]);
