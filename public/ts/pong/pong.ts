@@ -241,6 +241,12 @@ const tournamentCustom = () => {
             playersDiv?.appendChild(player);
     };
 
+    const sanitizeName = (name: string): string => {
+        const div = document.createElement('div');
+        div.textContent = name;
+        return div.innerHTML;
+    };
+
     createPlayer(1);
     createPlayer(2);
 
@@ -266,10 +272,9 @@ const tournamentCustom = () => {
         const inputs = playersDiv?.querySelectorAll<HTMLInputElement>('input');
         const playersName: string[] = [];
         inputs?.forEach(input => {
-            if (!input.value)
-                playersName.push(input.placeholder);
-            else
-                playersName.push(input.value);
+            const rawName = input.value || input.placeholder;
+            const sanitizedName = sanitizeName(rawName);
+            playersName.push(sanitizedName);
         });
 
         const duplicates = playersName.filter((name, index) => 
