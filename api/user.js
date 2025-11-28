@@ -5,6 +5,8 @@ const { promisify } = require('util');
 const { profile, Console } = require('console');
 const { promiseHooks } = require('v8');
 const { default: fastifyMultipart } = require('@fastify/multipart');
+const speakeasy = require('speakeasy');
+const qrcode = require('qrcode');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -27,9 +29,8 @@ const userRoute = async (fastify, options) => {
 
     const dbGet = promisify(fastify.db.get.bind(fastify.db));
     const dbAll = promisify(fastify.db.all.bind(fastify.db));
-
+    const dbRun = promisify(fastify.db.run.bind(fastify.db));
     const MAX_FILE_SIZE = 1 * 1024 * 1024;
-    const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
     fastify.post('/api/edit', {
@@ -56,7 +57,7 @@ const userRoute = async (fastify, options) => {
                 } catch (e) {
                     console.log(e);
                     return rep.code(500).send({ message: "Error uploading file" });
-                }                
+                }
             } else {
                 console.log('no file');
             }
@@ -111,7 +112,7 @@ const userRoute = async (fastify, options) => {
             }
         }
     });
-    
+
     fastify.post('/api/search', {
         onRequest: [fastify.authenticate]
     }, async (req, rep) => {
@@ -119,7 +120,7 @@ const userRoute = async (fastify, options) => {
         if (!username || username.length < 3)
             return rep.code(400).send({message : "No Username"});
         try {
-            username += '%'; 
+            username += '%';
             const users = await dbAll('SELECT id, username, picture FROM users WHERE username LIKE ? AND id != ?', [username, req.user.id]);
             return rep.code(200).send(users);
         } catch (e) {
@@ -176,7 +177,7 @@ const userRoute = async (fastify, options) => {
                 u1.picture as player1_picture,
                 u2.username as player2_username,
                 u2.picture as player2_picture
-                FROM game 
+                FROM game
                 JOIN users u1 ON game.player1_id = u1.id
                 JOIN users u2 ON game.player2_id = u2.id
                 WHERE player1_id = ? OR player2_id = ?`, [id, id]);
@@ -198,7 +199,7 @@ const userRoute = async (fastify, options) => {
                 u1.picture as player1_picture,
                 u2.username as player2_username,
                 u2.picture as player2_picture
-                FROM game 
+                FROM game
                 JOIN users u1 ON game.player1_id = u1.id
                 JOIN users u2 ON game.player2_id = u2.id
                 WHERE player1_id = ? OR player2_id = ?`, [userId, userId]);
@@ -207,6 +208,88 @@ const userRoute = async (fastify, options) => {
         } catch (e) {
             console.log(e);
             return rep.code(500).send({message: "Error try again later"});
+        }
+    });
+
+    // 2FA setup: return otpauth url + QR data URI (authenticated)
+    fastify.get('/api/2fa/setup', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        try {
+            const id = req.user.id;
+            const user = await dbGet('SELECT username, twofa_enabled FROM users WHERE id = ?', [id]);
+            if (!user) return rep.code(404).send({ message: 'User not found' });
+            const secret = speakeasy.generateSecret({ name: `Transcendence (${user.username})` });
+            const otpAuth = secret.otpauth_url;
+            const qrData = await qrcode.toDataURL(otpAuth);
+            return rep.code(200).send({ secret: secret.base32, otpauth: otpAuth, qr: qrData });
+        } catch (e) {
+            console.error(e);
+            return rep.code(500).send({ message: 'Error generating 2FA setup' });
+        }
+    });
+
+    // Enable 2FA (verify TOTP then persist secret)
+    fastify.post('/api/2fa/enable', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        try {
+            const id = req.user.id;
+            const { secret, token } = req.body || {};
+            console.log('[2FA enable] incoming request - headers:', req.headers);
+            console.log('[2FA enable] incoming body:', req.body);
+            console.log('[2FA enable] server time:', new Date().toISOString());
+
+            if (!secret || !token) {
+                console.warn('[2FA enable] missing secret or token');
+                return rep.code(400).send({ message: 'Missing params' });
+            }
+
+            // DEBUG: print expected codes for nearby time windows to help diagnose clock skew
+            try {
+                for (let offset = -2; offset <= 2; offset++) {
+                    const timeSec = Math.floor(Date.now() / 1000) + offset * 30;
+                    const expected = speakeasy.totp({
+                        secret,
+                        encoding: 'base32',
+                        time: timeSec
+                    });
+                    console.log(`[2FA enable] expected (offset ${offset}):`, expected);
+                }
+            } catch (err) {
+                console.warn('[2FA enable] unable to compute expected TOTPs', err);
+            }
+
+            const verified = speakeasy.totp.verify({ secret, encoding: 'base32', token, window: 2 });
+            if (!verified) {
+                console.warn('[2FA enable] verification failed for supplied token:', token);
+                return rep.code(400).send({ message: 'Invalid token (check server logs for expected codes and verify device time)' });
+            }
+            await dbRun('UPDATE users SET twofa_secret = ?, twofa_enabled = 1 WHERE id = ?', [secret, id]);
+            return rep.code(200).send({ ok: true });
+        } catch (e) {
+            console.error(e);
+            return rep.code(500).send({ message: 'Error enabling 2FA' });
+        }
+    });
+
+    // Disable 2FA (verify current TOTP)
+    fastify.post('/api/2fa/disable', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        try {
+            const id = req.user.id;
+            const { token } = req.body || {};
+            if (!token) return rep.code(400).send({ message: 'Missing token' });
+            const user = await dbGet('SELECT twofa_secret FROM users WHERE id = ?', [id]);
+            if (!user || !user.twofa_secret) return rep.code(400).send({ message: '2FA not enabled' });
+            const verified = speakeasy.totp.verify({ secret: user.twofa_secret, encoding: 'base32', token, window: 1 });
+            if (!verified) return rep.code(400).send({ message: 'Invalid token' });
+            await dbRun('UPDATE users SET twofa_secret = NULL, twofa_enabled = 0 WHERE id = ?', [id]);
+            return rep.code(200).send({ ok: true });
+        } catch (e) {
+            console.error(e);
+            return rep.code(500).send({ message: 'Error disabling 2FA' });
         }
     });
 }
