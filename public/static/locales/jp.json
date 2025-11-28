@@ -134,5 +134,27 @@
 
   "errors.passwordMismatch": "パスワードが一致しません",
   "router.welcome": "ようこそ",
-  "header.lang": "言語"
+  "header.lang": "言語",
+  "edit.enable2fa": "2FAを有効にする",
+  "edit.disable2fa": "2FAを無効にする",
+  "edit.twofa.title": "二要素認証",
+  "edit.twofa.info": "認証アプリ（Google Authenticator、Authy など）を使用してください",
+  "edit.twofa.enableTitle": "二要素認証を有効にする",
+  "edit.twofa.setupInfo": "認証アプリでQRをスキャンするか、シークレットを手動で入力してください。",
+  "edit.twofa.secretLabel": "シークレット：",
+  "edit.twofa.placeholder": "123456",
+  "edit.twofa.cancel": "キャンセル",
+  "edit.twofa.confirm": "有効にする",
+  "edit.twofa.disableTitle": "二要素認証を無効にする",
+  "edit.twofa.disableInfo": "2FAを無効にするには、認証アプリのコードを入力してください。",
+  "edit.twofa.disableConfirm": "無効にする",
+
+  "login.twofa.title": "二要素認証",
+  "login.twofa.info": "サインインを完了するために認証アプリのコードを入力してください。",
+  "login.twofa.placeholder": "123456",
+  "login.twofa.cancel": "キャンセル",
+  "login.twofa.verify": "確認",
+  "login.twofa.errNoCode": "コードを入力してください",
+  "login.twofa.errInvalid": "無効なコード",
+  "login.twofa.errNetwork": "コードの確認中にネットワークエラーが発生しました"
 }
