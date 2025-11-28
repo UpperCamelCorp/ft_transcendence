@@ -257,7 +257,7 @@ const userRoute = async (fastify, options) => {
                  console.warn('[2FA enable] missing secret or token');
                  return rep.code(400).send({ message: 'Missing params' });
              }
-             const verified = speakeasy.totp.verify({ secret, encoding: 'base32', token, window: 2 });
+             const verified = speakeasy.totp.verify({ secret, encoding: 'base32', token, window: 1 });
              if (!verified) {
                  console.warn('[2FA enable] verification failed for supplied token:', token);
                  return rep.code(400).send({ message: 'Invalid token (check server logs for expected codes and verify device time)' });
