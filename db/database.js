@@ -63,7 +63,7 @@ const setUpDataBase = async () => {
         // 2FA
         db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT`, (e) => {
             if (e && !e.message.includes('duplicate column name')) {
-                console.log('2fa_secret column addition error:', e);
+                console.log('twofa_secret column addition error:', e);
             } else if (!e) {
                 console.log('twofa_secret column added successfully');
             }
