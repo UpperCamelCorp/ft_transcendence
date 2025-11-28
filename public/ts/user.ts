@@ -174,7 +174,7 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');
                 localStorage.removeItem('picture');
-                router.navigate('/welcome');
+                router.navigate('/');
                 setTimeout(() => location.reload(), 50);
             }
         });

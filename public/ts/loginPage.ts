@@ -123,9 +123,9 @@ export const login = async () => {
                 localStorage.setItem('picture', decodeURIComponent(picture));
             }
             setupHeader();
-            window.history.replaceState({}, document.title, '/welcome');
+            window.history.replaceState({}, document.title, '/');
             setTimeout(() => {
-                router.navigate('/welcome');
+                router.navigate('/');
             }, 100);
             return;
         } catch (e) {
@@ -135,7 +135,6 @@ export const login = async () => {
 
     if (error) {
         console.error('OAuth error:', error);
-        // Show a visible error message to the user
         const emailInput = document.getElementById('email-input') as HTMLInputElement;
         const passwordInput = document.getElementById('password-input') as HTMLInputElement;
         const emailError = document.getElementById('email-error') as HTMLParagraphElement;
@@ -160,8 +159,8 @@ export const login = async () => {
                  localStorage.setItem('user', JSON.stringify(data.user));
                  if (data.user.picture) localStorage.setItem('picture', data.user.picture);
                  setupHeader();
-                 window.history.replaceState({}, document.title, '/welcome');
-                 setTimeout(() => router.navigate('/welcome'), 100);
+                 window.history.replaceState({}, document.title, '/');
+                 setTimeout(() => router.navigate('/'), 100);
                  return;
              }
         } catch (e) {

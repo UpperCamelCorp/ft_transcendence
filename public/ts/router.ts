@@ -15,18 +15,21 @@ export default class Router {
     }
 
     private setNamePage(path : string) : void {
-        // map route -> i18n key
         const map: Record<string, string> = {
-            '/': 'header.title',
-            '/welcome': 'router.welcome',
+            '/': 'router.welcome',
             '/login': 'login.title',
             '/signup': 'signup.title',
             '/game': 'sidebar.game',
             '/edit': 'edit.title',
-            '/friends': 'sidebar.friends'
+            '/friends': 'sidebar.friends',
+            '/user': 'user.statsTitle'
         };
 
-        const key = map[path] ?? '';
+        let key = map[path] ?? '';
+        if (!key) {
+            const seg = path.match(/\/[^\/]+/);
+            if (seg && seg[0]) key = map[seg[0]] ?? '';
+        }
 
         if (window.innerWidth >= 768) {
             const nameSpan = document.getElementById('page-name') as HTMLSpanElement;
@@ -71,7 +74,9 @@ export default class Router {
             this.setNamePage(path);
             handler();
         } else {
-            if (!this.handleDynamic(path)) {
+            if (this.handleDynamic(path)) {
+                this.setNamePage(path);
+            } else {
                 this.setNamePage('');
                 notFound();
                 console.log(`No route for ${path}`);
