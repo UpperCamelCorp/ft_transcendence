@@ -103,11 +103,33 @@ export const edit = () => {
     pictureInputDesktop?.addEventListener('change', () => handleImageChange(pictureInputDesktop));
     pictureInputMobile?.addEventListener('change', () => handleImageChange(pictureInputMobile));
 
-    // 2FA handlers
     const twofaSetupBtn = document.getElementById('twofa-setup-btn') as HTMLButtonElement | null;
     const twofaDisableBtn = document.getElementById('twofa-disable-btn') as HTMLButtonElement | null;
+    (async () => {
+        try {
+            const token = getAuthToken();
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const resp = await fetch('/api/2fa/status', { method: 'GET', headers, credentials: 'same-origin' });
+            if (!resp.ok) return;
+            const data = await resp.json();
+            if (data.enabled) {
+                if (twofaSetupBtn) {
+                    twofaSetupBtn.disabled = true;
+                    twofaSetupBtn.textContent = t('edit.twofa.enabled');
+                    twofaSetupBtn.classList.add('opacity-60','cursor-not-allowed');
+                }
+                if (twofaDisableBtn) twofaDisableBtn.classList.remove('hidden');
+            } else {
+                if (twofaSetupBtn) { twofaSetupBtn.disabled = false; twofaSetupBtn.classList.remove('opacity-60','cursor-not-allowed'); }
+                if (twofaDisableBtn) twofaDisableBtn.classList.add('hidden');
+            }
+        } catch (e) {
+            console.error('[2FA] status fetch error', e);
+        }
+    })();
 
-    const getAuthToken = () => localStorage.getItem('authToken');
+    function getAuthToken() { return localStorage.getItem('authToken'); }
 
     const show2faSetupModal = (qr: string, secret: string) => {
         const overlay = document.createElement('div');

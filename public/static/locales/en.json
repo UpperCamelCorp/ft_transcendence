@@ -92,6 +92,7 @@
   "edit.twofa.disableTitle": "Disable Two-Factor Authentication",
   "edit.twofa.disableInfo": "Enter code from your authenticator app to disable 2FA.",
   "edit.twofa.disableConfirm": "Disable",
+  "edit.twofa.enabled": "2FA enabled",
 
   "user.statsTitle": "Stats",
   "user.add": "Add",

@@ -92,6 +92,7 @@
   "edit.twofa.disableTitle": "Désactiver l'authentification à deux facteurs",
   "edit.twofa.disableInfo": "Entrez le code depuis votre application d'authentification pour désactiver la 2FA.",
   "edit.twofa.disableConfirm": "Désactiver",
+  "edit.twofa.enabled": "2FA activée",
 
   "user.statsTitle": "Stats",
   "user.add": "Ajouter",

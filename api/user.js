@@ -211,6 +211,20 @@ const userRoute = async (fastify, options) => {
         }
     });
 
+    // 2FA status endpoint
+    fastify.get('/api/2fa/status', {
+        onRequest: [fastify.authenticate]
+    }, async (req, rep) => {
+        try {
+            const id = req.user.id;
+            const row = await dbGet('SELECT twofa_enabled FROM users WHERE id = ?', [id]);
+            return rep.code(200).send({ enabled: !!(row && row.twofa_enabled === 1) });
+        } catch (e) {
+            console.error(e);
+            return rep.code(500).send({ message: 'Error fetching 2FA status' });
+        }
+    });
+
     // 2FA setup: return otpauth url + QR data URI (authenticated)
     fastify.get('/api/2fa/setup', {
         onRequest: [fastify.authenticate]
@@ -219,6 +233,7 @@ const userRoute = async (fastify, options) => {
             const id = req.user.id;
             const user = await dbGet('SELECT username, twofa_enabled FROM users WHERE id = ?', [id]);
             if (!user) return rep.code(404).send({ message: 'User not found' });
+            if (user.twofa_enabled) return rep.code(400).send({ message: '2FA already enabled' });
             const secret = speakeasy.generateSecret({ name: `Transcendence (${user.username})` });
             const otpAuth = secret.otpauth_url;
             const qrData = await qrcode.toDataURL(otpAuth);
@@ -236,42 +251,28 @@ const userRoute = async (fastify, options) => {
         try {
             const id = req.user.id;
             const { secret, token } = req.body || {};
-            console.log('[2FA enable] incoming request - headers:', req.headers);
-            console.log('[2FA enable] incoming body:', req.body);
-            console.log('[2FA enable] server time:', new Date().toISOString());
+            const current = await dbGet('SELECT twofa_enabled FROM users WHERE id = ?', [id]);
+            if (current && current.twofa_enabled) return rep.code(400).send({ message: '2FA already enabled' });
+             console.log('[2FA enable] incoming request - headers:', req.headers);
+             console.log('[2FA enable] incoming body:', req.body);
+             console.log('[2FA enable] server time:', new Date().toISOString());
 
-            if (!secret || !token) {
-                console.warn('[2FA enable] missing secret or token');
-                return rep.code(400).send({ message: 'Missing params' });
-            }
-
-            // DEBUG: print expected codes for nearby time windows to help diagnose clock skew
-            try {
-                for (let offset = -2; offset <= 2; offset++) {
-                    const timeSec = Math.floor(Date.now() / 1000) + offset * 30;
-                    const expected = speakeasy.totp({
-                        secret,
-                        encoding: 'base32',
-                        time: timeSec
-                    });
-                    console.log(`[2FA enable] expected (offset ${offset}):`, expected);
-                }
-            } catch (err) {
-                console.warn('[2FA enable] unable to compute expected TOTPs', err);
-            }
-
-            const verified = speakeasy.totp.verify({ secret, encoding: 'base32', token, window: 2 });
-            if (!verified) {
-                console.warn('[2FA enable] verification failed for supplied token:', token);
-                return rep.code(400).send({ message: 'Invalid token (check server logs for expected codes and verify device time)' });
-            }
-            await dbRun('UPDATE users SET twofa_secret = ?, twofa_enabled = 1 WHERE id = ?', [secret, id]);
-            return rep.code(200).send({ ok: true });
-        } catch (e) {
-            console.error(e);
-            return rep.code(500).send({ message: 'Error enabling 2FA' });
-        }
-    });
+             if (!secret || !token) {
+                 console.warn('[2FA enable] missing secret or token');
+                 return rep.code(400).send({ message: 'Missing params' });
+             }
+             const verified = speakeasy.totp.verify({ secret, encoding: 'base32', token, window: 2 });
+             if (!verified) {
+                 console.warn('[2FA enable] verification failed for supplied token:', token);
+                 return rep.code(400).send({ message: 'Invalid token (check server logs for expected codes and verify device time)' });
+             }
+             await dbRun('UPDATE users SET twofa_secret = ?, twofa_enabled = 1 WHERE id = ?', [secret, id]);
+             return rep.code(200).send({ ok: true });
+         } catch (e) {
+             console.error(e);
+             return rep.code(500).send({ message: 'Error enabling 2FA' });
+         }
+     });
 
     // Disable 2FA (verify current TOTP)
     fastify.post('/api/2fa/disable', {

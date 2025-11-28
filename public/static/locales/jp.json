@@ -148,6 +148,7 @@
   "edit.twofa.disableTitle": "二要素認証を無効にする",
   "edit.twofa.disableInfo": "2FAを無効にするには、認証アプリのコードを入力してください。",
   "edit.twofa.disableConfirm": "無効にする",
+  "edit.twofa.enabled": "2FA 有効",
 
   "login.twofa.title": "二要素認証",
   "login.twofa.info": "サインインを完了するために認証アプリのコードを入力してください。",
