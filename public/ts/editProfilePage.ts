@@ -222,9 +222,10 @@ export const edit = () => {
         cancel.addEventListener('click', () => overlay.remove());
         confirm.addEventListener('click', async () => {
             const codeInput = overlay.querySelector('#twofa-disable-code') as HTMLInputElement;
+            codeInput.addEventListener('input', () => clearError(codeInput));
             const code = codeInput.value.trim();
             if (!code) {
-                alert('Enter the code from your authenticator app');
+                invalidError(codeInput, 'Enter the code from your authenticator app');
                 return;
             }
             try {
