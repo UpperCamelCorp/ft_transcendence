@@ -12,6 +12,11 @@ const emailCheck = (email) => {
     return (regex.test(email));
 }
 
+const usernameCheck = (username) => {
+    const regex = new RegExp(/^[a-zA-Z0-9]+$/);
+    return (regex.test(username) && username.length <= 10)
+}
+
 const passwordCheck = (password) => {
     if (password.length < 8)
         return false;
@@ -61,12 +66,20 @@ const userRoute = async (fastify, options) => {
             if (password.value != confirm.value)
                 return rep.code(400).send({message : "Password does not match"});
             if (username.value) {
+                if (!usernameCheck(username.value))
+                    return rep.code(400).send({ message: "Inavlid Username"});
+                const existingUsername = await dbGet('SELECT id FROM users WHERE username = ? AND id != ?', [username.value, req.user.id]);
+                if (existingUsername)
+                    return rep.code(400).send({ message: "Username already exists" });
                 sqlFields.push('username = ?');
                 sqlParam.push(username.value);
             }
             if (email.value) {
                 if (!emailCheck(email.value))
                     return rep.code(400).send({message : "Invalid email"});
+                const existingEmail = await dbGet('SELECT id FROM users WHERE email = ? AND id != ?', [email.value, req.user.id]);
+                if (existingEmail)
+                    return rep.code(400).send({ message: "Email already exists" });
                 sqlFields.push('email = ?');
                 sqlParam.push(email.value);
             }
