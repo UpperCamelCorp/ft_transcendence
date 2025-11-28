@@ -14,7 +14,7 @@ const emailCheck = (email) => {
 
 const usernameCheck = (username) => {
     const regex = new RegExp(/^[a-zA-Z0-9]+$/);
-    return (regex.test(username) && username.length <= 10)
+    return (regex.test(username) && username.length <= 10 && username.length >= 3)
 }
 
 const passwordCheck = (password) => {
