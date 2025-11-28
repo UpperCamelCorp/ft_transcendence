@@ -299,7 +299,6 @@ class Game {
             <span id="player" class="text-2xl font-bold m-4 mb-8">${winner} ${t('pong.wonSuffix')}</span>
             <div class="flex m-2 space-x-8">
                 <button id="return-button" class="mt-2 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.return')}</button>
-                <button id="retry-button" class="mt-2 text-2xl text-slate p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">${t('pong.retry')}</button>
             </div>
         `
         document.body.appendChild(overlay);

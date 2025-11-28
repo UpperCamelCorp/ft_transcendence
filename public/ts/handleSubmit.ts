@@ -8,7 +8,6 @@ export const handleFormSubmit = async (event : Event, endpoint: string, action: 
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    console.log(data);
     try {
         const headers: HeadersInit = {
             'Content-Type': 'application/json',
@@ -22,7 +21,6 @@ export const handleFormSubmit = async (event : Event, endpoint: string, action: 
             body: JSON.stringify(data)
         });
         const result = await response.json();
-        console.log(result);
         action(response, result);
     } catch (e) {
         console.error(e);
@@ -34,7 +32,6 @@ export const handleMultiFormSubmit  = async (event : Event, endpoint: string, ac
     const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
 
-    console.log(formData);
     try {
         const headers: HeadersInit = {};
         const token = getToken();
@@ -47,7 +44,6 @@ export const handleMultiFormSubmit  = async (event : Event, endpoint: string, ac
             body: formData
         });
         const result = await response.json();
-        console.log(result);
         action(response, result);
     } catch (e) {
         console.error(e);

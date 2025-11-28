@@ -75,7 +75,6 @@ const friendsRoute = async (fastify, options) => {
                     const token = fastify.jwt.verify(data.token);
                     id = token.id;
                     fastify.connectedUsers.push(id);
-                    console.log(token.username, token.id, 'online');
                 } catch (e) {
                     connection.close();
                 }
@@ -86,7 +85,6 @@ const friendsRoute = async (fastify, options) => {
                         const index = fastify.connectedUsers.indexOf(id);
                         fastify.connectedUsers.splice(index, 1);
                     }
-                    console.log(id, 'offline');
                 } catch (e) {
                     console.log(e);
                 }

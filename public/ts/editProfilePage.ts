@@ -296,7 +296,6 @@ const editResponse = (rep: Response, res: any) => {
     const emailError = document.getElementById('email-error') as HTMLParagraphElement;
     const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
     const confirmPasswordError = document.getElementById('confirm-password-error') as HTMLParagraphElement;
-    console.log(rep.status);
     if (rep.ok) {
         clearError(emailInput, emailError);
         clearError(passwordInput, passwordError);

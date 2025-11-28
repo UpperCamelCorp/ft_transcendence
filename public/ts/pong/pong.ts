@@ -107,7 +107,8 @@ const tournamentGameOptions = () => `
                 </button>
             </div>
         </div>
-        <div class="w-full flex justify-center mt-4">
+        <div class="w-full flex flex-col items-center mt-4">
+            <p id="error-message" class="hidden text-red-500 text-sm mb-2"></p>
             <button id="play" class="bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
                 ${t('pong.play')}
             </button>
@@ -200,6 +201,25 @@ const tournamentCustom = () => {
     const addPlayer = document.getElementById('plus-button');
     const wrapper = document.getElementById('plus-wrapper') as HTMLDivElement;
     const playButton = document.getElementById('play');
+    const errorMessage = document.getElementById('error-message') as HTMLParagraphElement;
+
+    let currentUser = null;
+    let currentUserPicture = '/images/default-pp.png';
+    const userStr = localStorage.getItem('user');
+    const pictureStr = localStorage.getItem('picture');
+    
+    if (userStr) {
+        try {
+            currentUser = JSON.parse(userStr);
+        } catch (e) {
+            console.error('Error parsing user:', e);
+        }
+    }
+    
+    if (pictureStr) {
+        currentUserPicture = pictureStr;
+    }
+
     let player = 2;
 
     const createPlayer = (playerNum: number) => {
@@ -207,9 +227,9 @@ const tournamentCustom = () => {
         player.className = 'flex flex-col m-3 p-4 justify-center items-center';
         player.innerHTML = `
             <label for="name" class="text-slate-300">${t('pong.player', { n: playerNum })}</label>
-            <img src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full m-4">
+            <img id="picture${playerNum}" src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full m-4">
             <input
-                id="name"
+                id="name${playerNum}"
                 name="name"
                 type="text"
                 placeholder="${t('pong.player', { n: playerNum })}"
@@ -221,8 +241,23 @@ const tournamentCustom = () => {
             playersDiv?.appendChild(player);
     };
 
+    const sanitizeName = (name: string): string => {
+        const div = document.createElement('div');
+        div.textContent = name;
+        return div.innerHTML;
+    };
+
     createPlayer(1);
     createPlayer(2);
+
+    if (currentUser) {
+        const firstPicture = document.getElementById('picture1') as HTMLImageElement;
+        const firstName = document.getElementById('name1') as HTMLInputElement;
+
+        firstPicture.src = currentUserPicture;
+        firstName.placeholder = currentUser.username;
+        firstName.value = currentUser.username;
+    }
 
     addPlayer?.addEventListener('click', () => {
         if (player < 8) {
@@ -237,11 +272,21 @@ const tournamentCustom = () => {
         const inputs = playersDiv?.querySelectorAll<HTMLInputElement>('input');
         const playersName: string[] = [];
         inputs?.forEach(input => {
-            if (!input.value)
-                playersName.push(input.placeholder);
-            else
-                playersName.push(input.value);
+            const rawName = input.value || input.placeholder;
+            const sanitizedName = sanitizeName(rawName);
+            playersName.push(sanitizedName);
         });
+
+        const duplicates = playersName.filter((name, index) => 
+            playersName.indexOf(name) !== index
+        );
+        
+        if (duplicates.length > 0) {
+            errorMessage.textContent = 'Duplicate player names detected! Please use unique names.';
+            errorMessage.classList.remove('hidden');
+            return;
+        }
+
         render(pongGame());
         launchTournament(playersName);
     });

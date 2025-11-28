@@ -188,7 +188,6 @@ class Game {
     }
 
     public handleKeyDown = (e: KeyboardEvent) => {
-        console.log('aa local');
         e.preventDefault();
         if (!this.gameStart)
             this.gameStart = true;
@@ -390,7 +389,6 @@ export const gameInit = async (max: number = 3, leftColor: string = 'white', rig
     if (canvas && container) {
         canvas.width = container.clientWidth;
         canvas.height = canvas.width * (9 / 16);
-        console.log(canvas.width, canvas.height);
     }
     return new Promise<string>((resolve) => {
         currentGame = new Game(canvas, players, max, leftColor, rightColor, resolve);

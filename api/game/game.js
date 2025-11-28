@@ -49,7 +49,6 @@ const game = async (fastify, options) => {
                 const data = JSON.parse(message.toString());
                 let token;
                 if (data.type === 'join') {
-                    console.log(data.roomId);
                     if (data.roomId > 9999 || data.roomId < 0) {
                         connection.send(JSON.stringify({type : 'error', error: 'Wrong RoomId'}));
                         connection.close();
@@ -103,7 +102,6 @@ const game = async (fastify, options) => {
         });
 
         connection.on('close', () => {
-            console.log('player ', playerIndex, ' left');
             if (gameId != -1) {
                 gameManager.disconnect(gameId, playerIndex);
                 gameId = -1;

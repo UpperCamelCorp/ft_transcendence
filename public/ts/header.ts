@@ -112,7 +112,6 @@ export const setupHeader = () => {
     if (!headerListener) {
         profilePicture.addEventListener('click', menuHandler);
         searchBox.addEventListener('input', async (e) => {
-            console.log('search');
             try {
                 searchRes.innerHTML = '';
                 if (searchBox.value.trim().length >= 3) {
@@ -129,7 +128,6 @@ export const setupHeader = () => {
                         body : JSON.stringify({username})
                     });
                     const res : [any] = await rep.json();
-                    console.log(res);
                     searchRes.innerHTML = '';
                     if (searchRes.classList.contains('hidden'))
                         searchRes?.classList.toggle('hidden');

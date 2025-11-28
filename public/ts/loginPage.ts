@@ -73,7 +73,6 @@ const loginPage = () => `
     </div>`;
 
 const loginResponse = (rep: Response, result : any) => {
-    console.log(rep.status);
     const emailInput = document.getElementById('email-input') as HTMLInputElement;
     const passwordInput = document.getElementById('password-input') as HTMLInputElement;
     const emailError = document.getElementById('email-error') as HTMLParagraphElement;
