@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initStatus();
     router.setupLinkHandlers();
 
-    router.add('/welcome', welcome);
+    router.add('/', welcome);
     router.add("/login", login);
     router.add('/signup', signup);
     router.add('/game', game);

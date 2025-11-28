@@ -20,7 +20,7 @@ const friendsPage = () => `
         <div class="flex w-full justify-between items-center max-w-5xl mb-12 pb-8 border-b border-slate-700">
             <div class="flex items-center gap-4">
                 <img src="/svg/friends-icon.svg" alt="friends-icon" class="w-14 h-14 drop-shadow-lg">
-                <span id="user-title" class="text-4xl font-bold bg-gradient-to-r from-slate-200 to-indigo-300 bg-clip-text text-transparent">User's Friends</span>
+                <span id="user-title" class="text-4xl font-bold bg-gradient-to-r from-slate-200 to-indigo-300 bg-clip-text text-transparent">${t('sidebar.friends')}</span>
             </div>
             <button id="invite-button" class="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105">${t('friends.invite')}</button>
         </div>
@@ -79,10 +79,10 @@ const renderPending = (friendsList: FriendsList, mainDiv: HTMLDivElement, button
     mainDiv.innerHTML = '';
     if (!friendsList.pending.length) {
         mainDiv.innerHTML = `
-            <span class="text-2xl text-slate-300">No Invitation Yet</span>
+            <span class="text-2xl text-slate-300">${t('friends.noInvitation')}</span>
         `;
     }
-    button.innerText = 'Friends'
+    button.innerText = t('sidebar.friends');
     friendsList.pending.forEach((friend: Friend) => {
         mainDiv.innerHTML += `
         <a href="/user/${friend.user_id}" data-link class="flex items-center justify-center border-2 border-slate-700 rounded-2xl p-4">
@@ -101,7 +101,7 @@ export const friends = async () => {
     const userTitle = document.getElementById('user-title') as HTMLSpanElement;
     const user = JSON.parse(localStorage.getItem('user') || '');
 
-    userTitle.textContent = `${user.username}'s Friends`;
+    userTitle.textContent = `${user.username} ${t('sidebar.friends')}`;
     let isInvite = false;
     renderFriends(friendsList, mainDiv, inviteButton);
     inviteButton?.addEventListener('click', () => {
