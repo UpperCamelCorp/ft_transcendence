@@ -52,7 +52,6 @@ export default class Router {
         if (!matchPath)
             return false;
         const keyPath = matchPath[0];
-        console.log('keypath = ', keyPath);
         const handler = this.dynamic.get(keyPath);
         if (handler) {
             if (matchPath[1]) {

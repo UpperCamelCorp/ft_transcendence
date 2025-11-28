@@ -92,7 +92,6 @@ const signupPage = () => `
 `;
 
 const signupResponse = (rep : Response, result : any) => {
-    console.log(rep.status);
     const usernameInput = document.getElementById('username') as HTMLInputElement;
     const emailInput = document.getElementById('email') as HTMLInputElement;
     const passwordInput = document.getElementById('password') as HTMLInputElement;

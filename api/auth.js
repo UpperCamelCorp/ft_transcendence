@@ -3,7 +3,6 @@ const { promisify } = require('util');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    console.log('result of email check = ', regex.test(email));
     return (regex.test(email));
 }
 
@@ -37,7 +36,6 @@ const  authRoutes = async (fastify, options) => {
         }
      } , async (req, rep) => {
         try {
-            console.log(req.body);
             const {email, password} = req.body;
 
             if (!emailCheck(email))
@@ -80,7 +78,6 @@ const  authRoutes = async (fastify, options) => {
             }
         }
     }, async (req, rep) => {
-        console.log(req.body)
         try {
             const {username, email, password, confirmPassword} = req.body;
             if (!username)

@@ -8,7 +8,6 @@ const { default: fastifyMultipart } = require('@fastify/multipart');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    console.log('result of check = ', regex.test(email));
     return (regex.test(email));
 }
 
@@ -38,7 +37,6 @@ const userRoute = async (fastify, options) => {
         if (req.user) {
             const data = await req.file();
             let finalFile = null;
-            console.log('id= ', req.user.id);
             if (data.file && data.filename) {
                 try {
                     const ext = data.filename.split('.').pop().toLowerCase();
@@ -49,16 +47,12 @@ const userRoute = async (fastify, options) => {
                         return rep.code(400).send({ message: `File too large. Maximum size: ${MAX_FILE_SIZE / (1024 * 1024)}MB`});
                     const filename = `pp_${req.user.username}_${Date.now()}.${ext}`;
                     const filePath = path.join(__dirname, '../public/uploads/', filename);
-                    console.log('path = ', filePath);
                     await fs.writeFile(filePath, fileBuffer);
                     finalFile = `/uploads/${filename}`;
-                    console.log('final file = ', finalFile);
                 } catch (e) {
                     console.log(e);
                     return rep.code(500).send({ message: "Error uploading file" });
                 }                
-            } else {
-                console.log('no file');
             }
             const {username, email, password, confirm} = data.fields;
             const sqlFields = [];
