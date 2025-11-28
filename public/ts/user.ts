@@ -69,7 +69,6 @@ const getUser = async (userId: string, token: string) => {
         if (!rep.ok)
             return null;
         const data = await rep.json();
-        console.log(data);
         return data;
     } catch (e) {
         console.log(e);
@@ -89,7 +88,6 @@ const getGames = async (userId: string, token: string) => {
         if (!rep.ok)
             return null;
         const data = await rep.json();
-        console.log(data);
         return data;
     } catch (e) {
         console.log(e);
@@ -108,7 +106,6 @@ const addUser = async (userId: string, token: string) => {
         if (!rep.ok)
             return null;
         const data = await rep.json();
-        console.log(data);
         return data;
     } catch (e) {
         console.log(e);
@@ -137,7 +134,6 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
     }
 
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
-    console.log(userData);
 
     if (userData.friends === 2) {
 		if (userData.status)
@@ -196,7 +192,6 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
     if (userData.friends != 2)
         addButton?.addEventListener('click', async () => {
             const data = await addUser(userId, token);
-            console.log(`status == ${data.status}`)
             if (data.status === 1)
                 addButton.textContent = t('friends.waiting');
             else if (data.status === 2)
