@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { promisify } = require('util');
+const speakeasy = require('speakeasy');
 
 const emailCheck = (email) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -25,6 +26,7 @@ const  authRoutes = async (fastify, options) => {
     const dbRun = promisify(fastify.db.run.bind(fastify.db));
 
 
+    // login: if user.twofa_enabled => return temporary token + flag
     fastify.post('/api/login',{
         schema: {
             body: {
@@ -43,7 +45,7 @@ const  authRoutes = async (fastify, options) => {
             if (!emailCheck(email))
                 return rep.code(400).send({message: "Invalid email"});
 
-            const rows = await dbAll('SELECT id, username, hash, picture FROM users WHERE email = ?', [email]);
+            const rows = await dbAll('SELECT id, username, hash, picture, twofa_enabled FROM users WHERE email = ?', [email]);
 
             if (rows.length === 0) {
                 return rep.code(401).send({ message: "Wrong Credentials" });
@@ -53,6 +55,10 @@ const  authRoutes = async (fastify, options) => {
             const isPasswordValid = await bcrypt.compare(password, user.hash);
             if (!isPasswordValid) {
                 return rep.code(401).send({ message: "Wrong Credentials" });
+            }
+            if (user.twofa_enabled) {
+                const tempToken = fastify.jwt.sign({ id: user.id, username: user.username }, { expiresIn: '5m' });
+                return rep.code(200).send({ twofa: true, tempToken, user: { username: user.username, picture: user.picture } });
             }
 
             const jwtToken = fastify.jwt.sign({ id: user.id, username: user.username });
@@ -64,6 +70,28 @@ const  authRoutes = async (fastify, options) => {
         } catch (e) {
             fastify.log.error(e);
             return rep.code(500).send({ message: "Internal server error" });
+        }
+    })
+
+    fastify.post('/api/2fa/login', async (req, rep) => {
+        try {
+            const { tempToken, token } = req.body || {};
+            if (!tempToken || !token) return rep.code(400).send({ message: 'Missing params' });
+            let payload;
+            try {
+                payload = fastify.jwt.verify(tempToken);
+            } catch (e) {
+                return rep.code(401).send({ message: 'Invalid or expired temporary token' });
+            }
+            const userRec = await dbGet('SELECT id, username, picture, twofa_secret, twofa_enabled FROM users WHERE id = ?', [payload.id]);
+            if (!userRec || !userRec.twofa_enabled) return rep.code(400).send({ message: '2FA not enabled' });
+            const verified = speakeasy.totp.verify({ secret: userRec.twofa_secret, encoding: 'base32', token, window: 1 });
+            if (!verified) return rep.code(400).send({ message: 'Invalid TOTP' });
+            const finalToken = fastify.jwt.sign({ id: userRec.id, username: userRec.username });
+            return rep.code(200).send({ token: finalToken, user: { username: userRec.username }, picture: userRec.picture });
+        } catch (e) {
+            fastify.log.error(e);
+            return rep.code(500).send({ message: '2FA login error' });
         }
     });
 
