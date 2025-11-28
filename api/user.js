@@ -31,6 +31,7 @@ const userRoute = async (fastify, options) => {
     const dbRun = promisify(fastify.db.run.bind(fastify.db));
     const MAX_FILE_SIZE = 1 * 1024 * 1024;
     const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
     fastify.post('/api/edit', {
         onRequest: [fastify.authenticate]
