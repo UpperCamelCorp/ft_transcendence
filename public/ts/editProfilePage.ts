@@ -28,8 +28,8 @@ const editProfilePage= () => `
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
                         <div>
                             <label for="username">${t('edit.usernameLabel')}</label>
-                            <p id="username-error" class="text-red-700 italic text-xs hidden"></p>    
-                        </div>    
+                            <p id="username-error" class="text-red-700 italic text-xs hidden"></p>
+                        </div>
                         <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
@@ -59,6 +59,16 @@ const editProfilePage= () => `
                 </div>
             </div>
         </form>
+
+        <!-- 2FA UI -->
+        <div class="mt-6 p-4 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#0F172A] to-[#142033]">
+            <h3 class="text-white text-lg font-semibold mb-2">${t('edit.twofa.title')}</h3>
+            <p id="twofa-info" class="text-slate-300 text-sm mb-3">${t('edit.twofa.info')}</p>
+            <div id="twofa-actions" class="flex gap-3">
+                <button id="twofa-setup-btn" class="px-4 py-2 rounded bg-cyan-600 text-white">${t('edit.enable2fa') ?? 'Enable 2FA'}</button>
+                <button id="twofa-disable-btn" class="px-4 py-2 rounded bg-red-600 text-white">${t('edit.disable2fa') ?? 'Disable 2FA'}</button>
+            </div>
+        </div>
     </div>`;
 
 const initPicture = (classic: HTMLImageElement, mobile: HTMLImageElement) => {
@@ -77,7 +87,7 @@ export const edit = () => {
     const pictureInputMobile = document.getElementById('picture') as HTMLInputElement;
     const imgInput = document.getElementById('profile-picture') as HTMLImageElement;
     const imgInputMobile = document.getElementById('m-profile-picture') as HTMLImageElement;
-    
+
     initPicture(imgInput, imgInputMobile);
     editForm?.addEventListener('submit', (e) => handleMultiFormSubmit(e, '/api/edit', editResponse));
     const handleImageChange = (input: HTMLInputElement) => {
@@ -92,6 +102,166 @@ export const edit = () => {
 
     pictureInputDesktop?.addEventListener('change', () => handleImageChange(pictureInputDesktop));
     pictureInputMobile?.addEventListener('change', () => handleImageChange(pictureInputMobile));
+
+    // 2FA handlers
+    const twofaSetupBtn = document.getElementById('twofa-setup-btn') as HTMLButtonElement | null;
+    const twofaDisableBtn = document.getElementById('twofa-disable-btn') as HTMLButtonElement | null;
+
+    const getAuthToken = () => localStorage.getItem('authToken');
+
+    const show2faSetupModal = (qr: string, secret: string) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 flex items-center justify-center z-50';
+        overlay.innerHTML = `
+            <div class="max-w-lg w-full p-6 rounded-xl border border-slate-700 bg-gradient-to-br from-[#071026]/80 to-[#0b1724]/70 backdrop-blur-sm text-slate-200">
+                <h3 class="text-white text-2xl mb-4">${t('edit.twofa.enableTitle')}</h3>
+                <p class="text-slate-300 mb-4">${t('edit.twofa.setupInfo')}</p>
+
+                <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
+                    <div class="flex-shrink-0">
+                        <div class="bg-white rounded p-2">
+                            <img src="${qr}" alt="qr" class="w-36 h-36 object-contain">
+                        </div>
+                    </div>
+                    <div class="flex-1 w-full">
+                        <p class="text-sm text-slate-300 mb-2">${t('edit.twofa.secretLabel')}</p>
+                        <code id="twofa-secret" class="block w-full p-2 bg-slate-800 text-sm font-mono rounded break-all select-all text-slate-100">${secret}</code>
+                    </div>
+                </div>
+
+                <input id="twofa-verify-code" placeholder="${t('edit.twofa.placeholder')}" class="p-2 rounded w-full mb-4 bg-[#07172a] border border-slate-700 text-white" />
+                <div class="flex justify-end gap-2">
+                    <button id="twofa-cancel" class="px-4 py-2 rounded bg-gray-600 text-white">${t('edit.twofa.cancel')}</button>
+                    <button id="twofa-confirm" class="px-4 py-2 rounded bg-cyan-600 text-white">${t('edit.twofa.confirm')}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const cancel = overlay.querySelector('#twofa-cancel') as HTMLButtonElement;
+        const confirm = overlay.querySelector('#twofa-confirm') as HTMLButtonElement;
+        cancel.addEventListener('click', () => overlay.remove());
+        confirm.addEventListener('click', async () => {
+            const codeInput = overlay.querySelector('#twofa-verify-code') as HTMLInputElement;
+            const code = codeInput.value.trim();
+            if (!code) {
+                alert('Enter the code from your authenticator app');
+                return;
+            }
+            try {
+                const token = getAuthToken();
+                console.log('[2FA] enable - token from localStorage:', token);
+                const headers: Record<string,string> = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                const resp = await fetch('/api/2fa/enable', {
+                    method: 'POST',
+                    headers,
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ secret, token: code })
+                });
+                const text = await resp.text();
+                let res: any = {};
+                try { res = JSON.parse(text); } catch { res.message = text || ''; }
+                if (resp.ok) {
+                    alert('2FA enabled');
+                    overlay.remove();
+                } else if (resp.status === 401) {
+                    alert('Session expired or missing token. Please login again.');
+                    router.navigate('/login');
+                } else {
+                    console.error('2FA enable failed:', resp.status, res);
+                    alert(res.message || `Failed to enable 2FA (status ${resp.status})`);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Error enabling 2FA');
+            }
+        });
+    }
+
+    const show2faDisableModal = () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 flex items-center justify-center z-50';
+        overlay.innerHTML = `
+            <div class="max-w-md w-full p-6 rounded-xl border border-slate-700 bg-gradient-to-br from-[#071026]/80 to-[#0b1724]/70 backdrop-blur-sm text-slate-200">
+                <h3 class="text-white text-2xl mb-4">${t('edit.twofa.disableTitle')}</h3>
+                <p class="text-slate-300 mb-4">${t('edit.twofa.disableInfo')}</p>
+                <input id="twofa-disable-code" placeholder="${t('edit.twofa.placeholder')}" class="p-2 rounded w-full mb-4 bg-[#07172a] border border-slate-700 text-white placeholder-[#94A3B8]" />
+                <div class="flex justify-end gap-2">
+                    <button id="twofa-disable-cancel" class="px-4 py-2 rounded bg-gray-600 text-white">${t('edit.twofa.cancel')}</button>
+                    <button id="twofa-disable-confirm" class="px-4 py-2 rounded bg-red-600 text-white">${t('edit.twofa.disableConfirm')}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const cancel = overlay.querySelector('#twofa-disable-cancel') as HTMLButtonElement;
+        const confirm = overlay.querySelector('#twofa-disable-confirm') as HTMLButtonElement;
+        cancel.addEventListener('click', () => overlay.remove());
+        confirm.addEventListener('click', async () => {
+            const codeInput = overlay.querySelector('#twofa-disable-code') as HTMLInputElement;
+            const code = codeInput.value.trim();
+            if (!code) {
+                alert('Enter the code from your authenticator app');
+                return;
+            }
+            try {
+                const token = getAuthToken();
+                console.log('[2FA] disable - token from localStorage:', token);
+                const headers: Record<string,string> = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                const resp = await fetch('/api/2fa/disable', {
+                    method: 'POST',
+                    headers,
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ token: code })
+                });
+                const text = await resp.text();
+                let res: any = {};
+                try { res = JSON.parse(text); } catch { res.message = text || ''; }
+                if (resp.ok) {
+                    alert('2FA disabled');
+                    overlay.remove();
+                } else if (resp.status === 401) {
+                    alert('Session expired. Please login again.');
+                    router.navigate('/login');
+                } else {
+                    console.error('2FA disable failed:', resp.status, res);
+                    alert(res.message || `Failed to disable 2FA (status ${resp.status})`);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Error disabling 2FA');
+            }
+        });
+    }
+
+    twofaSetupBtn?.addEventListener('click', async () => {
+        try {
+            const token = getAuthToken();
+            console.log('[2FA] setup - token from localStorage:', token);
+            const headers: Record<string,string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const resp = await fetch('/api/2fa/setup', {
+                method: 'GET',
+                headers,
+                credentials: 'same-origin'
+            });
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                alert(err.message || 'Failed to start 2FA setup');
+                return;
+            }
+            const data = await resp.json();
+            show2faSetupModal(data.qr, data.secret);
+        } catch (e) {
+            console.error(e);
+            alert('Error fetching 2FA setup');
+        }
+    });
+
+    twofaDisableBtn?.addEventListener('click', () => show2faDisableModal());
+
 }
 
 
