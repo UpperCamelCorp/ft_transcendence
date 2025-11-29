@@ -106,8 +106,8 @@ export const setupHeader = () => {
 
      const closeMobileMenu = () => {
          if (!menu || !backdrop) return;
-         menu.classList.add('hidden', 'min-w-[220px]', 'rounded-bl-2xl', 'right-0');
-         menu.classList.remove('left-0', 'right-0', 'w-full', 'rounded-b-2xl', 'px-4', 'py-4', 'items-start', 'fixed', 'top-16');
+         menu.classList.remove('left-0', 'w-full', 'rounded-b-2xl', 'px-4', 'py-4', 'items-start');
+         menu.classList.add('hidden', 'min-w-[220px]', 'rounded-bl-2xl', 'right-0', 'fixed', 'top-16', 'z-50');
          backdrop.classList.add('hidden');
          document.body.classList.remove('overflow-hidden');
          const mobileRes = menu.querySelector('#mobile-search-result') as HTMLDivElement | null;
