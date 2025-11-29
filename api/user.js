@@ -147,6 +147,8 @@ const userRoute = async (fastify, options) => {
         try {
             let status = false;
             const user = await dbGet('SELECT username, picture FROM users WHERE id = ?', [userId]);
+            if (!user)
+                return rep.code(404).send({message : 'No User Found'});
             const friendRequestStatus = await dbGet('SELECT status FROM friends WHERE user_id = ? AND friend_id = ?', [userId, id]);
             const friendDemmandStatus = await dbGet('SELECT status FROM friends WHERE user_id = ? AND friend_id = ?', [id, userId]);
             if (friendRequestStatus && friendRequestStatus.status === 2) {
