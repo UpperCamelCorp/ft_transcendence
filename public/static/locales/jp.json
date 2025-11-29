@@ -157,5 +157,18 @@
   "login.twofa.verify": "確認",
   "login.twofa.errNoCode": "コードを入力してください",
   "login.twofa.errInvalid": "無効なコード",
-  "login.twofa.errNetwork": "コードの確認中にネットワークエラーが発生しました"
+  "login.twofa.errNetwork": "コードの確認中にネットワークエラーが発生しました",
+
+  "alert.enabled2fa": "2FAが正常に有効になりました",
+  "alert.disabled2fa": "2FAが正常に無効になりました",
+  "alert.enter2faCode": "認証アプリのコードを入力してください",
+  "alert.failedEnable2fa": "2FAの有効化に失敗しました",
+  "alert.errorEnabling2fa": "2FAの有効化中にエラーが発生しました",
+  "alert.sessionExpiredMissingToken": "セッションが期限切れかトークンがありません。再度ログインしてください。",
+  "alert.sessionExpired": "セッションが期限切れです。再度ログインしてください。",
+  "alert.failedDisable2fa": "2FAの無効化に失敗しました",
+  "alert.errorDisabling2fa": "2FAの無効化中にエラーが発生しました",
+  "alert.failedStart2faSetup": "2FA設定の開始に失敗しました",
+  "alert.errorFetching2faSetup": "2FA設定の取得中にエラーが発生しました",
+  "alert.fileError": "エラーが発生しました"
 }

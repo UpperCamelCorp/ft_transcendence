@@ -152,7 +152,7 @@ export const edit = () => {
             const codeInput = overlay.querySelector('#twofa-verify-code') as HTMLInputElement;
             const code = codeInput.value.trim();
             if (!code) {
-                alert('Enter the code from your authenticator app');
+                alert(t('alert.enter2faCode'));
                 return;
             }
             try {
@@ -170,18 +170,18 @@ export const edit = () => {
                 let res: any = {};
                 try { res = JSON.parse(text); } catch { res.message = text || ''; }
                 if (resp.ok) {
-                    alert('2FA enabled');
+                    alert(t('alert.enabled2fa'));
                     overlay.remove();
                 } else if (resp.status === 401) {
-                    alert('Session expired or missing token. Please login again.');
+                    alert(t('alert.sessionExpiredMissingToken'));
                     router.navigate('/login');
                 } else {
                     console.error('2FA enable failed:', resp.status, res);
-                    alert(res.message || `Failed to enable 2FA (status ${resp.status})`);
+                    alert(res.message || `${t('alert.failedEnable2fa')} (status ${resp.status})`);
                 }
             } catch (e) {
                 console.error(e);
-                alert('Error enabling 2FA');
+                alert(t('alert.errorEnabling2fa'));
             }
         });
     }
@@ -217,12 +217,11 @@ export const edit = () => {
             codeInput.addEventListener('input', () => clearError(codeInput, codeError as HTMLParagraphElement));
             const code = codeInput.value.trim();
             if (!code) {
-                invalidError(codeInput, codeError as HTMLParagraphElement, 'Enter the code from your authenticator app');
+                invalidError(codeInput, codeError as HTMLParagraphElement, t('alert.enter2faCode'));
                 return;
             }
             try {
                 const token = getAuthToken();
-                console.log('[2FA] disable - token from localStorage:', token);
                 const headers: Record<string,string> = { 'Content-Type': 'application/json' };
                 if (token) headers['Authorization'] = `Bearer ${token}`;
                 const resp = await fetch('/api/2fa/disable', {
@@ -235,18 +234,17 @@ export const edit = () => {
                 let res: any = {};
                 try { res = JSON.parse(text); } catch { res.message = text || ''; }
                 if (resp.ok) {
-                    alert('2FA disabled');
+                    alert(t('alert.disabled2fa'));
                     overlay.remove();
                 } else if (resp.status === 401) {
-                    alert('Session expired. Please login again.');
+                    alert(t('alert.sessionExpired'));
                     router.navigate('/login');
                 } else {
-                    console.error('2FA disable failed:', resp.status, res);
-                    alert(res.message || `Failed to disable 2FA (status ${resp.status})`);
+                    alert(res.message || `${t('alert.failedDisable2fa')} (status ${resp.status})`);
                 }
             } catch (e) {
                 console.error(e);
-                alert('Error disabling 2FA');
+                alert(t('alert.errorDisabling2fa'));
             }
         });
     }
@@ -264,14 +262,14 @@ export const edit = () => {
             });
             if (!resp.ok) {
                 const err = await resp.json().catch(() => ({}));
-                alert(err.message || 'Failed to start 2FA setup');
+                alert(err.message || t('alert.failedStart2faSetup'));
                 return;
             }
             const data = await resp.json();
             show2faSetupModal(data.qr, data.secret);
         } catch (e) {
             console.error(e);
-            alert('Error fetching 2FA setup');
+            alert(t('alert.errorFetching2faSetup'));
         }
     });
 
@@ -320,7 +318,7 @@ const editResponse = (rep: Response, res: any) => {
         else if (res.message.includes('Username'))
             invalidError(usernameInput, usernameError, res.message);
         else if (res.message.includes('Invalid file type') || res.message.includes('File too large')) {
-            alert(res.message);
+            alert(res.message || t('alert.fileError'));
             const pictureInputDesktop = document.getElementById('input-picture') as HTMLInputElement;
             const pictureInputMobile = document.getElementById('picture') as HTMLInputElement;
             if (pictureInputDesktop) pictureInputDesktop.value = '';

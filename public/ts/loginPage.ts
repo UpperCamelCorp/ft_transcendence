@@ -222,7 +222,8 @@ export const show2faPrompt = (tempToken: string) => {
                 localStorage.setItem('user', JSON.stringify(res.user));
                 if (res.picture) localStorage.setItem('picture', res.picture);
                 overlay.remove();
-                location.href = '/';
+                setupHeader();
+                router.navigate('/');
             } else {
                 if (errorP) { errorP.textContent = res.message || t('login.twofa.errInvalid'); errorP.classList.remove('hidden'); }
                 console.warn('[2FA] verify failed', resp.status, res);
