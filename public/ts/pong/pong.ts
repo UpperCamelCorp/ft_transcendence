@@ -143,15 +143,6 @@ const onlineGameCustom = () => `
                         class="px-4 py-3 bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all"
                     >
                 </div>
-                <div class="flex flex-col m-3">
-                    <label for="color" class="text-slate-300">${t('pong.paddleColor')}</label>
-                    <input
-                        id="color"
-                        name="color"
-                        type="color"
-                        value="#FFFFFF"
-                    >
-                </div>
             </div>
         </div>
         <div class="w-full flex justify-center mt-4">
