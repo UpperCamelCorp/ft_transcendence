@@ -5,6 +5,8 @@ import { onlineGame, cleanOnlineGame} from "./onlineGame.js";
 import { launchTournament } from "./tournament.js";
 import { t } from "../i18n.js";
 
+const DEFAULT_PADDLE_COLOR = '#FFFFFF';
+
 const pongGame = () => `
     <div class="w-full h-full max-w-4xl p-3 mx-2 aspect-video flex flex-col items-center justify-center">
         <p class="text-white text-4xl">${t('pong.scoreLabel')}</p>
@@ -180,7 +182,7 @@ export const OnlineCustom = () => {
             name = user.username;
         else
             name = nameInput?.value;
-        onlineGame(roomId, name, '#FFFFFF');
+        onlineGame(roomId, name, DEFAULT_PADDLE_COLOR);
     });
 }
 
