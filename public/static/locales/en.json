@@ -28,6 +28,14 @@
   "login.errWrongCredentials": "Wrong Credentials",
   "login.errInvalidEmail": "Example: john@example.com",
   "login.errOAuthFail": "Authentication failed. Please try again.",
+  "login.twofa.title": "Two-Factor Authentication",
+  "login.twofa.info": "Enter the code from your authenticator app to complete sign in.",
+  "login.twofa.placeholder": "123456",
+  "login.twofa.cancel": "Cancel",
+  "login.twofa.verify": "Verify",
+  "login.twofa.errNoCode": "Please enter the code",
+  "login.twofa.errInvalid": "Invalid code",
+  "login.twofa.errNetwork": "Network error verifying code",
 
   "signup.title": "Welcome",
   "signup.subtitle": "Sign up an account",
@@ -73,6 +81,18 @@
   "edit.send": "Send",
   "edit.errInvalidEmail": "Example: john@example.com",
   "edit.errInvalidPassword": "Password must contain at least 8 characters",
+  "edit.twofa.title": "Two-Factor Authentication",
+  "edit.twofa.info": "Use an authenticator app (Google Authenticator, Authy, ...)",
+  "edit.twofa.enableTitle": "Enable Two-Factor Authentication",
+  "edit.twofa.setupInfo": "Scan the QR with your authenticator app or enter the secret manually.",
+  "edit.twofa.secretLabel": "Secret:",
+  "edit.twofa.placeholder": "123456",
+  "edit.twofa.cancel": "Cancel",
+  "edit.twofa.confirm": "Enable",
+  "edit.twofa.disableTitle": "Disable Two-Factor Authentication",
+  "edit.twofa.disableInfo": "Enter code from your authenticator app to disable 2FA.",
+  "edit.twofa.disableConfirm": "Disable",
+  "edit.twofa.enabled": "2FA enabled",
 
   "user.statsTitle": "Stats",
   "user.add": "Add",
@@ -134,5 +154,7 @@
 
   "errors.passwordMismatch": "Password does not match",
   "router.welcome": "Welcome",
-  "header.lang": "Language"
+  "header.lang": "Language",
+  "edit.enable2fa": "Enable 2FA",
+  "edit.disable2fa": "Disable 2FA"
 }

@@ -28,6 +28,14 @@
   "login.errWrongCredentials": "Identifiants incorrects",
   "login.errInvalidEmail": "Exemple : john@exemple.com",
   "login.errOAuthFail": "Échec de l'authentification. Réessayez.",
+  "login.twofa.title": "Authentification à deux facteurs",
+  "login.twofa.info": "Entrez le code de votre application d'authentification pour terminer la connexion.",
+  "login.twofa.placeholder": "123456",
+  "login.twofa.cancel": "Annuler",
+  "login.twofa.verify": "Vérifier",
+  "login.twofa.errNoCode": "Veuillez entrer le code",
+  "login.twofa.errInvalid": "Code invalide",
+  "login.twofa.errNetwork": "Erreur réseau lors de la vérification",
 
   "signup.title": "Bienvenue",
   "signup.subtitle": "Créez un compte",
@@ -73,6 +81,18 @@
   "edit.send": "Envoyer",
   "edit.errInvalidEmail": "Exemple : john@exemple.com",
   "edit.errInvalidPassword": "Le mot de passe doit contenir au moins 8 caractères",
+  "edit.twofa.title": "Authentification à deux facteurs",
+  "edit.twofa.info": "Utilisez une application d'authentification (Google Authenticator, Authy, ...)",
+  "edit.twofa.enableTitle": "Activer l'authentification à deux facteurs",
+  "edit.twofa.setupInfo": "Scannez le QR avec votre application d'authentification ou saisissez le secret manuellement.",
+  "edit.twofa.secretLabel": "Secret :",
+  "edit.twofa.placeholder": "123456",
+  "edit.twofa.cancel": "Annuler",
+  "edit.twofa.confirm": "Activer",
+  "edit.twofa.disableTitle": "Désactiver l'authentification à deux facteurs",
+  "edit.twofa.disableInfo": "Entrez le code depuis votre application d'authentification pour désactiver la 2FA.",
+  "edit.twofa.disableConfirm": "Désactiver",
+  "edit.twofa.enabled": "2FA activée",
 
   "user.statsTitle": "Stats",
   "user.add": "Ajouter",
@@ -134,5 +154,7 @@
 
   "errors.passwordMismatch": "Les mots de passe ne correspondent pas",
   "router.welcome": "Bienvenue",
-  "header.lang": "Langue"
+  "header.lang": "Langue",
+  "edit.enable2fa": "Activer 2FA",
+  "edit.disable2fa": "Désactiver 2FA"
 }

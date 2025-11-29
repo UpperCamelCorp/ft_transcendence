@@ -59,6 +59,22 @@ const setUpDataBase = async () => {
                 console.log('Picture column added successfully');
             }
         });
+
+        // 2FA
+        db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT`, (e) => {
+            if (e && !e.message.includes('duplicate column name')) {
+                console.log('twofa_secret column addition error:', e);
+            } else if (!e) {
+                console.log('twofa_secret column added successfully');
+            }
+        });
+        db.run(`ALTER TABLE users ADD COLUMN twofa_enabled INTEGER DEFAULT 0`, (e) => {
+            if (e && !e.message.includes('duplicate column name')) {
+                console.log('twofa_enabled column addition error:', e);
+            } else if (!e) {
+                console.log('twofa_enabled column added successfully');
+            }
+        });
     })
     return db;
 }
