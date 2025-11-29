@@ -16,7 +16,7 @@ interface FriendsList {
 }
 
 const friendsPage = () => `
-    <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full max-h-screen">
+    <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-4 sm:p-8 md:p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full max-h-screen">
         <div class="w-full max-w-5xl mb-12 pb-8 border-b border-slate-700">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div class="flex items-center gap-4">
