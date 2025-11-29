@@ -27,12 +27,12 @@ class Paddle {
     }
 
     moveUp() {
-        if (this.y - 5 > 0)
+        if (this.y - 20 > 0)
             this.y -= 5;
     }
 
     moveDown(height: number) {
-        if (this.y + 5 < 504)
+        if (this.y + 20 < 504)
             this.y += 5;
     }
 
