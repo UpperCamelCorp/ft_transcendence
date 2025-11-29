@@ -160,7 +160,6 @@ export const OnlineCustom = () => {
     const playButton = document.getElementById('play');
     const roomIdInput = document.getElementById('room') as HTMLInputElement;
     const nameInput = document.getElementById('name') as HTMLInputElement;
-    const colorInput = document.getElementById('color') as HTMLInputElement;
     let user = null;
     const userStr = localStorage.getItem('user');
     if (userStr) {
@@ -176,13 +175,12 @@ export const OnlineCustom = () => {
     playButton?.addEventListener('click', () => {
         render(pongGame());
         const roomId = parseInt(roomIdInput?.value || '0');
-        const color = colorInput?.value;
         let name;
         if (user && !nameInput?.value)
             name = user.username;
         else
             name = nameInput?.value;
-        onlineGame(roomId, name, color);
+        onlineGame(roomId, name, '#FFFFFF');
     });
 }
 

@@ -104,7 +104,6 @@
   "pong.roomId": "ルームID",
   "pong.roomPlaceholder": "0000",
   "pong.displayName": "表示名",
-  "pong.paddleColor": "パドルの色",
   "pong.play": "プレイ",
   "pong.return": "戻る",
   "pong.retry": "再試行",

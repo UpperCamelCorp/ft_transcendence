@@ -124,7 +124,6 @@
   "pong.roomId": "Room id",
   "pong.roomPlaceholder": "0000",
   "pong.displayName": "Display Name",
-  "pong.paddleColor": "Paddle Color",
   "pong.play": "Play",
   "pong.return": "Return",
   "pong.retry": "Retry",
