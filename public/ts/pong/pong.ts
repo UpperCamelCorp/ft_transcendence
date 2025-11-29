@@ -6,29 +6,37 @@ import { launchTournament } from "./tournament.js";
 import { t } from "../i18n.js";
 
 const pongGame = () => `
-    <div class="w-full h-full max-w-4xl p-3 mx-2 aspect-video flex flex-col items-center justify-center">
-        <p class="text-white text-4xl">${t('pong.scoreLabel')}</p>
-        <div class="flex items-center gap-8 my-4 text-white bg-gray-800/70 text-3xl border rounded-3xl border-b-cyan-400 p-4">
-            <div class="flex mx-3 mr-10 space-x-1 items-center">
-                <img id="left-image" src="../images/default-pp.png" alt="left-user-image" class="w-12 h-12 rounded-full">
-                <span class="text-white" id="left-name">${t('pong.player1')}</span>
+    <div class="w-full h-full max-w-full sm:max-w-4xl p-2 sm:p-3 mx-2 flex flex-col items-center justify-center">
+        <p class="text-white text-2xl sm:text-3xl md:text-4xl mb-2 truncate">${t('pong.scoreLabel')}</p>
+
+        <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-8 my-4 text-white bg-gray-800/70 border rounded-3xl border-b-cyan-400 p-3 overflow-hidden">
+            <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+                <img id="left-image" src="../images/default-pp.png" alt="left-user-image" class="w-8 h-8 sm:w-10 md:w-12 rounded-full flex-shrink-0">
+                <span id="left-name" class="truncate text-xs sm:text-sm md:text-base">${t('pong.player1')}</span>
             </div>
-            <span id="score-left">0</span>
-            <span>-</span>
-            <span id="score-right">0</span>
-            <div class="flex mx-3 ml-10 space-x-1 items-center">
-                <img id="right-image" src="../images/default-pp.png" alt="right-user-image" class="w-12 h-12 rounded-full">
-                <span class="text-white" id="right-name">${t('pong.player2')}</span>
+
+            <div class="flex items-center justify-center gap-3 text-xl sm:text-2xl md:text-4xl flex-shrink-0">
+                <span id="score-left" class="font-bold">0</span>
+                <span class="mx-1">-</span>
+                <span id="score-right" class="font-bold">0</span>
+            </div>
+
+            <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+                <img id="right-image" src="../images/default-pp.png" alt="right-user-image" class="w-8 h-8 sm:w-10 md:w-12 rounded-full flex-shrink-0">
+                <span id="right-name" class="truncate text-xs sm:text-sm md:text-base">${t('pong.player2')}</span>
             </div>
         </div>
-        <canvas id="game" class="bg-black/50">
-        </canvas>
-        <div class="w-full flex justify-center space-x-8 mt-12 md:hidden">
-            <button id="up" class="bg-red-700 rounded-2xl">
-                <img src="../svg/game-arrow.svg" alt="up-arrow" class="w-20 h-20 m-3">
+
+        <div class="w-full max-w-full">
+            <canvas id="game" class="bg-black/50 w-full h-auto max-w-full"></canvas>
+        </div>
+
+        <div class="w-full flex justify-center space-x-6 mt-6 md:hidden">
+            <button id="up" class="bg-red-700 rounded-2xl p-2">
+                <img src="../svg/game-arrow.svg" alt="up-arrow" class="w-12 h-12 sm:w-16 sm:h-16 m-1">
             </button>
-           <button id="down" class="bg-cyan-700 rounded-2xl">
-                <img src="../svg/game-arrow.svg" alt="down-arrow" class="w-20 h-20 rotate-180 m-3">
+            <button id="down" class="bg-cyan-700 rounded-2xl p-2">
+                <img src="../svg/game-arrow.svg" alt="down-arrow" class="w-12 h-12 sm:w-16 sm:h-16 rotate-180 m-1">
             </button>
         </div>
     </div>`
@@ -36,22 +44,25 @@ const pongGame = () => `
 const gameChoice = () => `
     <div class="w-full max-w-3xl p-5 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#18003C] to-[#142033]">
         <div class="text-slate-300 flex flex-col items-center">
-            <h1 class="text-5xl font-bold text-white mb-2">${t('pong.title')}</h1>
-            <p>${t('pong.welcome')}</p>
-            <p>${t('pong.playDesc')}</p>
+            <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 text-center break-words">${t('pong.title')}</h1>
+            <p class="text-sm md:text-base text-center">${t('pong.welcome')}</p>
+            <p class="text-sm md:text-base text-center">${t('pong.playDesc')}</p>
         </div>
-        <div class="m-4 p-3 flex items-center justify-center gap-x-10 text-slate-300 text-2xl">
-            <button id="local-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 transition-all duration-200">
-                <img src="../svg/local-game.svg" alt="local-game" class="w-12 h-12 m-3">
-                <span>${t('pong.localGame')}</span>
+
+        <div class="w-full mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+            <button id="local-button" class="w-full flex-1 flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
+                <img src="../svg/local-game.svg" alt="local-game" class="w-8 h-8 sm:w-10 md:w-12 m-2">
+                <span class="mt-1">${t('pong.localGame')}</span>
             </button>
-            <button id="tournament-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
-                <img src="/svg/tournament-icon.svg" alt="tournament" class="w-12 h-12 m-3">
-                <span>${t('pong.tournament')}</span>
+
+            <button id="tournament-button" class="w-full flex-1 flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
+                <img src="/svg/tournament-icon.svg" alt="tournament" class="w-8 h-8 sm:w-10 md:w-12 m-2">
+                <span class="mt-1">${t('pong.tournament')}</span>
             </button>
-            <button id="online-button" class="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
-                <img src="../svg/online-game.svg" alt="online-game" class="w-12 h-12 m-3">
-                <span>${t('pong.onlineGame')}</span>
+
+            <button id="online-button" class="w-full flex-1 flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-[#1E293B] to-[#334155] hover:from-[#334155] hover:to-[#475569] border border-cyan-400 hover:border-cyan-300 transition-all duration-200">
+                <img src="../svg/online-game.svg" alt="online-game" class="w-8 h-8 sm:w-10 md:w-12 m-2">
+                <span class="mt-1">${t('pong.onlineGame')}</span>
             </button>
         </div>
     </div>`
@@ -207,7 +218,7 @@ const tournamentCustom = () => {
     let currentUserPicture = '/images/default-pp.png';
     const userStr = localStorage.getItem('user');
     const pictureStr = localStorage.getItem('picture');
-    
+
     if (userStr) {
         try {
             currentUser = JSON.parse(userStr);
@@ -215,7 +226,7 @@ const tournamentCustom = () => {
             console.error('Error parsing user:', e);
         }
     }
-    
+
     if (pictureStr) {
         currentUserPicture = pictureStr;
     }
@@ -277,10 +288,10 @@ const tournamentCustom = () => {
             playersName.push(sanitizedName);
         });
 
-        const duplicates = playersName.filter((name, index) => 
+        const duplicates = playersName.filter((name, index) =>
             playersName.indexOf(name) !== index
         );
-        
+
         if (duplicates.length > 0) {
             errorMessage.textContent = 'Duplicate player names detected! Please use unique names.';
             errorMessage.classList.remove('hidden');

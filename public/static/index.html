@@ -11,31 +11,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	<link rel="icon" href="../images/favicon.png" type="image/png">
 </head>
-<body class="bg-[url('../images/bg.jpg')] bg-cover bg-right md:bg-center font-roboto md:overflow-hidden">
+<body class="bg-[url('../images/bg.jpg')] bg-cover bg-right md:bg-center font-roboto overflow-auto">
     <!-- header -->
     <header class="fixed top-0 bg-[#18003c] w-full h-16 flex items-center justify-between z-50">
         <div class="flex items-center">
-            <button id="openMenu" class="w-10 h-10 pl-2 md:hidden">
-                <img src="/svg/menu-icon.svg" alt="menu-icon">
-            </button>
             <a href="/" data-link id="title-page" class="text-3xl text-white font-bold p-4 md:p-2" data-i18n="header.title">Transcendence</a>
         </div>
         <div class="hidden md:block">
             <span id="page-name" class="text-4xl text-white font-bold"></span>
         </div>
-        <div class="mx-5 flex justify-center">
+        <div class="mx-5 flex items-center">
             <div class="relative">
-                <input type="search" name="username" id="user-search" data-i18n-placeholder="header.searchPlaceholder" placeholder="Search user" class="rounded-2xl border-2 border-slate-600 mx-3 text-slate-500 p-2">
-                <div id="search-result" class="absolute top-11 left-4 flex flex-col w-64 text-white bg-black/50 hidden">
-                </div>
+                <input type="search" name="username" id="user-search" data-i18n-placeholder="header.searchPlaceholder" placeholder="Search user" class="rounded-2xl border-2 border-slate-600 mx-3 text-slate-500 p-2 hidden md:block">
+                <div id="search-result" class="absolute top-11 left-4 flex flex-col w-64 text-white bg-black/50 hidden"></div>
             </div>
-            <img id="profile-picture-header" src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full hover:ring-2 hover:ring-cyan-300">
+
+            <img id="profile-picture-header" src="/images/default-pp.png" alt="profile-picture" class="w-10 h-10 rounded-full hover:ring-2 hover:ring-cyan-300 ml-2 md:hidden">
+
+            <img id="profile-picture-header-desktop" src="/images/default-pp.png" alt="profile-picture" class="w-12 h-12 rounded-full hover:ring-2 hover:ring-cyan-300 hidden md:block">
         </div>
+
+        <div id="mobile-backdrop" class="hidden fixed inset-0 bg-black/50 z-40" role="presentation" aria-hidden="true" aria-label="Modal backdrop"></div>
+
         <div id="profile-menu" class="fixed top-16 right-0 min-w-[220px] z-50 bg-[#18003c]/95 p-4 flex flex-col items-center justify-center rounded-bl-2xl hidden">
         </div>
     </header>
      <!-- main content -->
-     <main id="main" class="h-[calc(100vh-4rem)] relative mt-16 z-10 flex items-center justify-center overflow-x-scroll px-4">
+     <main id="main" class="h-[calc(100vh-4rem)] relative mt-16 z-10 flex items-center justify-center overflow-auto px-4">
      </main>
  </body>
  </html>
