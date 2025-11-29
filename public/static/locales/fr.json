@@ -156,5 +156,18 @@
   "router.welcome": "Bienvenue",
   "header.lang": "Langue",
   "edit.enable2fa": "Activer 2FA",
-  "edit.disable2fa": "Désactiver 2FA"
+  "edit.disable2fa": "Désactiver 2FA",
+
+  "alert.enabled2fa": "2FA activée avec succès",
+  "alert.disabled2fa": "2FA désactivée avec succès",
+  "alert.enter2faCode": "Entrez le code depuis votre application d'authentification",
+  "alert.failedEnable2fa": "Échec de l'activation de la 2FA",
+  "alert.errorEnabling2fa": "Erreur lors de l'activation de la 2FA",
+  "alert.sessionExpiredMissingToken": "Session expirée ou jeton manquant. Veuillez vous reconnecter.",
+  "alert.sessionExpired": "Session expirée. Veuillez vous reconnecter.",
+  "alert.failedDisable2fa": "Échec de la désactivation de la 2FA",
+  "alert.errorDisabling2fa": "Erreur lors de la désactivation de la 2FA",
+  "alert.failedStart2faSetup": "Échec du démarrage de la configuration 2FA",
+  "alert.errorFetching2faSetup": "Erreur lors de la récupération de la configuration 2FA",
+  "alert.fileError": "Une erreur est survenue"
 }

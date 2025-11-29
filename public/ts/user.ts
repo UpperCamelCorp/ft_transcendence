@@ -4,7 +4,7 @@ import { t } from "./i18n.js";
 
 export const userPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-4 md:p-6 rounded-2xl flex flex-col items-center max-w-4xl w-full max-h-[calc(100vh-5rem)] overflow-auto">
-        
+
         <div class="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
             <div class="flex items-center w-full md:w-auto">
                 <div class="relative mr-3">
@@ -49,7 +49,7 @@ export const userPage = () => `
 
         <div id="games-wrapper" class="w-full">
             <div id="games-div" class="flex flex-col gap-3 overflow-auto pr-2 max-h-[calc(100vh-18rem)]">
-                
+
                 <!-- games injected here -->
             </div>
         </div>
@@ -57,7 +57,7 @@ export const userPage = () => `
 
 export const historyPage = () => `
     <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-6 rounded-2xl flex flex-col  max-w-3xl w-full max-h-[calc(100vh-5rem)] overflow-auto">
-        
+
         <div class="relative flex items-center justify-center m-3">
             <h1 id="user-title" class="text-3xl md:text-4xl text-white font-bold break-words">-</h1>
             <button id="return-button" class="absolute top-0 right-2 border border-[#334155] hover:border-[#475569] text-slate-200 px-4 py-2 rounded-lg text-sm">${t('user.return')}</button>
@@ -185,7 +185,6 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
                 localStorage.removeItem('user');
                 localStorage.removeItem('picture');
                 router.navigate('/');
-                setTimeout(() => location.reload(), 50);
             }
         });
     }

@@ -156,5 +156,18 @@
   "router.welcome": "Welcome",
   "header.lang": "Language",
   "edit.enable2fa": "Enable 2FA",
-  "edit.disable2fa": "Disable 2FA"
+  "edit.disable2fa": "Disable 2FA",
+
+  "alert.enabled2fa": "Enabled 2FA successfully",
+  "alert.disabled2fa": "Disabled 2FA successfully",
+  "alert.enter2faCode": "Enter the code from your authenticator app",
+  "alert.failedEnable2fa": "Failed to enable 2FA",
+  "alert.errorEnabling2fa": "Error enabling 2FA",
+  "alert.sessionExpiredMissingToken": "Session expired or missing token. Please login again.",
+  "alert.sessionExpired": "Session expired. Please login again.",
+  "alert.failedDisable2fa": "Failed to disable 2FA",
+  "alert.errorDisabling2fa": "Error disabling 2FA",
+  "alert.failedStart2faSetup": "Failed to start 2FA setup",
+  "alert.errorFetching2faSetup": "Error fetching 2FA setup",
+  "alert.fileError": "An error occurred"
 }
