@@ -120,8 +120,10 @@ const signupResponse = (rep : Response, result : any) => {
             invalidError(usernameInput, usernameError, "Username required");
         else if (result.message === 'Invalid username')
             invalidError(usernameInput, usernameError, "Username must be < 10 and contain only letters and numbers");
-        else if (result.message === 'User already exists')
+        else if (result.message === 'User already exists') {
+            invalidError(emailInput, emailError, result.message);
             invalidError(usernameInput, usernameError, result.message);
+        }
     }
 }
 
