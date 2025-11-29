@@ -6,70 +6,70 @@ import { setupHeader } from "./header.js";
 import { t } from './i18n.js';
 
 const editProfilePage= () => `
-    <div class="max-w-4xl bg-gradient-to-br from-[#18003C] to-[#142033] rounded-2xl p-8">
-        <form id="form-edit">
-            <div class="w-full flex items-center justify-center text-white md:visible">
-                <div class="w-40 hidden md:flex items-center p-4 pr-8">
-                    <label for="input-picture" class="relative">
-                        <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
-                        <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-8 h-8 absolute bottom-0 -right-4">
-                        <input id="input-picture" type="file" name="picture" accept="image/*" class="hidden">
-                    </label>
-                </div>
-                <div class="flex flex-col items-center space-y-4 p-4">
-                    <p class="text-2xl text-slate-300">${t('edit.title')}</p>
-                    <div class="w-40 flex md:hidden items-center p-4">
+    <div class="max-w-4xl bg-gradient-to-br from-[#18003C] to-[#142033] rounded-2xl p-4 sm:p-6 md:p-8 max-h-[calc(100vh-5rem)] overflow-auto">
+         <form id="form-edit">
+            <div class="w-full flex flex-col md:flex-row items-start md:items-center justify-center text-white gap-4">
+                <div class="w-40 md:flex-shrink-0 hidden md:flex items-center p-2 md:p-4 pr-4">
+                     <label for="input-picture" class="relative">
+                        <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover">
+                        <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-7 h-7 md:w-8 md:h-8 absolute bottom-0 -right-3 md:-right-4">
+                         <input id="input-picture" type="file" name="picture" accept="image/*" class="hidden">
+                     </label>
+                 </div>
+                <div class="flex-1 flex flex-col items-stretch space-y-4 p-2">
+                    <p class="text-2xl text-slate-300 text-center md:text-left">${t('edit.title')}</p>
+                    <div class="flex md:hidden items-center justify-center">
                         <label for="picture" class="relative">
-                            <img id="m-profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-24 h-24 rounded-full">
-                            <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-8 h-8 absolute bottom-0 left-24">
+                            <img id="m-profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-20 h-20 rounded-full object-cover">
+                            <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-7 h-7 absolute bottom-0 left-16">
                             <input type="file" id="picture" name="picture" accept="image/*" class="hidden">
                         </label>
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <div>
-                            <label for="username">${t('edit.usernameLabel')}</label>
-                            <p id="username-error" class="text-red-700 italic text-xs hidden"></p>
-                        </div>
-                        <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
+                         <div>
+                             <label for="username">${t('edit.usernameLabel')}</label>
+                             <p id="username-error" class="text-red-700 italic text-xs hidden"></p>
+                         </div>
+                        <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                     </div>
+                     <div class="flex flex-col justify-start text-[#E2E8F0]">
+                         <div>
+                             <label for="email" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.emailLabel')}</label>
+                             <p id="email-error" class="text-red-700 italic text-xs hidden"></p>
+                         </div>
+                        <input type="text" name="email" id="email" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                     </div>
+                     <div class="flex flex-col justify-start text-[#E2E8F0]">
+                         <div>
+                             <label for="password" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.passwordLabel')}</label>
+                             <p id="password-error" class="text-red-700 italic text-xs hidden"></p>
+                         </div>
+                        <input type="password" name="password" id="password" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                     </div>
+                     <div class="flex flex-col justify-start text-[#E2E8F0]">
+                         <div>
+                             <label for="password-confirm" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.passwordConfirmLabel')}</label>
+                             <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
+                         </div>
+                        <input type="password" name="confirm" id="password-confirm" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
                     </div>
-                    <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.emailLabel')}</label>
-                            <p id="email-error" class="text-red-700 italic text-xs hidden"></p>
-                        </div>
-                        <input type="text" name="email" id="email" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
-                    </div>
-                    <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.passwordLabel')}</label>
-                            <p id="password-error" class="text-red-700 italic text-xs hidden"></p>
-                        </div>
-                        <input type="password" name="password" id="password" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
-                    </div>
-                    <div class="flex flex-col justify-start text-[#E2E8F0]">
-                        <div>
-                            <label for="password-confirm" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.passwordConfirmLabel')}</label>
-                            <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
-                        </div>
-                        <input type="password" name="confirm" id="password-confirm" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all">
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
+                    <button type="submit" class="w-full md:w-auto bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
                         ${t('edit.send')}
                     </button>
                 </div>
             </div>
-        </form>
+         </form>
 
-        <!-- 2FA UI -->
-        <div class="mt-6 p-4 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#0F172A] to-[#142033]">
-            <h3 class="text-white text-lg font-semibold mb-2">${t('edit.twofa.title')}</h3>
-            <p id="twofa-info" class="text-slate-300 text-sm mb-3">${t('edit.twofa.info')}</p>
-            <div id="twofa-actions" class="flex gap-3">
-                <button id="twofa-setup-btn" class="px-4 py-2 rounded bg-cyan-600 text-white">${t('edit.enable2fa') ?? 'Enable 2FA'}</button>
-                <button id="twofa-disable-btn" class="px-4 py-2 rounded bg-red-600 text-white">${t('edit.disable2fa')}</button>
-            </div>
-        </div>
-    </div>`;
+         <!-- 2FA UI -->
+         <div class="mt-6 p-4 border rounded-2xl border-[#243241] bg-gradient-to-br from-[#0F172A] to-[#142033]">
+             <h3 class="text-white text-lg font-semibold mb-2">${t('edit.twofa.title')}</h3>
+             <p id="twofa-info" class="text-slate-300 text-sm mb-3">${t('edit.twofa.info')}</p>
+             <div id="twofa-actions" class="flex gap-3">
+                 <button id="twofa-setup-btn" class="px-4 py-2 rounded bg-cyan-600 text-white">${t('edit.enable2fa') ?? 'Enable 2FA'}</button>
+                 <button id="twofa-disable-btn" class="px-4 py-2 rounded bg-red-600 text-white">${t('edit.disable2fa')}</button>
+             </div>
+         </div>
+     </div>`;
 
 const initPicture = (classic: HTMLImageElement, mobile: HTMLImageElement) => {
     const picture = localStorage.getItem('picture');
@@ -133,16 +133,16 @@ export const edit = () => {
 
     const show2faSetupModal = (qr: string, secret: string) => {
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 flex items-center justify-center z-50 p-4';
         overlay.innerHTML = `
-            <div class="max-w-lg w-full p-6 rounded-xl border border-slate-700 bg-gradient-to-br from-[#071026]/80 to-[#0b1724]/70 backdrop-blur-sm text-slate-200">
+            <div class="max-w-lg w-full max-h-[90vh] overflow-auto p-4 sm:p-6 rounded-xl border border-slate-700 bg-gradient-to-br from-[#071026]/80 to-[#0b1724]/70 backdrop-blur-sm text-slate-200">
                 <h3 class="text-white text-2xl mb-4">${t('edit.twofa.enableTitle')}</h3>
                 <p class="text-slate-300 mb-4">${t('edit.twofa.setupInfo')}</p>
 
                 <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
                     <div class="flex-shrink-0">
                         <div class="bg-white rounded p-2">
-                            <img src="${qr}" alt="qr" class="w-36 h-36 object-contain">
+                            <img src="${qr}" alt="qr" class="w-28 h-28 sm:w-36 sm:h-36 object-contain">
                         </div>
                     </div>
                     <div class="flex-1 w-full">
@@ -222,10 +222,17 @@ export const edit = () => {
         cancel.addEventListener('click', () => overlay.remove());
         confirm.addEventListener('click', async () => {
             const codeInput = overlay.querySelector('#twofa-disable-code') as HTMLInputElement;
-            codeInput.addEventListener('input', () => clearError(codeInput));
+            let codeError = overlay.querySelector('#twofa-disable-error') as HTMLParagraphElement | null;
+            if (!codeError) {
+                codeError = document.createElement('p') as HTMLParagraphElement;
+                codeError.id = 'twofa-disable-error';
+                codeError.className = 'text-red-700 italic text-xs hidden';
+                codeInput.insertAdjacentElement('afterend', codeError);
+            }
+            codeInput.addEventListener('input', () => clearError(codeInput, codeError as HTMLParagraphElement));
             const code = codeInput.value.trim();
             if (!code) {
-                invalidError(codeInput, 'Enter the code from your authenticator app');
+                invalidError(codeInput, codeError as HTMLParagraphElement, 'Enter the code from your authenticator app');
                 return;
             }
             try {

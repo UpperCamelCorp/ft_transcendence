@@ -4,7 +4,7 @@ import { t } from "./i18n.js";
 const WelcomePage = () => `
     <section class="w-full px-6 py-12 max-w-4xl text-center">
         <div class="bg-gradient-to-br from-[#18003C] to-[#142033] rounded-2xl shadow-lg border border-[#243241] p-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">${t('welcome.title')}</h1>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight break-words">${t('welcome.title')}</h1>
             <p id="user-welcome" class="text-lg text-slate-300 mt-8 mb-10 mx-auto w-full max-w-xl text-center">
                 ${t('welcome.notice').replace('{loginLink}', `<a href="/login" data-link class="underline hover:text-blue-400">${t('welcome.loginLink')}</a>`)}
             </p>

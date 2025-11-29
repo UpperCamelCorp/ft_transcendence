@@ -3,55 +3,64 @@ import { router } from "./index.js";
 import { t } from "./i18n.js";
 
 export const userPage = () => `
-    <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full">
-        <div class="flex flex-col-reverse md:flex-col justify-center items-center mb-8">
-            <div class="flex justify-center items-center">
-                <div class="relative mr-4">
-                    <div id="status" class="absolute left-14 top-1 rounded-full bg-[#FF0000] w-4 h-4 z-50"></div>
-                    <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 rounded-full m-2 md:mr-4">
+    <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-4 md:p-6 rounded-2xl flex flex-col items-center max-w-4xl w-full"
+         style="max-height: calc(100vh - 5rem); overflow:auto;">
+        <div class="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <div class="flex items-center w-full md:w-auto">
+                <div class="relative mr-3">
+                    <div id="status" class="absolute left-8 top-0 rounded-full bg-red-500 w-2 h-2 md:w-4 md:h-4 z-50"></div>
+                    <img id="user-picture" src="/images/default-pp.png" alt="user picture" class="w-16 h-16 md:w-24 md:h-24 rounded-full">
                 </div>
-                <div class="flex flex-col md:flex-row items-center">
-                    <h1 id="user-title" class="text-4xl text-white font-bold text-center mb-2 md:mb-0 md:mr-4">${t('user.statsTitle')}</h1>
-                    <div class="flex items-center">
-                        <button id="add-button" class="bg-[#06b6d4] hover:bg-[#0891b2] text-black font-semibold p-3 md:mr-4 rounded-lg shadow">${t('user.add')}</button>
-                        <div id="profile-actions" class="flex items-center">
-                            <a href="/edit" data-link class="ml-2">
-                                <button id="edit-profile" class="bg-[#0F172A] hover:bg-[#111827] text-white font-semibold p-3 rounded-lg border border-slate-700">${t('header.menu.edit')}</button>
-                            </a>
-                            <button id="disconnect-profile" class="ml-2 bg-[#ef4444] hover:bg-[#dc2626] text-white font-semibold p-3 rounded-lg border border-red-700">${t('header.menu.disconnect')}</button>
-                        </div>
+                <div class="flex flex-col">
+                    <h1 id="user-title" class="text-xl md:text-4xl font-bold text-white mb-1 break-words">-</h1>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <span id="user-subtitle" class="hidden md:inline"></span>
                     </div>
                 </div>
             </div>
+
+            <div id="profile-actions" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button id="add-button" class="w-full sm:w-auto bg-emerald-400 text-black font-semibold px-3 py-2 rounded-lg shadow hover:brightness-105 transition text-sm">${t('user.add')}</button>
+                    <a href="/edit" data-link class="w-full sm:w-auto">
+                        <button id="edit-profile" class="w-full sm:w-auto bg-[#0F172A] text-white font-semibold px-3 py-2 rounded-lg border border-slate-700 text-sm">${t('header.menu.edit')}</button>
+                    </a>
+                </div>
+                <button id="disconnect-profile" class="w-full sm:w-auto bg-red-600 text-white font-semibold px-3 py-2 rounded-lg border border-red-700 text-sm">${t('header.menu.disconnect')}</button>
+            </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 w-full">
-            <!-- Stat 1 -->
-            <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-6 shadow-lg hover:scale-105 transition-transform">
-                <span class="text-2xl font-semibold text-cyan-300 mb-2">${t('user.winRate')}</span>
-                <span id="win-rate" class="text-5xl font-bold text-white mb-2">-%</span>
-                <span class="text-sm text-slate-400">${t('user.last30')}</span>
+
+        <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+            <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-3 shadow-lg">
+                <span class="text-lg font-semibold text-cyan-300 mb-1">${t('user.winRate')}</span>
+                <span id="win-rate" class="text-2xl md:text-3xl font-bold text-white mb-1">-%</span>
+                <span class="text-xs text-slate-400">${t('user.last30')}</span>
             </div>
-            <!-- Stat 2 -->
-            <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-6 shadow-lg hover:scale-105 transition-transform">
-                <span class="text-2xl font-semibold text-cyan-300 mb-2">${t('user.gamesPlayed')}</span>
-                <span id="total" class="text-5xl font-bold text-white mb-2">-</span>
-                <span class="text-sm text-slate-400">${t('user.totalMatches')}</span>
+            <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-3 shadow-lg">
+                <span class="text-lg font-semibold text-cyan-300 mb-1">${t('user.totalMatches')}</span>
+                <span id="total" class="text-2xl md:text-3xl font-bold text-white mb-1">-</span>
+                <span class="text-xs text-slate-400">${t('user.totalMatches')}</span>
             </div>
-            <!-- Stat 3 -->
-            <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-6 shadow-lg hover:scale-105 transition-transform">
-                <span class="text-2xl font-semibold text-cyan-300 mb-2">${t('user.gamesHistory')}</span>
-                <button id="history-button" class="flex h-full items-center">
-                    <span class="text-sm text-slate-400">${t('user.historyClick')}</span>
-                </button>
+            <div class="flex flex-col items-center bg-[#1a1a2e] rounded-xl p-3 shadow-lg">
+                <span class="text-lg font-semibold text-cyan-300 mb-1">${t('user.gamesHistory')}</span>
+                <button id="history-button" class="text-sm text-slate-300 underline">${t('user.historyClick')}</button>
+            </div>
+        </div>
+
+        <div id="games-wrapper" class="w-full">
+            <div id="games-div" class="flex flex-col gap-3 overflow-auto pr-2"
+                 style="max-height: calc(100vh - 18rem);">
+                <!-- games injected here -->
             </div>
         </div>
     </div>`;
 
 export const historyPage = () => `
-    <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col  max-w-3xl w-full max-h-full">
-        <div class="relative flex items-center justify-center m-4">
-            <h1 id="user-title" class="text-4xl text-white font-bold">-</h1>
-            <button id="return-button" class="absolute top-0 right-2 border border-[#334155] hover:border-[#475569] text-slate-200 px-6 py-3 rounded-lg">${t('user.return')}</button>
+    <div id="history-div" class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-6 rounded-2xl flex flex-col  max-w-3xl w-full"
+         style="max-height: calc(100vh - 5rem); overflow:auto;">
+        <div class="relative flex items-center justify-center m-3">
+            <h1 id="user-title" class="text-3xl md:text-4xl text-white font-bold break-words">-</h1>
+            <button id="return-button" class="absolute top-0 right-2 border border-[#334155] hover:border-[#475569] text-slate-200 px-4 py-2 rounded-lg text-sm">${t('user.return')}</button>
         </div>
         <div id="games-div" class="overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-800">
         </div>
@@ -125,12 +134,18 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
 
     const isOwnProfile = !userId || userId === '';
 
+    profileActions?.classList.remove('hidden');
+    const editBtn = document.getElementById('edit-profile') as HTMLButtonElement | null;
+    const disconnectBtn = document.getElementById('disconnect-profile') as HTMLButtonElement | null;
+
     if (isOwnProfile) {
-        profileActions?.classList.remove('hidden');
         addButton?.classList.add('hidden');
+        editBtn?.classList.remove('hidden');
+        disconnectBtn?.classList.remove('hidden');
     } else {
-        profileActions?.classList.add('hidden');
         addButton?.classList.remove('hidden');
+        editBtn?.classList.add('hidden');
+        disconnectBtn?.classList.add('hidden');
     }
 
     title.textContent = `${user.username} ${t('user.statsSuffix')}`;
@@ -154,7 +169,6 @@ export const setUserPage = (userData: any, games: [any], userId:string, token: s
         }
     }
     picture.src = user.picture ? user.picture : '/images/default-pp.png';
-    const disconnectBtn = document.getElementById('disconnect-profile') as HTMLButtonElement | null;
     if (disconnectBtn) {
         disconnectBtn.addEventListener('click', async () => {
             try {

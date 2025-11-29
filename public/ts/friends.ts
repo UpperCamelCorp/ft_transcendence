@@ -17,16 +17,23 @@ interface FriendsList {
 
 const friendsPage = () => `
     <div class="bg-gradient-to-br from-gray-900 via-indigo-950 to-black p-12 rounded-2xl flex flex-col items-center max-w-3xl w-full max-h-screen">
-        <div class="flex w-full justify-between items-center max-w-5xl mb-12 pb-8 border-b border-slate-700">
-            <div class="flex items-center gap-4">
-                <img src="/svg/friends-icon.svg" alt="friends-icon" class="w-14 h-14 drop-shadow-lg">
-                <span id="user-title" class="text-4xl font-bold bg-gradient-to-r from-slate-200 to-indigo-300 bg-clip-text text-transparent">${t('sidebar.friends')}</span>
+        <div class="w-full max-w-5xl mb-12 pb-8 border-b border-slate-700">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <img src="/svg/friends-icon.svg" alt="friends-icon" class="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-lg">
+                    <span id="user-title" class="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-slate-200 to-indigo-300 bg-clip-text text-transparent">${t('sidebar.friends')}</span>
+                </div>
+                <div class="flex items-center justify-end w-full sm:w-auto">
+                    <!-- make invite button full width on small screens -->
+                    <button id="invite-button" class="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105">
+                        ${t('friends.invite')}
+                    </button>
+                </div>
             </div>
-            <button id="invite-button" class="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105">${t('friends.invite')}</button>
         </div>
-        <div id="friends-div" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl">
-        </div>
-    </div>`;
+     <div id="friends-div" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl">
+     </div>
+ </div>`;
 
 const getFriends = async () => {
     const token = localStorage.getItem('authToken');
