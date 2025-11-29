@@ -94,6 +94,7 @@ class Game {
     }
 
     private handleKeyDown = (e: KeyboardEvent) => {
+        if (this.socket.readyState !== WebSocket.OPEN) return;
         switch (e.code) {
             case 'KeyW':
                 this.socket.send(JSON.stringify({
@@ -113,6 +114,7 @@ class Game {
     };
 
     private handleKeyUp = (e: KeyboardEvent) => {
+        if (this.socket.readyState !== WebSocket.OPEN) return;
         switch (e.code) {
             case 'KeyW':
                 this.socket.send(JSON.stringify({
@@ -132,6 +134,7 @@ class Game {
     };
 
     private handleTouchStart = (up: boolean) => {
+        if (this.socket.readyState !== WebSocket.OPEN) return;
         if (up)
             this.socket.send(JSON.stringify({
                         type: 'move',
@@ -147,6 +150,7 @@ class Game {
     }
 
     private handleTouchEnd = (up: boolean) => {
+        if (this.socket.readyState !== WebSocket.OPEN) return;
         if (up)
             this.socket.send(JSON.stringify({
                     type: 'move',
