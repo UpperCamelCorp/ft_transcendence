@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ ! -d /app/public/uploads ]; then
+    mkdir -p /app/public/uploads
+fi
+
 if [ ! -f /app/certs/cert.pem ]; then
     echo "Generating SSL certificates..."
     mkdir -p /app/certs
