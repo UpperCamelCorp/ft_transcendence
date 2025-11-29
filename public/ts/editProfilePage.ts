@@ -9,20 +9,13 @@ const editProfilePage= () => `
     <div class="max-w-4xl bg-gradient-to-br from-[#18003C] to-[#142033] rounded-2xl p-4 sm:p-6 md:p-8 max-h-[calc(100vh-5rem)] overflow-auto">
          <form id="form-edit">
             <div class="w-full flex flex-col md:flex-row items-start md:items-center justify-center text-white gap-4">
-                <div class="w-40 md:flex-shrink-0 hidden md:flex items-center p-2 md:p-4 pr-4">
-                     <label for="input-picture" class="relative">
-                        <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover">
-                        <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-7 h-7 md:w-8 md:h-8 absolute bottom-0 -right-3 md:-right-4">
-                         <input id="input-picture" type="file" name="picture" accept="image/*" class="hidden">
-                     </label>
-                 </div>
-                <div class="flex-1 flex flex-col items-stretch space-y-4 p-2">
-                    <p class="text-2xl text-slate-300 text-center md:text-left">${t('edit.title')}</p>
-                    <div class="flex md:hidden items-center justify-center">
-                        <label for="picture" class="relative">
-                            <img id="m-profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-20 h-20 rounded-full object-cover">
-                            <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-7 h-7 absolute bottom-0 left-16">
-                            <input type="file" id="picture" name="picture" accept="image/*" class="hidden">
+                <div class="flex-1 flex flex-col items-stretch space-y-4 p-2 w-full">
+                    <p class="text-2xl text-slate-300 text-center">${t('edit.title')}</p>
+                    <div class="w-40 flex-shrink-0 flex items-center p-4 self-center">
+                        <label for="input-picture" class="relative">
+                            <img id="profile-picture" src="../images/default-pp.png" alt="profile-picture" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover">
+                            <img src="../svg/edit-logo.svg" alt="edit-picture" class="w-7 h-7 md:w-8 md:h-8 absolute bottom-0 -right-3 md:-right-4">
+                            <input id="input-picture" type="file" name="picture" accept="image/*" class="hidden">
                         </label>
                     </div>
                     <div class="flex flex-col justify-start text-[#E2E8F0]">
@@ -30,28 +23,28 @@ const editProfilePage= () => `
                              <label for="username">${t('edit.usernameLabel')}</label>
                              <p id="username-error" class="text-red-700 italic text-xs hidden"></p>
                          </div>
-                        <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                        <input type="text" name="username" id="username" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-full max-w-full px-3 py-2">
                      </div>
                      <div class="flex flex-col justify-start text-[#E2E8F0]">
                          <div>
                              <label for="email" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.emailLabel')}</label>
                              <p id="email-error" class="text-red-700 italic text-xs hidden"></p>
                          </div>
-                        <input type="text" name="email" id="email" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                        <input type="text" name="email" id="email" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-full max-w-full px-3 py-2">
                      </div>
                      <div class="flex flex-col justify-start text-[#E2E8F0]">
                          <div>
                              <label for="password" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.passwordLabel')}</label>
                              <p id="password-error" class="text-red-700 italic text-xs hidden"></p>
                          </div>
-                        <input type="password" name="password" id="password" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                        <input type="password" name="password" id="password" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-full max-w-full px-3 py-2">
                      </div>
                      <div class="flex flex-col justify-start text-[#E2E8F0]">
                          <div>
                              <label for="password-confirm" class="block text-sm font-medium text-[#E2E8F0]">${t('edit.passwordConfirmLabel')}</label>
                              <p id="confirm-password-error" class="text-red-700 italic text-xs hidden"></p>
                          </div>
-                        <input type="password" name="confirm" id="password-confirm" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-72 max-w-full px-3 py-2">
+                        <input type="password" name="confirm" id="password-confirm" class="bg-[#334155] border border-[#475569] rounded-xl text-white placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-transparent transition-all w-full max-w-full px-3 py-2">
                     </div>
                     <button type="submit" class="w-full md:w-auto bg-gradient-to-r from-[#3B82F6] to-[#1D4ED8] hover:from-[#2563EB] hover:to-[#1E40AF] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#1E293B]">
                         ${t('edit.send')}
@@ -71,12 +64,10 @@ const editProfilePage= () => `
          </div>
      </div>`;
 
-const initPicture = (classic: HTMLImageElement, mobile: HTMLImageElement) => {
+const initPicture = (classic: HTMLImageElement) => {
     const picture = localStorage.getItem('picture');
-    if (picture) {
+    if (picture)
         classic.src = picture;
-        mobile.src = picture;
-    }
 }
 
 
@@ -84,24 +75,18 @@ export const edit = () => {
     render(editProfilePage());
     const editForm = document.getElementById('form-edit');
     const pictureInputDesktop = document.getElementById('input-picture') as HTMLInputElement;
-    const pictureInputMobile = document.getElementById('picture') as HTMLInputElement;
     const imgInput = document.getElementById('profile-picture') as HTMLImageElement;
-    const imgInputMobile = document.getElementById('m-profile-picture') as HTMLImageElement;
 
-    initPicture(imgInput, imgInputMobile);
+    initPicture(imgInput);
     editForm?.addEventListener('submit', (e) => handleMultiFormSubmit(e, '/api/edit', editResponse));
     const handleImageChange = (input: HTMLInputElement) => {
         const userImage = input.files?.[0];
-        if (userImage) {
-            if (imgInput)
-                imgInput.src = URL.createObjectURL(userImage);
-            if (imgInputMobile)
-                imgInputMobile.src = URL.createObjectURL(userImage);
+        if (userImage && imgInput) {
+            imgInput.src = URL.createObjectURL(userImage);
         }
     };
 
     pictureInputDesktop?.addEventListener('change', () => handleImageChange(pictureInputDesktop));
-    pictureInputMobile?.addEventListener('change', () => handleImageChange(pictureInputMobile));
 
     const twofaSetupBtn = document.getElementById('twofa-setup-btn') as HTMLButtonElement | null;
     const twofaDisableBtn = document.getElementById('twofa-disable-btn') as HTMLButtonElement | null;
