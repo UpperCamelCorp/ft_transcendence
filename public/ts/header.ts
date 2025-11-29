@@ -54,6 +54,15 @@ export const setupHeader = () => {
      const langSelect = document.getElementById('lang-select') as HTMLSelectElement;
      const backdrop = document.getElementById('mobile-backdrop') as HTMLDivElement | null;
 
+    const normalizeMenuState = () => {
+        if (!menu) return;
+        menu.classList.remove('left-0', 'w-full', 'rounded-b-2xl', 'px-4', 'py-4', 'items-start', 'z-50', 'fixed', 'top-16');
+        menu.classList.add('hidden', 'min-w-[220px]', 'rounded-bl-2xl', 'right-0', 'fixed', 'top-16', 'z-50');
+        if (backdrop) backdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+    normalizeMenuState();
+
      if (searchBox) {
          searchBox.placeholder = t('header.searchPlaceholder');
      }
