@@ -214,7 +214,7 @@ export const setupHeader = () => {
                      else {
                          const noUser = document.createElement('span');
                          noUser.textContent = t('header.search.noUser');
-                         noUser.className = 'text-slate-300 font-bold italic m-4'
+                         noUser.className = 'text-slate-300 font-bold italic m-4';
                          searchRes?.appendChild(noUser);
                      }
                  }
