@@ -124,7 +124,6 @@
   "pong.roomId": "Id de la salle",
   "pong.roomPlaceholder": "0000",
   "pong.displayName": "Pseudo",
-  "pong.paddleColor": "Couleur de la raquette",
   "pong.play": "Jouer",
   "pong.return": "Retour",
   "pong.retry": "Rejouer",
