@@ -172,7 +172,7 @@ export const setupHeader = () => {
      }
      if (profilePictureDesktop && userPicture) profilePictureDesktop.src = userPicture;
      if (profilePictureDesktop && !userPicture) profilePictureDesktop.src = '../images/default-pp.png';
-		if (!headerListener) {
+    if (!headerListener) {
         profilePicture?.addEventListener('click', () => {
             if (window.innerWidth < 768) openMobileMenu();
             else menuHandler();
